@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lesson 03 — if statements</title>
+<style>
+  :root {
+    --bg: #14151f;
+    --panel: #1e2030;
+    --panel-border: #2e3148;
+    --text: #c8cce0;
+    --text-dim: #7d81a0;
+    --keyword: #9ece6a;
+    --string: #e0af68;
+    --accent: #7dcfff;
+    --error: #f7768e;
+    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(125, 207, 255, 0.06), transparent 40%),
+      radial-gradient(circle at 85% 90%, rgba(158, 206, 106, 0.06), transparent 40%);
+    color: var(--text);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 48px 20px;
+  }
+
+  .window {
+    width: 100%;
+    max-width: 560px;
+    background: var(--panel);
+    border: 1px solid var(--panel-border);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
+  }
+
+  .titlebar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 16px;
+    background: #191a28;
+    border-bottom: 1px solid var(--panel-border);
+  }
+
+  .dot { width: 11px; height: 11px; border-radius: 50%; }
+  .dot.red { background: #f7768e; }
+  .dot.yellow { background: #e0af68; }
+  .dot.green { background: #9ece6a; }
+
+  .filename {
+    margin-left: 8px;
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--text-dim);
+  }
+
+  .content {
+    padding: 28px 28px 24px;
+  }
+
+  h1 {
+    font-size: 21px;
+    line-height: 1.35;
+    font-weight: 600;
+    margin: 0 0 14px;
+    color: var(--text);
+    max-width: 30ch;
+  }
+
+  p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: var(--text-dim);
+    margin: 0 0 12px;
+    max-width: 46ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    color: var(--accent);
+    background: rgba(125, 207, 255, 0.08);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .example {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: #14151f;
+    border: 1px solid var(--panel-border);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 18px 0 22px;
+  }
+  .example .kw { color: var(--keyword); }
+  .example .str { color: var(--string); }
+  .example .var { color: var(--accent); }
+  .example .out { color: var(--text-dim); margin-top: 6px; }
+  .example div { margin-bottom: 2px; white-space: pre; }
+
+  label {
+    display: block;
+    font-size: 13px;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: #14151f;
+    border: 1px solid var(--panel-border);
+    color: var(--text);
+    padding: 12px 14px;
+    border-radius: 6px;
+    outline: none;
+    resize: vertical;
+    min-height: 76px;
+    line-height: 1.6;
+    transition: border-color 0.15s ease;
+  }
+
+  textarea:focus {
+    border-color: var(--accent);
+  }
+
+  .run-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+  }
+
+  button {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 14px;
+    background: var(--keyword);
+    color: #14151f;
+    border: none;
+    padding: 0 20px;
+    height: 38px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: filter 0.15s ease;
+  }
+
+  button:hover { filter: brightness(1.08); }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  .console {
+    margin-top: 14px;
+    min-height: 24px;
+    font-family: var(--font-mono);
+    font-size: 13.5px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+  }
+
+  .console.success { color: var(--keyword); }
+  .console.error { color: var(--error); }
+
+  .nav-row {
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--panel-border);
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 13px;
+  }
+
+  .nav-row a {
+    color: var(--text-dim);
+    text-decoration: none;
+  }
+
+  .nav-row a:hover { color: var(--accent); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.25s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+  <div class="window">
+    <div class="titlebar">
+      <span class="dot red"></span>
+      <span class="dot yellow"></span>
+      <span class="dot green"></span>
+      <span class="filename">lesson_03.py</span>
+    </div>
+
+    <div class="content">
+      <h1>if statements</h1>
+      <p>
+        An <code>if</code> statement lets your code make a decision. It checks
+        whether something is true, and only runs the code underneath it when
+        that condition is met.
+      </p>
+
+      <div class="example"><div><span class="kw">if</span> <span class="var">age</span> &gt;= <span class="str">18</span>:
+    <span class="kw">print</span>(<span class="str">"You can vote"</span>)</div></div>
+
+      <p>
+        Notice two things: the line ends in a colon <code>:</code>, and the
+        line underneath is indented. That indentation is what tells Python
+        "this only happens if the condition above is true."
+      </p>
+
+      <p>
+        Try it yourself. Write an <code>if</code> statement that checks
+        whether <code>age</code> is 18 or older, and prints any message you
+        like underneath. There's more than one correct way to write this —
+        the exact wording of your message doesn't matter.
+      </p>
+
+      <label for="code-input">Your code</label>
+      <textarea
+        id="code-input"
+        autocomplete="off"
+        spellcheck="false"
+        rows="3"
+        placeholder="if age >= 18:&#10;    print(&quot;...&quot;)"
+      ></textarea>
+      <div class="run-row">
+        <button id="check-btn">Run</button>
+      </div>
+
+      <div class="console" id="console"></div>
+
+      <div class="nav-row">
+        <a href="lesson2.html">&larr; Lesson 2</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const input = document.getElementById('code-input');
+    const button = document.getElementById('check-btn');
+    const consoleEl = document.getElementById('console');
+
+    function flash(className, text) {
+      consoleEl.className = className + ' flash';
+      void consoleEl.offsetWidth;
+      consoleEl.classList.add('flash');
+      consoleEl.textContent = text;
+    }
+
+    // Several structurally different but logically equivalent ways to
+    // write "if age is 18 or older", each normalized (spaces stripped).
+    const conditionPatterns = [
+      /^ifage>=18:$/,
+      /^if18<=age:$/,
+      /^ifage>17:$/,
+      /^if17<age:$/,
+      /^ifnotage<18:$/
+    ];
+
+    function showResult() {
+      const raw = input.value;
+      const lines = raw.split('\n').map(l => l.replace(/\r/g, ''));
+      const nonEmpty = lines.filter(l => l.trim().length > 0);
+
+      if (nonEmpty.length === 0) {
+        flash('console error', 'Write your if statement into the box above, then press Run.');
+        return;
+      }
+
+      const headerLine = lines.find(l => l.trim().length > 0);
+      const headerIndex = lines.indexOf(headerLine);
+      const bodyLines = lines.slice(headerIndex + 1).filter(l => l.trim().length > 0);
+
+      const headerTight = headerLine.trim().replace(/\s+/g, '').toLowerCase();
+      const conditionOK = conditionPatterns.some(p => p.test(headerTight));
+
+      if (!headerTight.startsWith('if')) {
+        flash('console error', 'Not quite. Start the first line with if.');
+        return;
+      }
+      if (!headerTight.includes(':')) {
+        flash('console error', 'Not quite. The if line needs to end with a colon.');
+        return;
+      }
+      if (!headerTight.includes('age')) {
+        flash('console error', 'Not quite. Your condition should check the variable age.');
+        return;
+      }
+      if (!conditionOK) {
+        flash('console error', 'Close, but the condition should mean "age is 18 or older" — try age >= 18.');
+        return;
+      }
+
+      if (bodyLines.length === 0) {
+        flash('console error', 'Almost — now add an indented line underneath that prints something.');
+        return;
+      }
+
+      const bodyLine = bodyLines[0];
+      const isIndented = /^[ \t]+/.test(bodyLine);
+      const bodyTight = bodyLine.trim();
+
+      if (!isIndented) {
+        flash('console error', 'The print line needs to be indented under the if line.');
+        return;
+      }
+      if (!/print\s*\(/.test(bodyTight)) {
+        flash('console error', 'The indented line should call print(...) with your message.');
+        return;
+      }
+      if (!/["']/.test(bodyTight)) {
+        flash('console error', 'Put your message inside quotes, like print("...").');
+        return;
+      }
+
+      flash('console success', 'That works — a valid if statement using your own wording.\n\nAny message would print, as long as age is 18 or older.');
+    }
+
+    button.addEventListener('click', showResult);
+  </script>
+
+</body>
+</html>
