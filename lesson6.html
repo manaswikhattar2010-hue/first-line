@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter VI — The Crossroads</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 620px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content {
+    padding: 34px 34px 30px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+
+  p.lede {
+    font-style: italic;
+    color: var(--ink-dim);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 26px 0 22px;
+    color: var(--gold);
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .paths {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 8px;
+  }
+
+  .path {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 20px 22px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .path:hover {
+    border-color: var(--gold);
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -14px rgba(0,0,0,0.35);
+  }
+  .path:active { transform: translateY(0); }
+
+  .path .glyph {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 26px;
+    color: var(--leather);
+    margin-bottom: 2px;
+  }
+  .path .tag {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--gold);
+    margin-bottom: 8px;
+    display: block;
+  }
+  .path p {
+    font-size: 15.5px;
+    margin: 0;
+    color: var(--ink-dim);
+    max-width: none;
+  }
+  .path .go {
+    display: inline-block;
+    margin-top: 10px;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 14.5px;
+    color: var(--flame);
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a {
+    color: var(--leather);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .nav-row a:hover { color: var(--flame); }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER VI</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+      <h1>The Crossroads</h1>
+
+      <p class="lede">
+        Past the well, the path forks in two — the first time this
+        house has ever let you choose your own way. Both doors lead
+        somewhere worth going. Only one opens tonight.
+      </p>
+
+      <p>
+        Read the carving above each door, and step through the one
+        that calls to you. You can always return here later and take
+        the other path another night.
+      </p>
+
+      <div class="divider"><span>choose your way</span></div>
+
+      <div class="paths">
+        <a class="path" href="lesson7.html">
+          <span class="tag">the left door</span>
+          <div class="glyph">The Spiral Stair</div>
+          <p>
+            Behind this door, a staircase winds down and seems to
+            repeat itself — the same step, again and again, until you
+            tell it to stop. Learn to make the house do something
+            more than once without writing it out by hand each time.
+          </p>
+          <span class="go">Descend the stair &rarr;</span>
+        </a>
+
+        <a class="path" href="lesson8.html">
+          <span class="tag">the right door</span>
+          <div class="glyph">The Second Question</div>
+          <p>
+            Behind this door, a voice asks you one question — and if
+            your answer doesn't satisfy it, asks another, and maybe
+            another after that. Learn to give the house more than one
+            way for a fork to turn out.
+          </p>
+          <span class="go">Answer the question &rarr;</span>
+        </a>
+      </div>
+
+      <div class="nav-row">
+        <a href="lesson5.html">&larr; Chapter V</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
