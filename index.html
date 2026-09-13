@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 01 — The print statement</title>
+<title>Chapter I — The Spoken Word</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #14151f;
-    --panel: #1e2030;
-    --panel-border: #2e3148;
-    --text: #c8cce0;
-    --text-dim: #7d81a0;
-    --keyword: #9ece6a;
-    --string: #e0af68;
-    --accent: #7dcfff;
-    --error: #f7768e;
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
   }
 
   * { box-sizing: border-box; }
@@ -24,96 +29,138 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: var(--bg);
+    background: var(--leather-dark);
     background-image:
-      radial-gradient(circle at 15% 10%, rgba(125, 207, 255, 0.06), transparent 40%),
-      radial-gradient(circle at 85% 90%, rgba(158, 206, 106, 0.06), transparent 40%);
-    color: var(--text);
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
     font-family: var(--font-body);
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 48px 20px;
+    padding: 44px 18px;
   }
 
-  .window {
+  .book {
     width: 100%;
-    max-width: 560px;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
     overflow: hidden;
-    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
   }
 
-  .titlebar {
+  .chapter-bar {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: #191a28;
-    border-bottom: 1px solid var(--panel-border);
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
   }
 
-  .dot { width: 11px; height: 11px; border-radius: 50%; }
-  .dot.red { background: #f7768e; }
-  .dot.yellow { background: #e0af68; }
-  .dot.green { background: #9ece6a; }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
 
-  .filename {
-    margin-left: 8px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-dim);
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
   }
 
   .content {
-    padding: 28px 28px 24px;
+    padding: 34px 34px 30px;
   }
 
   h1 {
-    font-size: 21px;
-    line-height: 1.35;
-    font-weight: 600;
-    margin: 0 0 14px;
-    color: var(--text);
-    max-width: 30ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
   }
 
   p {
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--text-dim);
-    margin: 0 0 12px;
-    max-width: 46ch;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 54ch;
   }
 
-  code, .snippet {
-    font-family: var(--font-mono);
-    font-size: 0.92em;
-    color: var(--accent);
-    background: rgba(125, 207, 255, 0.08);
-    padding: 1px 6px;
-    border-radius: 4px;
+  p.lede {
+    font-style: italic;
+    color: var(--ink-dim);
   }
 
-  .example {
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 22px 0;
+    color: var(--gold);
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span { font-size: 18px; }
+
+  code {
     font-family: var(--font-mono);
-    font-size: 14px;
-    background: #14151f;
-    border: 1px solid var(--panel-border);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14.5px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
     border-radius: 6px;
-    padding: 12px 16px;
-    margin: 18px 0 22px;
+    padding: 16px 20px;
+    margin: 18px 0 24px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
   }
-  .example .kw { color: var(--keyword); }
-  .example .str { color: var(--string); }
-  .example .out { color: var(--text-dim); margin-top: 6px; }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; margin-top: 6px; }
 
   label {
     display: block;
-    font-size: 13px;
-    color: var(--text-dim);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
     margin-bottom: 8px;
   }
 
@@ -125,87 +172,114 @@
   input[type="text"] {
     flex: 1;
     font-family: var(--font-mono);
-    font-size: 14px;
-    background: #14151f;
-    border: 1px solid var(--panel-border);
-    color: var(--text);
-    padding: 10px 12px;
-    border-radius: 6px;
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
     outline: none;
-    transition: border-color 0.15s ease;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-
+  input[type="text"]::placeholder { color: #a8987a; }
   input[type="text"]:focus {
-    border-color: var(--accent);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
   }
 
   button {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14px;
-    background: var(--keyword);
-    color: #14151f;
-    border: none;
-    padding: 0 20px;
-    border-radius: 6px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: filter 0.15s ease;
+    transition: filter 0.15s ease, transform 0.05s ease;
   }
-
-  button:hover { filter: brightness(1.08); }
-  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
   .console {
-    margin-top: 18px;
-    min-height: 24px;
-    font-family: var(--font-mono);
-    font-size: 13.5px;
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
     line-height: 1.6;
-    white-space: pre-wrap;
   }
-
-  .console .prompt {
-    color: var(--text-dim);
-  }
-
-  .console.success { color: var(--keyword); }
+  .console.success { color: #3f6b3a; }
   .console.error { color: var(--error); }
 
   @media (prefers-reduced-motion: no-preference) {
-    .console.flash { animation: flash-in 0.25s ease; }
+    .console.flash { animation: flash-in 0.3s ease; }
   }
   @keyframes flash-in {
-    from { opacity: 0; transform: translateY(-2px); }
+    from { opacity: 0; transform: translateY(-3px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a {
+    color: var(--leather);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .nav-row a:hover { color: var(--flame); }
 </style>
 </head>
 <body>
 
-  <div class="window">
-    <div class="titlebar">
-      <span class="dot red"></span>
-      <span class="dot yellow"></span>
-      <span class="dot green"></span>
-      <span class="filename">lesson_01.py</span>
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER I</span>
+      <span class="flicker">by candlelight</span>
     </div>
 
     <div class="content">
-      <h1>The print statement</h1>
-      <p>
-        In Python, <code>print()</code> is how your program talks back to you.
-        Whatever you put inside the parentheses gets shown on the screen.
-        Text goes inside quotes, like this:
+      <h1>The Spoken Word</h1>
+
+      <p class="lede">
+        The corridor ends at a heavy oak door. No handle, no keyhole —
+        only words carved faintly into the wood, worn smooth by
+        travelers who came before you. A single candle gutters on the
+        sill beside an old, dog-eared spellbook.
       </p>
 
-      <div class="example">
+      <p>
+        You open the spellbook to its first page. It explains that
+        every door in this house answers to an incantation, and the
+        simplest of them all is <code>print()</code>. Whatever words
+        you place inside the parentheses — held safely inside
+        quotation marks — are the words that will appear, glowing,
+        on the door before you.
+      </p>
+
+      <div class="spellbook">
+        <span class="label">From the spellbook:</span>
         <div><span class="kw">print</span>(<span class="str">"Hello World"</span>)</div>
         <div class="out">Hello World</div>
       </div>
 
-      <p>Try it yourself. Type the line above exactly as shown.</p>
+      <p>
+        Speak the incantation exactly as it is written above, and the
+        door will open.
+      </p>
 
-      <label for="code-input">Your code</label>
+      <label for="code-input">Your incantation</label>
       <div class="input-row">
         <input
           type="text"
@@ -214,67 +288,67 @@
           spellcheck="false"
           placeholder='print("Hello World")'
         />
-        <button id="check-btn">Run</button>
+        <button id="check-btn">Speak</button>
       </div>
 
       <div class="console" id="console"></div>
-      <div class="nav-row">
-  <span></span>
-  <a href="lesson2.html">Lesson 2 &rarr;</a>
-</div>
 
+      <div class="nav-row">
+        <span></span>
+        <a href="lesson2.html">Turn the page &rarr;</a>
+      </div>
     </div>
   </div>
 
-  <script>
-    const input = document.getElementById('code-input');
-    const button = document.getElementById('check-btn');
-    const consoleEl = document.getElementById('console');
-    const target = 'print("Hello World")';
+<script>
+  const input = document.getElementById('code-input');
+  const button = document.getElementById('check-btn');
+  const consoleEl = document.getElementById('console');
+  const target = 'print("Hello World")';
 
-    function normalize(str) {
-      // Treat single and double quotes as equivalent, trim outer whitespace
-      return str.trim().replace(/'/g, '"');
-    }
+  function normalize(str) {
+    // Treat single and double quotes as equivalent
+    return str.trim().replace(/'/g, '"');
+  }
 
-    function showResult() {
-      const value = input.value;
-      const clean = normalize(value);
-      const cleanTarget = normalize(target);
+  function showResult() {
+    const value = input.value;
+    const clean = normalize(value);
+    const cleanTarget = normalize(target);
 
-      consoleEl.classList.remove('flash');
-      void consoleEl.offsetWidth; // restart animation
-      consoleEl.classList.add('flash');
+    consoleEl.classList.remove('flash');
+    void consoleEl.offsetWidth; // restart animation
+    consoleEl.classList.add('flash');
 
-      if (clean === cleanTarget) {
-        consoleEl.className = 'console success flash';
-        consoleEl.textContent = 'Hello World\n\nNice work — that ran perfectly.';
-      } else if (clean.length === 0) {
-        consoleEl.className = 'console error flash';
-        consoleEl.textContent = 'Type the line into the box above, then press Run.';
+    if (clean === cleanTarget) {
+      consoleEl.className = 'console success';
+      consoleEl.textContent = 'The door swings open, and light spills through. "Hello World." Your story has begun.';
+    } else if (clean.length === 0) {
+      consoleEl.className = 'console error';
+      consoleEl.textContent = 'The room stays silent. You must speak the words aloud.';
+    } else {
+      consoleEl.className = 'console error';
+      let hint = 'The door does not stir. ';
+      if (!clean.includes('print')) {
+        hint += 'Every incantation in this house begins with the word print.';
+      } else if (!clean.includes('(') || !clean.includes(')')) {
+        hint += 'The words need to be cupped inside parentheses, like a hand around a flame.';
+      } else if (!clean.includes('"')) {
+        hint += 'Wrap your words in quotation marks, as though sealing them in parchment.';
+      } else if (clean.toLowerCase().replace(/\s/g, '') === cleanTarget.toLowerCase().replace(/\s/g, '')) {
+        hint += 'Check each letter closely — spelling and capitals matter to old magic.';
       } else {
-        consoleEl.className = 'console error flash';
-        let hint = 'Not quite. ';
-        if (!clean.includes('print')) {
-          hint += 'Start with the word print.';
-        } else if (!clean.includes('(') || !clean.includes(')')) {
-          hint += 'print needs parentheses right after it: print(...)';
-        } else if (!clean.includes('"')) {
-          hint += 'Text needs to sit inside quotes: "Hello World"';
-        } else if (clean.toLowerCase().replace(/\s/g, '') !== cleanTarget.toLowerCase().replace(/\s/g, '')) {
-          hint += 'Check the spelling and capitalization of Hello World.';
-        } else {
-          hint += 'Check for extra or missing spaces.';
-        }
-        consoleEl.textContent = hint;
+        hint += 'Something in the phrase is amiss — look for a missing or extra character.';
       }
+      consoleEl.classList.add('flash');
+      consoleEl.textContent = hint;
     }
+  }
 
-    button.addEventListener('click', showResult);
-    input.addEventListener('keydown', (e) => {
-      if (e.key === 'Enter') showResult();
-    });
-  </script>
-
+  button.addEventListener('click', showResult);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') showResult();
+  });
+</script>
 </body>
 </html>
