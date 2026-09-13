@@ -3,20 +3,25 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Lesson 03 — if statements</title>
+<title>Chapter III — The Fork in the Path</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #14151f;
-    --panel: #1e2030;
-    --panel-border: #2e3148;
-    --text: #c8cce0;
-    --text-dim: #7d81a0;
-    --keyword: #9ece6a;
-    --string: #e0af68;
-    --accent: #7dcfff;
-    --error: #f7768e;
-    --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
   }
 
   * { box-sizing: border-box; }
@@ -24,119 +29,147 @@
   body {
     margin: 0;
     min-height: 100vh;
-    background: var(--bg);
+    background: var(--leather-dark);
     background-image:
-      radial-gradient(circle at 15% 10%, rgba(125, 207, 255, 0.06), transparent 40%),
-      radial-gradient(circle at 85% 90%, rgba(158, 206, 106, 0.06), transparent 40%);
-    color: var(--text);
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
     font-family: var(--font-body);
     display: flex;
     justify-content: center;
     align-items: flex-start;
-    padding: 48px 20px;
+    padding: 44px 18px;
   }
 
-  .window {
+  .book {
     width: 100%;
-    max-width: 560px;
-    background: var(--panel);
-    border: 1px solid var(--panel-border);
-    border-radius: 10px;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
     overflow: hidden;
-    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, 0.6);
   }
 
-  .titlebar {
+  .chapter-bar {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 12px 16px;
-    background: #191a28;
-    border-bottom: 1px solid var(--panel-border);
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
   }
 
-  .dot { width: 11px; height: 11px; border-radius: 50%; }
-  .dot.red { background: #f7768e; }
-  .dot.yellow { background: #e0af68; }
-  .dot.green { background: #9ece6a; }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
 
-  .filename {
-    margin-left: 8px;
-    font-family: var(--font-mono);
-    font-size: 13px;
-    color: var(--text-dim);
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
   }
 
   .content {
-    padding: 28px 28px 24px;
+    padding: 34px 34px 30px;
   }
 
   h1 {
-    font-size: 21px;
-    line-height: 1.35;
-    font-weight: 600;
-    margin: 0 0 14px;
-    color: var(--text);
-    max-width: 30ch;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
   }
 
   p {
-    font-size: 15px;
-    line-height: 1.65;
-    color: var(--text-dim);
-    margin: 0 0 12px;
-    max-width: 46ch;
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 54ch;
+  }
+
+  p.lede {
+    font-style: italic;
+    color: var(--ink-dim);
   }
 
   code {
     font-family: var(--font-mono);
-    font-size: 0.92em;
-    color: var(--accent);
-    background: rgba(125, 207, 255, 0.08);
-    padding: 1px 6px;
-    border-radius: 4px;
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
   }
 
-  .example {
+  .spellbook {
     font-family: var(--font-mono);
-    font-size: 14px;
-    background: #14151f;
-    border: 1px solid var(--panel-border);
+    font-size: 14.5px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
     border-radius: 6px;
-    padding: 12px 16px;
-    margin: 18px 0 22px;
+    padding: 16px 20px;
+    margin: 18px 0 24px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
   }
-  .example .kw { color: var(--keyword); }
-  .example .str { color: var(--string); }
-  .example .var { color: var(--accent); }
-  .example .out { color: var(--text-dim); margin-top: 6px; }
-  .example div { margin-bottom: 2px; white-space: pre; }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; margin-top: 6px; white-space: normal; }
 
   label {
     display: block;
-    font-size: 13px;
-    color: var(--text-dim);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
     margin-bottom: 8px;
   }
 
   textarea {
     width: 100%;
     font-family: var(--font-mono);
-    font-size: 14px;
-    background: #14151f;
-    border: 1px solid var(--panel-border);
-    color: var(--text);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
     padding: 12px 14px;
-    border-radius: 6px;
+    border-radius: 5px;
     outline: none;
     resize: vertical;
-    min-height: 76px;
-    line-height: 1.6;
-    transition: border-color 0.15s ease;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-
+  textarea::placeholder { color: #a8987a; }
   textarea:focus {
-    border-color: var(--accent);
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
   }
 
   .run-row {
@@ -146,199 +179,214 @@
   }
 
   button {
-    font-family: var(--font-body);
-    font-weight: 600;
-    font-size: 14px;
-    background: var(--keyword);
-    color: #14151f;
-    border: none;
-    padding: 0 20px;
-    height: 38px;
-    border-radius: 6px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
     cursor: pointer;
-    transition: filter 0.15s ease;
+    transition: filter 0.15s ease, transform 0.05s ease;
   }
-
-  button:hover { filter: brightness(1.08); }
-  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
 
   .console {
-    margin-top: 14px;
-    min-height: 24px;
-    font-family: var(--font-mono);
-    font-size: 13.5px;
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
     line-height: 1.6;
-    white-space: pre-wrap;
   }
-
-  .console.success { color: var(--keyword); }
+  .console.success { color: #3f6b3a; }
   .console.error { color: var(--error); }
 
-  .nav-row {
-    margin-top: 26px;
-    padding-top: 18px;
-    border-top: 1px solid var(--panel-border);
-    display: flex;
-    justify-content: space-between;
-    font-family: var(--font-mono);
-    font-size: 13px;
-  }
-
-  .nav-row a {
-    color: var(--text-dim);
-    text-decoration: none;
-  }
-
-  .nav-row a:hover { color: var(--accent); }
-
   @media (prefers-reduced-motion: no-preference) {
-    .console.flash { animation: flash-in 0.25s ease; }
+    .console.flash { animation: flash-in 0.3s ease; }
   }
   @keyframes flash-in {
-    from { opacity: 0; transform: translateY(-2px); }
+    from { opacity: 0; transform: translateY(-3px); }
     to { opacity: 1; transform: translateY(0); }
   }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a {
+    color: var(--leather);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .nav-row a:hover { color: var(--flame); }
 </style>
 </head>
 <body>
 
-  <div class="window">
-    <div class="titlebar">
-      <span class="dot red"></span>
-      <span class="dot yellow"></span>
-      <span class="dot green"></span>
-      <span class="filename">lesson_03.py</span>
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER III</span>
+      <span class="flicker">by candlelight</span>
     </div>
 
     <div class="content">
-      <h1>if statements</h1>
-      <p>
-        An <code>if</code> statement lets your code make a decision. It checks
-        whether something is true, and only runs the code underneath it when
-        that condition is met.
-      </p>
+      <h1>The Fork in the Path</h1>
 
-      <div class="example"><div><span class="kw">if</span> <span class="var">age</span> &gt;= <span class="str">18</span>:
-    <span class="kw">print</span>(<span class="str">"You can vote"</span>)</div></div>
-
-      <p>
-        Notice two things: the line ends in a colon <code>:</code>, and the
-        line underneath is indented. That indentation is what tells Python
-        "this only happens if the condition above is true."
+      <p class="lede">
+        The corridor splits ahead of you: one way glows, the other
+        stays dark, and which one lights depends on a question the
+        house silently asks of anyone who passes.
       </p>
 
       <p>
-        Try it yourself. Write an <code>if</code> statement that checks
-        whether <code>age</code> is 18 or older, and prints any message you
-        like underneath. There's more than one correct way to write this —
-        the exact wording of your message doesn't matter.
+        This is called a <code>condition</code> — a fork that is only
+        taken when something is true. Here, the house asks whether a
+        traveler's <code>age</code> is 18 or older.
       </p>
 
-      <label for="code-input">Your code</label>
+      <div class="spellbook">
+        <span class="label">From the spellbook:</span>
+        <div><span class="kw">if</span> <span class="var">age</span> &gt;= <span class="var">18</span>:</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You may pass"</span>)</div>
+        <div class="out">You may pass</div>
+      </div>
+
+      <p>
+        Notice two things: the first line ends in a colon, and the
+        line underneath is indented. That indentation tells the house
+        this only happens when the condition above is true.
+      </p>
+
+      <p>
+        Try it yourself. Write an <code>if</code> that checks whether
+        <code>age</code> is 18 or older, and have it speak a message
+        underneath, indented, the same way it's shown above. There's
+        more than one way to phrase the condition — the exact wording
+        of your message doesn't matter, so long as the shape is right.
+      </p>
+
+      <label for="code-input">Your incantation</label>
       <textarea
         id="code-input"
         autocomplete="off"
         spellcheck="false"
         rows="3"
-        placeholder="if age >= 18:&#10;    print(&quot;...&quot;)"
+        placeholder='if age >= 18:&#10;    print("You may pass")'
       ></textarea>
       <div class="run-row">
-        <button id="check-btn">Run</button>
+        <button id="check-btn">Recite</button>
       </div>
 
       <div class="console" id="console"></div>
 
       <div class="nav-row">
-        <a href="lesson2.html">&larr; Lesson 2</a>
+        <a href="lesson2.html">&larr; Chapter II</a>
         <span></span>
-
       </div>
     </div>
   </div>
 
-  <script>
-    const input = document.getElementById('code-input');
-    const button = document.getElementById('check-btn');
-    const consoleEl = document.getElementById('console');
+<script>
+  const input = document.getElementById('code-input');
+  const button = document.getElementById('check-btn');
+  const consoleEl = document.getElementById('console');
 
-    function flash(className, text) {
-      consoleEl.className = className + ' flash';
-      void consoleEl.offsetWidth;
-      consoleEl.classList.add('flash');
-      consoleEl.textContent = text;
+  function flash(className, text) {
+    consoleEl.className = className;
+    void consoleEl.offsetWidth; // restart animation
+    consoleEl.classList.add('flash');
+    consoleEl.textContent = text;
+  }
+
+  // Several structurally different but logically equivalent ways to
+  // write "if age is 18 or older" are accepted, since the exact
+  // wording of the condition doesn't matter to the house — only that
+  // it correctly tests the fork.
+  const conditionPatterns = [
+    /^if\s+age\s*>=\s*18\s*:$/,
+    /^if\s+age\s*>\s*17\s*:$/,
+    /^if\s+18\s*<=\s*age\s*:$/,
+    /^if\s+17\s*<\s*age\s*:$/,
+    /^if\s+not\s+age\s*<\s*18\s*:$/
+  ];
+
+  function showResult() {
+    const raw = input.value.replace(/\r\n/g, '\n');
+    const rawLines = raw.split('\n');
+    const nonEmptyIdx = rawLines.findIndex(l => l.trim().length > 0);
+
+    if (nonEmptyIdx === -1) {
+      flash('console error', 'The path stays dark. Write something to test the fork.');
+      return;
     }
 
-    // Several structurally different but logically equivalent ways to
-    // write "if age is 18 or older", each normalized (spaces stripped).
-    const conditionPatterns = [
-      /^ifage>=18:$/,
-      /^if18<=age:$/,
-      /^ifage>17:$/,
-      /^if17<age:$/,
-      /^ifnotage<18:$/
-    ];
+    const conditionLine = rawLines[nonEmptyIdx].trim().replace(/\s+/g, ' ');
+    const bodyIdx = rawLines.findIndex((l, i) => i > nonEmptyIdx && l.trim().length > 0);
 
-    function showResult() {
-      const raw = input.value;
-      const lines = raw.split('\n').map(l => l.replace(/\r/g, ''));
-      const nonEmpty = lines.filter(l => l.trim().length > 0);
-
-      if (nonEmpty.length === 0) {
-        flash('console error', 'Write your if statement into the box above, then press Run.');
-        return;
-      }
-
-      const headerLine = lines.find(l => l.trim().length > 0);
-      const headerIndex = lines.indexOf(headerLine);
-      const bodyLines = lines.slice(headerIndex + 1).filter(l => l.trim().length > 0);
-
-      const headerTight = headerLine.trim().replace(/\s+/g, '').toLowerCase();
-      const conditionOK = conditionPatterns.some(p => p.test(headerTight));
-
-      if (!headerTight.startsWith('if')) {
-        flash('console error', 'Not quite. Start the first line with if.');
-        return;
-      }
-      if (!headerTight.includes(':')) {
-        flash('console error', 'Not quite. The if line needs to end with a colon.');
-        return;
-      }
-      if (!headerTight.includes('age')) {
-        flash('console error', 'Not quite. Your condition should check the variable age.');
-        return;
-      }
-      if (!conditionOK) {
-        flash('console error', 'Close, but the condition should mean "age is 18 or older" — try age >= 18.');
-        return;
-      }
-
-      if (bodyLines.length === 0) {
-        flash('console error', 'Almost — now add an indented line underneath that prints something.');
-        return;
-      }
-
-      const bodyLine = bodyLines[0];
-      const isIndented = /^[ \t]+/.test(bodyLine);
-      const bodyTight = bodyLine.trim();
-
-      if (!isIndented) {
-        flash('console error', 'The print line needs to be indented under the if line.');
-        return;
-      }
-      if (!/print\s*\(/.test(bodyTight)) {
-        flash('console error', 'The indented line should call print(...) with your message.');
-        return;
-      }
-      if (!/["']/.test(bodyTight)) {
-        flash('console error', 'Put your message inside quotes, like print("...").');
-        return;
-      }
-
-      flash('console success', 'That works — a valid if statement using your own wording.\n\nAny message would print, as long as age is 18 or older.');
+    if (bodyIdx === -1) {
+      flash('console error', 'The condition is spoken, but nothing follows beneath it. The fork needs a line to take when it lights.');
+      return;
     }
 
-    button.addEventListener('click', showResult);
-  </script>
+    const bodyRaw = rawLines[bodyIdx];
+    const isIndented = /^(\s{2,}|\t)/.test(bodyRaw);
+    const bodyLine = bodyRaw.trim();
 
+    const conditionOk = conditionPatterns.some(p => p.test(conditionLine));
+
+    if (!conditionOk) {
+      if (!/^if\b/.test(conditionLine)) {
+        flash('console error', 'Every fork begins with the word if.');
+      } else if (!conditionLine.endsWith(':')) {
+        flash('console error', 'The condition needs to end in a colon — that\'s what opens the path beneath it.');
+      } else if (!/age/.test(conditionLine)) {
+        flash('console error', 'The fork should ask about age, the traveler at the threshold.');
+      } else {
+        flash('console error', 'The condition doesn\'t quite ask whether age is 18 or older. Check the comparison.');
+      }
+      return;
+    }
+
+    if (!isIndented) {
+      flash('console error', 'The line beneath the fork must be indented — that is how the house knows it only happens when the condition is true.');
+      return;
+    }
+
+    if (!/^print\s*\(/.test(bodyLine)) {
+      flash('console error', 'The path beneath the fork should speak something aloud, with print.');
+      return;
+    }
+
+    if (!/["']/.test(bodyLine)) {
+      flash('console error', 'Whatever the path says should be sealed in quotation marks.');
+      return;
+    }
+
+    if (!bodyLine.includes(')')) {
+      flash('console error', 'The spoken words need to be closed inside their parentheses.');
+      return;
+    }
+
+    flash('console success', 'The path ahead lights. The fork has judged the traveler worthy, and the way forward opens.');
+  }
+
+  button.addEventListener('click', showResult);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && e.metaKey) showResult();
+    if (e.key === 'Enter' && e.ctrlKey) showResult();
+  });
+</script>
 </body>
 </html>
