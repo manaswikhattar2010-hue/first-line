@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter VIII — The Gem Table</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 24px;
+  }
+  .terms span {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--leather);
+    background: rgba(74,47,34,0.08);
+    border: 1px solid var(--page-edge);
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER VIII</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+      <h1>The Gem Table</h1>
+
+      <p class="lede">
+        A low table stands in the middle of the room, scattered with
+        gems of every colour, each catching the candlelight
+        differently. Beside them, a blank ledger waits — and a note,
+        in handwriting older than yours.
+      </p>
+
+      <p>
+        "Write down what is on the table," it says, "and something
+        will be added to it that was not there before."
+      </p>
+
+      <p>
+        In the spellbook's tongue, a row of things held under one name
+        is called a <code>list</code>. It looks like this — a name, an
+        equals sign, and square brackets holding whatever you like,
+        each one separated by a comma.
+      </p>
+
+      <div class="spellbook">
+        <span class="label">From the spellbook:</span>
+        <div><span class="var">gems</span> = [<span class="str">"ruby"</span>, <span class="str">"sapphire"</span>, <span class="str">"emerald"</span>]</div>
+        <div><span class="kw">print</span>(<span class="var">gems</span>)</div>
+        <div class="out">['ruby', 'sapphire', 'emerald']</div>
+      </div>
+
+      <p>
+        A list can hold as few or as many things as you like — one
+        gem, or a dozen. If you remember the Spiral Stair, you can
+        even walk through your list one item at a time:
+      </p>
+
+      <div class="spellbook"><span class="kw">for</span> <span class="var">gem</span> <span class="kw">in</span> <span class="var">gems</span>:
+    <span class="kw">print</span>(<span class="var">gem</span>)</div>
+
+      <p>
+        Try it yourself. Write down what's on the table — real gems,
+        invented ones, or something else entirely. The ledger only
+        asks that it takes the shape of a list: a name, an equals
+        sign, and square brackets holding at least one thing. What you
+        put inside, how many, and whether you loop through them
+        afterward — all of that is yours to decide.
+      </p>
+
+      <label for="code-input">Your ledger entry</label>
+      <textarea id="code-input" autocomplete="off" spellcheck="false" rows="4"
+        placeholder='gems = ["ruby", "sapphire", "emerald"]'></textarea>
+      <div class="run-row"><button id="check-btn">Place it on the table</button></div>
+      <div class="console" id="console"></div>
+
+      <div class="nav-row">
+        <a href="lesson6.html">&larr; The Crossroads</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+<script>
+  const input = document.getElementById('code-input');
+  const button = document.getElementById('check-btn');
+  const consoleEl = document.getElementById('console');
+
+  function flash(className, text) {
+    consoleEl.className = className;
+    void consoleEl.offsetWidth;
+    consoleEl.classList.add('flash');
+    consoleEl.textContent = text;
+  }
+
+  button.addEventListener('click', () => {
+    const raw = input.value;
+    if (raw.trim().length === 0) {
+      flash('console error', 'The ledger stays blank. Write down at least one thing from the table.');
+      return;
+    }
+
+    const lines = raw.replace(/\r\n/g, '\n').split('\n')
+      .map(l => l.trim())
+      .filter(l => l.length > 0);
+
+    const listLine = lines.find(l => l.includes('=') && l.includes('[') && l.includes(']'));
+
+    if (!listLine) {
+      if (!lines.some(l => l.includes('='))) {
+        flash('console error', 'A list still needs a name for the ledger to remember it by — try name = [ ... ].');
+      } else if (!lines.some(l => l.includes('['))) {
+        flash('console error', 'The list needs an opening square bracket, [, to hold what you write.');
+      } else if (!lines.some(l => l.includes(']'))) {
+        flash('console error', 'The list is missing its closing square bracket, ].');
+      } else {
+        flash('console error', 'Something in the entry is amiss — check for a missing equals sign or bracket.');
+      }
+      return;
+    }
+
+    const varMatch = listLine.match(/^([A-Za-z_]\w*)\s*=/);
+    if (!varMatch) {
+      flash('console error', 'The list needs a plain name before the equals sign, like gems = [ ... ].');
+      return;
+    }
+
+    const start = listLine.indexOf('[');
+    const end = listLine.lastIndexOf(']');
+    if (end < start) {
+      flash('console error', 'The brackets seem to be facing the wrong way — [ should come before ].');
+      return;
+    }
+
+    const inner = listLine.slice(start + 1, end).trim();
+    if (inner.length === 0) {
+      flash('console error', 'The brackets are empty. Add at least one thing to the table before you write it down.');
+      return;
+    }
+
+    const varName = varMatch[1];
+    const loopPattern = new RegExp('^for\\s+\\w+\\s+in\\s+' + varName + '\\s*:$');
+    const hasLoop = lines.some(l => loopPattern.test(l));
+
+    if (hasLoop) {
+      flash('console success', 'The gems arrange themselves on the table — and as your loop walks past each one, a new stone, one you\'ve never seen before, settles quietly among them.');
+    } else {
+      flash('console success', 'The gems arrange themselves on the table exactly as you wrote them — and among them now sits one you never placed there at all.');
+    }
+  });
+
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+  });
+</script>
+</body>
+</html>
