@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter VII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker p { max-width: none; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 17px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER VII</span>
+      <span class="flicker" id="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Shown only if someone lands here with no ?path= chosen -->
+      <div class="picker" id="picker" hidden>
+        <h1>Two Doors</h1>
+        <p class="lede">You've arrived here without choosing a door. Pick one, and the house will show you what lies behind it.</p>
+        <div class="picker-links">
+          <a href="lesson7.html?path=loops">The Spiral Stair &mdash; repeating something on your own terms</a>
+          <a href="lesson7.html?path=elif">The Second Question &mdash; asking more than one thing</a>
+        </div>
+      </div>
+
+      <!-- LOOPS -->
+      <div id="loops" hidden>
+        <h1>The Spiral Stair</h1>
+        <p class="lede">
+          The stairs before you don't end — they spiral downward, the
+          same step repeating, until something tells them to stop.
+        </p>
+        <p>
+          In the spellbook's tongue, this is a <code>for</code> loop.
+          It repeats whatever is indented beneath it, once for every
+          number in a range you choose.
+        </p>
+
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">for</span> <span class="var">step</span> <span class="kw">in</span> <span class="kw">range</span>(<span class="var">3</span>):</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You descend one step."</span>)</div>
+          <div class="out">You descend one step.
+You descend one step.
+You descend one step.</div>
+        </div>
+
+        <p>
+          <code>range(3)</code> counts out three turns of the stair.
+          <code>step</code> is just a name for wherever you are in the
+          count — you don't have to use it. The indentation rule is
+          the same one from the fork: only what's indented belongs to
+          the loop above it.
+        </p>
+
+        <p>
+          Try it yourself. Write a <code>for</code> loop that repeats
+          three times, printing something each time it does. The
+          words are yours to choose — the house only cares that the
+          loop takes the right shape.
+        </p>
+
+        <label for="loops-input">Your incantation</label>
+        <textarea id="loops-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='for step in range(3):&#10;    print("...")'></textarea>
+        <div class="run-row"><button id="loops-btn">Descend</button></div>
+        <div class="console" id="loops-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson6.html">&larr; The Crossroads</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ELIF -->
+      <div id="elif" hidden>
+        <h1>The Second Question</h1>
+        <p class="lede">
+          The voice behind this door doesn't stop at one question. If
+          your first answer doesn't satisfy it, it tries another —
+          and sometimes another after that.
+        </p>
+        <p>
+          This is called <code>elif</code>, short for "else if." It
+          lets a fork branch more than two ways: try the first
+          condition, and if that's false, try the next, and the next,
+          until one is true — or, if you add an <code>else</code> at
+          the end, catch whatever's left.
+        </p>
+
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">if</span> <span class="var">age</span> &gt;= <span class="var">18</span>:</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You may enter"</span>)</div>
+          <div><span class="kw">elif</span> <span class="var">age</span> &gt;= <span class="var">13</span>:</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"You may enter with a guardian"</span>)</div>
+          <div><span class="kw">else</span>:</div>
+          <div>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kw">print</span>(<span class="str">"Not tonight"</span>)</div>
+          <div class="out">Only one of these ever speaks — whichever question is met first.</div>
+        </div>
+
+        <p>
+          Try it yourself. Write an <code>if</code>, followed by at
+          least one <code>elif</code>, each ending in a colon with an
+          indented line beneath it. An <code>else</code> at the end is
+          welcome, but not required. Use whatever condition and
+          message you like — the house only cares about the shape.
+        </p>
+
+        <label for="elif-input">Your incantation</label>
+        <textarea id="elif-input" autocomplete="off" spellcheck="false" rows="6"
+          placeholder='if age >= 18:&#10;    print("...")&#10;elif age >= 13:&#10;    print("...")&#10;else:&#10;    print("...")'></textarea>
+        <div class="run-row"><button id="elif-btn">Ask</button></div>
+        <div class="console" id="elif-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson6.html">&larr; The Crossroads</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const path = params.get('path');
+
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  if (path === 'loops') {
+    document.getElementById('loops').hidden = false;
+    document.title = 'Chapter VII — The Spiral Stair';
+
+    const input = document.getElementById('loops-input');
+    const button = document.getElementById('loops-btn');
+    const consoleEl = document.getElementById('loops-console');
+
+    button.addEventListener('click', () => {
+      const raw = input.value.replace(/\r\n/g, '\n');
+      const lines = raw.split('\n');
+      const idx = lines.findIndex(l => l.trim().length > 0);
+
+      if (idx === -1) {
+        flash(consoleEl, 'console error', 'The stair stays still. Write something to set it turning.');
+        return;
+      }
+
+      const loopLine = lines[idx].trim().replace(/\s+/g, ' ');
+      const bodyIdx = lines.findIndex((l, i) => i > idx && l.trim().length > 0);
+
+      if (bodyIdx === -1) {
+        flash(consoleEl, 'console error', 'The loop is spoken, but nothing follows beneath it to repeat.');
+        return;
+      }
+
+      const bodyRaw = lines[bodyIdx];
+      const bodyIndented = /^(\s{2,}|\t)/.test(bodyRaw);
+      const bodyLine = bodyRaw.trim();
+
+      if (!/^for\b/.test(loopLine)) {
+        flash(consoleEl, 'console error', 'Every spiral begins with the word for.');
+      } else if (!/\bin\s+range\(/.test(loopLine)) {
+        flash(consoleEl, 'console error', 'The stair needs to know how many turns to take — use in range(...).');
+      } else if (!loopLine.endsWith(':')) {
+        flash(consoleEl, 'console error', 'The loop line needs to end in a colon, same as the fork did.');
+      } else if (!bodyIndented) {
+        flash(consoleEl, 'console error', 'The line beneath the loop must be indented, or the stair won\'t know what to repeat.');
+      } else if (!/^print\s*\(/.test(bodyLine)) {
+        flash(consoleEl, 'console error', 'Each turn of the stair should speak something aloud, with print.');
+      } else if (!/["']/.test(bodyLine) || !bodyLine.includes(')')) {
+        flash(consoleEl, 'console error', 'Whatever the stair says should be sealed in quotes and closed inside its parentheses.');
+      } else {
+        flash(consoleEl, 'console success', 'The stairs settle into stone. You\'ve learned to make the house repeat itself.');
+      }
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+
+  } else if (path === 'elif') {
+    document.getElementById('elif').hidden = false;
+    document.title = 'Chapter VII — The Second Question';
+
+    const input = document.getElementById('elif-input');
+    const button = document.getElementById('elif-btn');
+    const consoleEl = document.getElementById('elif-console');
+
+    function parseBlocks(raw) {
+      const lines = raw.replace(/\r\n/g, '\n').split('\n');
+      const blocks = [];
+      let i = 0;
+      while (i < lines.length) {
+        if (lines[i].trim().length === 0) { i++; continue; }
+        if (/^(\s)/.test(lines[i])) { i++; continue; } // stray indented line, skip
+        const header = lines[i].trim().replace(/\s+/g, ' ');
+        let j = i + 1;
+        while (j < lines.length && lines[j].trim().length === 0) j++;
+        const bodyRaw = j < lines.length ? lines[j] : '';
+        const bodyIndented = /^(\s{2,}|\t)/.test(bodyRaw);
+        const bodyLine = bodyRaw.trim();
+        blocks.push({ header, bodyLine, bodyIndented });
+        i = j + 1;
+      }
+      return blocks;
+    }
+
+    function bodyOk(block) {
+      return block.bodyIndented && /^print\s*\(/.test(block.bodyLine) && /["']/.test(block.bodyLine) && block.bodyLine.includes(')');
+    }
+
+    button.addEventListener('click', () => {
+      const raw = input.value;
+      if (raw.trim().length === 0) {
+        flash(consoleEl, 'console error', 'The voice waits. Speak your questions first.');
+        return;
+      }
+
+      const blocks = parseBlocks(raw);
+
+      if (blocks.length === 0) {
+        flash(consoleEl, 'console error', 'Nothing here takes the shape of a question yet.');
+        return;
+      }
+
+      const ifBlock = blocks[0];
+      if (!/^if\b/.test(ifBlock.header)) {
+        flash(consoleEl, 'console error', 'The first question must begin with if.');
+        return;
+      }
+      if (!ifBlock.header.endsWith(':')) {
+        flash(consoleEl, 'console error', 'The if line needs to end in a colon.');
+        return;
+      }
+      if (!bodyOk(ifBlock)) {
+        flash(consoleEl, 'console error', 'The line beneath if should be indented, and speak something with print.');
+        return;
+      }
+
+      if (blocks.length < 2) {
+        flash(consoleEl, 'console error', 'One question isn\'t enough for this door — add at least one elif beneath your if.');
+        return;
+      }
+
+      const elifBlock = blocks[1];
+      if (!/^elif\b/.test(elifBlock.header)) {
+        flash(consoleEl, 'console error', 'The second question should begin with elif, right after your if.');
+        return;
+      }
+      if (!elifBlock.header.endsWith(':')) {
+        flash(consoleEl, 'console error', 'The elif line needs to end in a colon too.');
+        return;
+      }
+      if (!bodyOk(elifBlock)) {
+        flash(consoleEl, 'console error', 'The line beneath elif should be indented, and speak something with print.');
+        return;
+      }
+
+      if (blocks.length >= 3) {
+        const elseBlock = blocks[2];
+        if (/^else\b/.test(elseBlock.header)) {
+          if (elseBlock.header !== 'else:') {
+            flash(consoleEl, 'console error', 'An else line takes no condition — just else: on its own.');
+            return;
+          }
+          if (!bodyOk(elseBlock)) {
+            flash(consoleEl, 'console error', 'The line beneath else should be indented, and speak something with print.');
+            return;
+          }
+        }
+      }
+
+      flash(consoleEl, 'console success', 'All three questions settle into silence. You\'ve learned to give the house more than one way to answer.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
