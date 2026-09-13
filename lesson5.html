@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter V — The Wishing Well</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --well: #16324a;
+    --well-light: #2e5c7a;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 620px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content {
+    padding: 34px 34px 30px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+
+  p.lede {
+    font-style: italic;
+    color: var(--ink-dim);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 14px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .cm { color: #7d7a6a; }
+  .spellbook .out { color: #9aa88f; white-space: normal; }
+
+  .terms {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 24px;
+  }
+  .terms span {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--leather);
+    background: rgba(74,47,34,0.08);
+    border: 1px solid var(--page-edge);
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 14.5px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 14px 16px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.55;
+    min-height: 150px;
+    tab-size: 4;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    gap: 12px;
+  }
+
+  .status {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14.5px;
+    color: var(--ink-dim);
+  }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease, opacity 0.15s ease;
+    white-space: nowrap;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.15); }
+  button:active:not(:disabled) { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  button:disabled { opacity: 0.55; cursor: wait; }
+
+  .well {
+    margin-top: 24px;
+    background: radial-gradient(ellipse at 50% 0%, var(--well-light), var(--well) 70%);
+    border: 1px solid #0e2436;
+    border-radius: 8px;
+    padding: 18px 20px;
+    box-shadow: inset 0 0 30px rgba(0,0,0,0.35);
+  }
+  .well .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #a9c9dc;
+    margin-bottom: 8px;
+    display: block;
+  }
+  .console {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    line-height: 1.6;
+    color: #dceaf2;
+    white-space: pre-wrap;
+    word-break: break-word;
+    min-height: 24px;
+  }
+  .console.error { color: #f0b3a4; }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a {
+    color: var(--leather);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .nav-row a:hover { color: var(--flame); }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER V</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+      <h1>The Wishing Well</h1>
+
+      <p class="lede">
+        Past the Archive, the path ends at an old stone well, its
+        water black and still except for a scatter of coins glinting
+        far below. There is no door here, no fork, nothing to get
+        right or wrong — only the water, waiting to hear what you
+        have to say.
+      </p>
+
+      <p>
+        Speak whatever you like into the well: something from the
+        rooms you've already passed through, or words of your own the
+        house has never heard. Unlike the door and the fork, the well
+        isn't listening for anything in particular. It simply shows
+        you whatever your words bring to life.
+      </p>
+
+      <div class="spellbook">
+        <span class="label">A wish someone left behind:</span>
+        <div><span class="var">wish</span> = <span class="str">"a library that never closes"</span></div>
+        <div><span class="kw">print</span>(<span class="str">"I wish for "</span> + <span class="var">wish</span>)</div>
+        <div class="out">I wish for a library that never closes</div>
+      </div>
+
+      <p>Some words the earlier rooms taught you, if you'd like a place to start:</p>
+      <div class="terms">
+        <span>print()</span>
+        <span>name = value</span>
+        <span>"strings"</span>
+        <span># comments</span>
+        <span>if / indentation</span>
+      </div>
+
+      <label for="code-input">Your wish</label>
+      <textarea
+        id="code-input"
+        autocomplete="off"
+        spellcheck="false"
+        placeholder='wish = "a dragon for a friend"&#10;print("I wish for " + wish)'
+      ></textarea>
+
+      <div class="run-row">
+        <span class="status" id="status">The well is waking up&hellip;</span>
+        <button id="check-btn" disabled>Make a Wish</button>
+      </div>
+
+      <div class="well">
+        <span class="label">the water shows:</span>
+        <div class="console" id="console">Still and quiet, for now.</div>
+      </div>
+
+      <div class="nav-row">
+        <a href="lesson4.html">&larr; Chapter IV</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+<script src="https://cdn.jsdelivr.net/pyodide/v0.26.4/full/pyodide.js"></script>
+<script>
+  const input = document.getElementById('code-input');
+  const button = document.getElementById('check-btn');
+  const consoleEl = document.getElementById('console');
+  const statusEl = document.getElementById('status');
+
+  let pyodide = null;
+
+  function flash(className, text) {
+    consoleEl.className = className;
+    void consoleEl.offsetWidth; // restart animation
+    consoleEl.classList.add('flash');
+    consoleEl.textContent = text;
+  }
+
+  async function wakeTheWell() {
+    try {
+      pyodide = await loadPyodide();
+      statusEl.textContent = 'The well is listening.';
+      button.disabled = false;
+    } catch (err) {
+      statusEl.textContent = 'The well would not wake. Try reloading the page.';
+    }
+  }
+  wakeTheWell();
+
+  async function makeWish() {
+    if (!pyodide) return;
+    const code = input.value;
+
+    if (code.trim().length === 0) {
+      flash('console error', 'The water stays still. Speak a wish first.');
+      return;
+    }
+
+    button.disabled = true;
+    const previousLabel = button.textContent;
+    button.textContent = 'Listening…';
+
+    let captured = '';
+    pyodide.setStdout({ batched: (s) => { captured += s + '\n'; } });
+    pyodide.setStderr({ batched: () => {} });
+
+    try {
+      await pyodide.runPythonAsync(code);
+      const text = captured.trim();
+      flash('console', text.length > 0
+        ? text
+        : 'The water ripples, but nothing rises to the surface. Try using print() to see your wish take shape.');
+    } catch (err) {
+      const message = String(err.message || err).split('\n').pop();
+      flash('console error', 'The wish unravels: ' + message);
+    } finally {
+      button.disabled = false;
+      button.textContent = previousLabel;
+    }
+  }
+
+  button.addEventListener('click', makeWish);
+  input.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) makeWish();
+  });
+</script>
+</body>
+</html>
