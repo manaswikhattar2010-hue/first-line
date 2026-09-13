@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter IV — The Archive</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 620px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content {
+    padding: 34px 34px 30px;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+
+  p.lede {
+    font-style: italic;
+    color: var(--ink-dim);
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 22px;
+    color: var(--gold);
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .entry {
+    margin-bottom: 30px;
+  }
+  .entry:last-of-type { margin-bottom: 8px; }
+
+  .entry h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 23px;
+    margin: 0 0 4px;
+    color: var(--leather);
+  }
+
+  .entry .kicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--gold);
+    margin: 0 0 10px;
+  }
+
+  .entry p {
+    font-size: 16.5px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 4px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .cm { color: #7d7a6a; }
+  .spellbook .out { color: #9aa88f; white-space: normal; }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a {
+    color: var(--leather);
+    text-decoration: none;
+    font-weight: 600;
+  }
+  .nav-row a:hover { color: var(--flame); }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER IV</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+      <h1>The Archive</h1>
+
+      <p class="lede">
+        Past the fork, the path opens into a quiet room lined floor to
+        ceiling with shelves. No doors to open here, no incantations
+        to test — only scrolls, each holding one small rule of the
+        old language, left behind for anyone who wants to read before
+        they continue.
+      </p>
+
+      <p>
+        Take your time. Nothing in this room asks anything of you.
+      </p>
+
+      <div class="divider"><span>the scrolls</span></div>
+
+      <div class="entry">
+        <h2>print()</h2>
+        <p class="kicker">speaks something aloud</p>
+        <p>
+          Whatever sits inside the parentheses is revealed exactly as
+          written — this is how the language shows you anything at
+          all. Without it, a spell may do something, but no one would
+          ever see the result.
+        </p>
+        <div class="spellbook"><span class="kw">print</span>(<span class="str">"The lantern flickers."</span>)
+<span class="out">The lantern flickers.</span></div>
+      </div>
+
+      <div class="entry">
+        <h2>name = value</h2>
+        <p class="kicker">gives something a name to remember it by</p>
+        <p>
+          This is a <code>variable</code>. Once a name holds a value,
+          you can use that name anywhere you'd otherwise have to
+          repeat the value itself — and if the value changes later,
+          everything using that name changes with it.
+        </p>
+        <div class="spellbook"><span class="var">torches_lit</span> = <span class="str">3</span>
+<span class="kw">print</span>(<span class="var">torches_lit</span>)
+<span class="out">3</span></div>
+      </div>
+
+      <div class="entry">
+        <h2>"quotation marks"</h2>
+        <p class="kicker">seals plain text so it isn't mistaken for a name</p>
+        <p>
+          Anything wrapped in quotes — single or double, the house
+          doesn't mind which — is treated as exact text, called a
+          <code>string</code>. Without the quotes, the language
+          assumes you're speaking the name of something, not the
+          words themselves.
+        </p>
+        <div class="spellbook"><span class="str">"door"</span>    <span class="cm"># the word "door" itself</span>
+door       <span class="cm"># the thing named door, wherever that is</span></div>
+      </div>
+
+      <div class="entry">
+        <h2># comments</h2>
+        <p class="kicker">notes left for a reader, not the house</p>
+        <p>
+          Anything after a <code>#</code> on a line is ignored — the
+          house never hears it. It exists only for whoever reads the
+          scroll later, to explain what a spell is doing and why.
+        </p>
+        <div class="spellbook"><span class="cm"># checks whether the door should open</span>
+<span class="kw">if</span> <span class="var">age</span> &gt;= <span class="var">18</span>:</div>
+      </div>
+
+      <div class="entry">
+        <h2>indentation</h2>
+        <p class="kicker">shows what belongs to what</p>
+        <p>
+          A line indented beneath another belongs to it — it only
+          happens as part of that line above. You saw this at the
+          fork: the message beneath <code>if</code> only spoke when
+          the condition above it was true. The house is strict about
+          this; an unindented line stands on its own.
+        </p>
+        <div class="spellbook"><span class="kw">if</span> <span class="var">age</span> &gt;= <span class="var">18</span>:
+    <span class="kw">print</span>(<span class="str">"You may pass"</span>)  <span class="cm"># belongs to the if</span>
+<span class="kw">print</span>(<span class="str">"The torch still burns"</span>)  <span class="cm"># always runs</span></div>
+      </div>
+
+      <p>
+        That's all the room has to offer for now. When you're ready,
+        the path continues.
+      </p>
+
+      <div class="nav-row">
+        <a href="lesson3.html">&larr; Chapter III</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
