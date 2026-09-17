@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter IX — The Spellsmith's Bench</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 620px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 34px;
+    line-height: 1.15;
+    margin: 0 0 16px;
+    color: var(--leather);
+  }
+
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 21px;
+    margin: 30px 0 6px;
+    color: var(--leather);
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 32px 0 22px;
+    color: var(--gold);
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .gems {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  @media (max-width: 420px) {
+    .gems { grid-template-columns: 1fr; }
+  }
+
+  .gem {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--page-edge);
+    border-top: 4px solid var(--gem-color, var(--gold));
+    border-radius: 8px;
+    padding: 16px 16px 14px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .gem:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -14px rgba(0,0,0,0.35);
+  }
+  .gem:active { transform: translateY(0); }
+
+  .gem .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 20px;
+    color: var(--leather);
+  }
+  .gem .element {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 13.5px;
+    color: var(--gem-color, var(--gold));
+    margin-bottom: 6px;
+    display: block;
+  }
+  .gem p {
+    font-size: 14px;
+    margin: 0;
+    color: var(--ink-dim);
+    max-width: none;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER IX</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+      <h1>The Spellsmith's Bench</h1>
+
+      <p class="lede">
+        Past the gem table, a narrow stair leads down into a workshop
+        thick with the smell of hot metal and old paper. An old
+        spellsmith looks up from the bench, wipes their hands, and
+        waves you closer.
+      </p>
+
+      <p>
+        "Every spell you've cast so far," they say, "you've cast once,
+        by hand, right where you stood. Let me show you how to forge
+        one you can carry with you — something you name once, and call
+        upon as many times as you like."
+      </p>
+
+      <h2 class="sub">Naming a spell</h2>
+      <p>
+        In the old tongue, this is called a <code>function</code>. You
+        write <code>def</code>, followed by a name of your choosing and
+        a pair of parentheses, then indent the instructions beneath it
+        — same as the fork and the stair. Writing it doesn't cast it
+        yet. You have to call its name afterward for it to do anything.
+      </p>
+
+      <div class="spellbook">
+        <span class="label">From the spellbook:</span>
+        <div><span class="kw">def</span> <span class="fn">greet_traveler</span>():
+    <span class="kw">print</span>(<span class="str">"Welcome, traveler."</span>)</div>
+        <div><span class="fn">greet_traveler</span>()</div>
+        <div class="out">Welcome, traveler.</div>
+      </div>
+
+      <h2 class="sub">Handing it something</h2>
+      <p>
+        A spell can also ask for something when you call it — a name
+        placed inside the parentheses, which the spell then knows how
+        to use. This is called a <code>parameter</code>.
+      </p>
+
+      <div class="spellbook"><span class="kw">def</span> <span class="fn">greet</span>(<span class="var">name</span>):
+    <span class="kw">print</span>(<span class="str">"Welcome, "</span> + <span class="var">name</span>)
+
+<span class="fn">greet</span>(<span class="str">"Elior"</span>)
+<span class="out">Welcome, Elior</span></div>
+
+      <h2 class="sub">Getting something back</h2>
+      <p>
+        Some spells don't speak at all — they simply hand something
+        back to you, quietly, using <code>return</code>. You can then
+        catch what they hand back in a variable, the same way you've
+        caught a value before.
+      </p>
+
+      <div class="spellbook"><span class="kw">def</span> <span class="fn">double</span>(<span class="var">n</span>):
+    <span class="kw">return</span> <span class="var">n</span> * <span class="var">2</span>
+
+<span class="var">result</span> = <span class="fn">double</span>(<span class="var">4</span>)
+<span class="kw">print</span>(<span class="var">result</span>)
+<span class="out">8</span></div>
+
+      <p>
+        That's the whole shape of it: a name, a set of instructions
+        beneath it, and a call whenever you'd like it to run. Whether
+        it speaks, hands something back, or both — that part is
+        always up to you.
+      </p>
+
+      <div class="divider"><span>your reward</span></div>
+
+      <p>
+        The spellsmith reaches beneath the bench and sets four gems in
+        front of you, each humming faintly with something different.
+        "Take one," they say. "It will decide which way the house
+        opens for you next."
+      </p>
+
+      <div class="gems">
+        <a class="gem" style="--gem-color: var(--ruby)" href="lesson10.html?path=fire">
+          <span class="element">leads to fire</span>
+          <div class="name">Ruby</div>
+          <p>A gem that burns warm in your palm, restless and quick to answer.</p>
+        </a>
+        <a class="gem" style="--gem-color: var(--sapphire)" href="lesson10.html?path=water">
+          <span class="element">leads to water</span>
+          <div class="name">Sapphire</div>
+          <p>A gem cool to the touch, patient, and slow to give up its secrets.</p>
+        </a>
+        <a class="gem" style="--gem-color: var(--emerald)" href="lesson10.html?path=earth">
+          <span class="element">leads to earth</span>
+          <div class="name">Emerald</div>
+          <p>A gem heavy and steady, the kind that doesn't move once it's set.</p>
+        </a>
+        <a class="gem" style="--gem-color: var(--amethyst)" href="lesson10.html?path=shadow">
+          <span class="element">leads to shadow</span>
+          <div class="name">Amethyst</div>
+          <p>A gem that seems darker the longer you look at it.</p>
+        </a>
+      </div>
+
+      <div class="nav-row">
+        <a href="lesson8.html">&larr; Chapter VIII</a>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>
