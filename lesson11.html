@@ -1,0 +1,791 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XI</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no gem/path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Homelands</h1>
+        <p>You've arrived here without a path to follow. Choose the gem you carried, and the house will remember where it leads.</p>
+        <div class="picker-links">
+          <a href="lesson11.html?path=fire">Ruby &mdash; Sol-Torren</a>
+          <a href="lesson11.html?path=water">Sapphire &mdash; Nadir Haven</a>
+          <a href="lesson11.html?path=earth">Emerald &mdash; Noxglen</a>
+          <a href="lesson11.html?path=shadow">Amethyst &mdash; Nocturna</a>
+        </div>
+      </div>
+
+      <!-- WATER — Nadir Haven -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>Nadir Haven</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          Virelia circles you once, tail free and easy again, and for
+          the first time she smiles without any panic behind it. "You
+          didn't have to do that," she says. "Come — let me show you
+          where I'm from."
+        </p>
+        <p>
+          The moment the water closes over your head, you brace for
+          the burn in your lungs that never comes. Your sapphire pulses
+          faintly against your skin, and you realize, with some
+          disbelief, that you're breathing. Nadir Haven opens up below
+          you: a city grown into coral and drowned stone, lit by
+          strings of glowing jellyfish.
+        </p>
+
+        <h2 class="sub">Repeating until something changes</h2>
+        <p>
+          Virelia's people don't count their descents in fixed
+          numbers — they sink until the pressure feels right, however
+          long that takes. In the spellbook's tongue, that's a
+          <code>while</code> loop: it repeats for as long as a
+          condition stays true, rather than a number you chose ahead
+          of time.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">depth</span> = <span class="var">0</span>
+<span class="kw">while</span> <span class="var">depth</span> &lt; <span class="var">5</span>:
+    <span class="kw">print</span>(<span class="str">"You sink deeper."</span>)
+    <span class="var">depth</span> = <span class="var">depth</span> + <span class="var">1</span></div>
+          <div class="out">You sink deeper.
+You sink deeper.
+You sink deeper.
+You sink deeper.
+You sink deeper.</div>
+        </div>
+        <p>
+          Be careful: if nothing inside the loop ever changes the
+          condition, it never stops. The current has to shift a little
+          each time, or you'd sink forever.
+        </p>
+
+        <h2 class="sub">A spell that calls on itself</h2>
+        <p>
+          There's a second way to repeat something, stranger than the
+          first: a function that calls <em>itself</em>, each time
+          asking a slightly smaller version of the same question,
+          until it reaches an answer it doesn't need to ask again.
+          This is called <code>recursion</code> — think of it like an
+          echo of your own voice, bouncing back smaller and smaller
+          until it fades to nothing.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">count_down</span>(<span class="var">n</span>):
+    <span class="kw">if</span> <span class="var">n</span> &lt;= <span class="var">0</span>:
+        <span class="kw">print</span>(<span class="str">"You surface."</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="var">n</span>)
+        <span class="fn">count_down</span>(<span class="var">n</span> - <span class="var">1</span>)
+
+<span class="fn">count_down</span>(<span class="var">3</span>)</div>
+          <div class="out">3
+2
+1
+You surface.</div>
+        </div>
+        <p>
+          Every recursive spell needs a way out — the <code>if</code>
+          that stops it from calling itself forever, the way
+          <code>count_down</code> stops once <code>n</code> reaches
+          zero.
+        </p>
+
+        <p>
+          Try it yourself. Write something that repeats — a
+          <code>while</code> loop, a function that calls itself, or
+          both. It's yours to shape; the current only asks that
+          something in your spell truly repeats.
+        </p>
+        <label for="water-input">Your incantation</label>
+        <textarea id="water-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='depth = 0&#10;while depth < 5:&#10;    print("...")&#10;    depth = depth + 1'></textarea>
+        <div class="run-row"><button id="water-btn">Dive</button></div>
+        <div class="console" id="water-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson10.html?path=water">&larr; The Siren's Net</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- FIRE — Sol-Torren -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>Sol-Torren</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          The flames along Autumn's arms fold back into her skin, fur
+          and feather smoothing into something more human. "Well," she
+          says, brushing soot from her sleeve like it's an
+          inconvenience rather than a near-disaster, "I owe you for
+          that. Come on — let me take you home."
+        </p>
+        <p>
+          Sol-Torren rises out of heat-shimmer on the horizon before
+          it's anything more than a smudge: towers of red stone,
+          rivers of something that glows instead of flows. Your ruby
+          warms against your chest, and when a spark drifts too close
+          to your hand, you feel nothing at all.
+        </p>
+
+        <h2 class="sub">Repeating until something changes</h2>
+        <p>
+          Fire doesn't burn out on a schedule — it burns until there's
+          nothing left to feed it. In the spellbook's tongue, that's a
+          <code>while</code> loop: it repeats for as long as a
+          condition stays true, rather than a number you chose ahead
+          of time.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">embers</span> = <span class="var">5</span>
+<span class="kw">while</span> <span class="var">embers</span> &gt; <span class="var">0</span>:
+    <span class="kw">print</span>(<span class="str">"An ember flares."</span>)
+    <span class="var">embers</span> = <span class="var">embers</span> - <span class="var">1</span></div>
+          <div class="out">An ember flares.
+An ember flares.
+An ember flares.
+An ember flares.
+An ember flares.</div>
+        </div>
+        <p>
+          Be careful: if nothing inside the loop ever changes the
+          condition, the fire never dies down. Something has to shift
+          a little each time through, or it burns forever.
+        </p>
+
+        <h2 class="sub">A spell that calls on itself</h2>
+        <p>
+          There's a second way to repeat something, stranger than the
+          first: a function that calls <em>itself</em>, each time a
+          slightly smaller version of the same question, until it
+          reaches an answer it doesn't need to ask again. This is
+          called <code>recursion</code> — a spark leaping from ember to
+          ember, each one a little smaller, until the last one fades.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">spark_chain</span>(<span class="var">n</span>):
+    <span class="kw">if</span> <span class="var">n</span> &lt;= <span class="var">0</span>:
+        <span class="kw">print</span>(<span class="str">"The last spark fades."</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="str">"A spark leaps."</span>)
+        <span class="fn">spark_chain</span>(<span class="var">n</span> - <span class="var">1</span>)
+
+<span class="fn">spark_chain</span>(<span class="var">3</span>)</div>
+          <div class="out">A spark leaps.
+A spark leaps.
+A spark leaps.
+The last spark fades.</div>
+        </div>
+        <p>
+          Every recursive spell needs a way out — the <code>if</code>
+          that stops it from calling itself forever, the way
+          <code>spark_chain</code> stops once <code>n</code> reaches
+          zero.
+        </p>
+
+        <p>
+          Try it yourself. Write something that repeats — a
+          <code>while</code> loop, a function that calls itself, or
+          both. It's yours to shape; the flame only asks that
+          something in your spell truly repeats.
+        </p>
+        <label for="fire-input">Your incantation</label>
+        <textarea id="fire-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='embers = 5&#10;while embers > 0:&#10;    print("...")&#10;    embers = embers - 1'></textarea>
+        <div class="run-row"><button id="fire-btn">Kindle</button></div>
+        <div class="console" id="fire-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson10.html?path=fire">&larr; Autumn's Wildfire</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — Noxglen -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>Noxglen</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          Aspen's shoulders ease, just slightly — not trust exactly,
+          but something adjacent to it. "It's rare," he says, "to find
+          a traveler in Fae lands who can actually back up their
+          words." He looks you over once, unimpressed. "You can't save
+          the world dressed like that. Come. Let's get you properly
+          seen."
+        </p>
+        <p>
+          Noxglen unfolds around you slowly, like it doesn't quite
+          trust straight lines — streets that curve for no reason,
+          lanterns that burn without flame. Your emerald hums, and
+          suddenly you can see it: threads of light woven through
+          everything, every fae nearby outlined in something like
+          color that isn't color. Aspen's is almost too much to look
+          at directly.
+        </p>
+
+        <h2 class="sub">Repeating until something changes</h2>
+        <p>
+          Roots don't grow a fixed number of times — they grow until
+          the ground stops giving way. In the spellbook's tongue,
+          that's a <code>while</code> loop: it repeats for as long as
+          a condition stays true, rather than a number you chose ahead
+          of time.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">roots</span> = <span class="var">0</span>
+<span class="kw">while</span> <span class="var">roots</span> &lt; <span class="var">5</span>:
+    <span class="kw">print</span>(<span class="str">"A root unfurls."</span>)
+    <span class="var">roots</span> = <span class="var">roots</span> + <span class="var">1</span></div>
+          <div class="out">A root unfurls.
+A root unfurls.
+A root unfurls.
+A root unfurls.
+A root unfurls.</div>
+        </div>
+        <p>
+          Be careful: if nothing inside the loop ever changes the
+          condition, the roots never stop spreading. Something has to
+          shift a little each time through, or it goes on forever.
+        </p>
+
+        <h2 class="sub">A spell that calls on itself</h2>
+        <p>
+          There's a second way to repeat something, stranger than the
+          first: a function that calls <em>itself</em>, each time a
+          slightly smaller version of the same question, until it
+          reaches an answer it doesn't need to ask again. This is
+          called <code>recursion</code> — like a fae path that keeps
+          forking into smaller paths, each one leading a little
+          further in, until one finally opens into a clearing.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">wander_path</span>(<span class="var">n</span>):
+    <span class="kw">if</span> <span class="var">n</span> &lt;= <span class="var">0</span>:
+        <span class="kw">print</span>(<span class="str">"You reach the clearing."</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="str">"The path forks again."</span>)
+        <span class="fn">wander_path</span>(<span class="var">n</span> - <span class="var">1</span>)
+
+<span class="fn">wander_path</span>(<span class="var">3</span>)</div>
+          <div class="out">The path forks again.
+The path forks again.
+The path forks again.
+You reach the clearing.</div>
+        </div>
+        <p>
+          Every recursive spell needs a way out — the <code>if</code>
+          that stops it from calling itself forever, the way
+          <code>wander_path</code> stops once <code>n</code> reaches
+          zero.
+        </p>
+
+        <p>
+          Try it yourself. Write something that repeats — a
+          <code>while</code> loop, a function that calls itself, or
+          both. It's yours to shape; the ground only asks that
+          something in your spell truly repeats.
+        </p>
+        <label for="earth-input">Your incantation</label>
+        <textarea id="earth-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='roots = 0&#10;while roots < 5:&#10;    print("...")&#10;    roots = roots + 1'></textarea>
+        <div class="run-row"><button id="earth-btn">Take Root</button></div>
+        <div class="console" id="earth-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson10.html?path=earth">&larr; Aspen's Question</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — Nocturna -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>Nocturna</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          Buer's hand curls into a fist where the soul had been, and
+          for a moment you're certain he's about to do something
+          worse. Instead, he exhales, slow and displeased. "You have
+          nerve," he says, like it pains him to admit it. "Fine. Come
+          see where nerve like that actually gets you." He doesn't
+          wait to see if you follow.
+        </p>
+        <p>
+          Nocturna doesn't so much appear as it stops being hidden —
+          a city built into a dark so total it swallows the edges of
+          things. Your amethyst pulses once, and the dark peels back
+          just for you: shapes, distances, the shifting edge of
+          Buer's expression, all suddenly visible in shades of violet
+          and grey.
+        </p>
+
+        <h2 class="sub">Repeating until something changes</h2>
+        <p>
+          Shadows don't retreat on a schedule — they retreat until the
+          dark gives way. In the spellbook's tongue, that's a
+          <code>while</code> loop: it repeats for as long as a
+          condition stays true, rather than a number you chose ahead
+          of time.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">shadows</span> = <span class="var">5</span>
+<span class="kw">while</span> <span class="var">shadows</span> &gt; <span class="var">0</span>:
+    <span class="kw">print</span>(<span class="str">"A shadow retreats."</span>)
+    <span class="var">shadows</span> = <span class="var">shadows</span> - <span class="var">1</span></div>
+          <div class="out">A shadow retreats.
+A shadow retreats.
+A shadow retreats.
+A shadow retreats.
+A shadow retreats.</div>
+        </div>
+        <p>
+          Be careful: if nothing inside the loop ever changes the
+          condition, the dark never lifts. Something has to shift a
+          little each time through, or it goes on forever.
+        </p>
+
+        <h2 class="sub">A spell that calls on itself</h2>
+        <p>
+          There's a second way to repeat something, stranger than the
+          first: a function that calls <em>itself</em>, each time a
+          slightly smaller version of the same question, until it
+          reaches an answer it doesn't need to ask again. This is
+          called <code>recursion</code> — an echo answering an echo,
+          each one a little fainter, until the last one dies into
+          silence.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">echo</span>(<span class="var">n</span>):
+    <span class="kw">if</span> <span class="var">n</span> &lt;= <span class="var">0</span>:
+        <span class="kw">print</span>(<span class="str">"Silence."</span>)
+    <span class="kw">else</span>:
+        <span class="kw">print</span>(<span class="str">"An echo answers."</span>)
+        <span class="fn">echo</span>(<span class="var">n</span> - <span class="var">1</span>)
+
+<span class="fn">echo</span>(<span class="var">3</span>)</div>
+          <div class="out">An echo answers.
+An echo answers.
+An echo answers.
+Silence.</div>
+        </div>
+        <p>
+          Every recursive spell needs a way out — the <code>if</code>
+          that stops it from calling itself forever, the way
+          <code>echo</code> stops once <code>n</code> reaches zero.
+        </p>
+
+        <p>
+          Try it yourself. Write something that repeats — a
+          <code>while</code> loop, a function that calls itself, or
+          both. It's yours to shape; the dark only asks that something
+          in your spell truly repeats.
+        </p>
+        <label for="shadow-input">Your incantation</label>
+        <textarea id="shadow-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='shadows = 5&#10;while shadows > 0:&#10;    print("...")&#10;    shadows = shadows - 1'></textarea>
+        <div class="run-row"><button id="shadow-btn">Listen</button></div>
+        <div class="console" id="shadow-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson10.html?path=shadow">&larr; Buer's Bargain</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  function hasWhileLoop(lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const trimmed = lines[i].trim();
+      if (!/^while\s+.+:$/.test(trimmed)) continue;
+      const indentMatch = lines[i].match(/^(\s*)/);
+      const baseIndent = indentMatch[1].length;
+      let j = i + 1;
+      while (j < lines.length && lines[j].trim().length === 0) j++;
+      if (j < lines.length) {
+        const bodyIndentMatch = lines[j].match(/^(\s*)/);
+        if (bodyIndentMatch[1].length > baseIndent) return true;
+      }
+    }
+    return false;
+  }
+
+  function hasRecursion(lines) {
+    for (let i = 0; i < lines.length; i++) {
+      const trimmed = lines[i].trim();
+      const m = trimmed.match(/^def\s+([A-Za-z_]\w*)\s*\([^)]*\)\s*:$/);
+      if (!m) continue;
+      const name = m[1];
+      const defIndent = lines[i].match(/^(\s*)/)[1].length;
+      const callPattern = new RegExp('(^|[^\\w])' + name + '\\s*\\(');
+      let j = i + 1;
+      while (j < lines.length) {
+        const line = lines[j];
+        if (line.trim().length === 0) { j++; continue; }
+        const indent = line.match(/^(\s*)/)[1].length;
+        if (indent <= defIndent) break;
+        if (callPattern.test(line)) return true;
+        j++;
+      }
+    }
+    return false;
+  }
+
+  function checkLoop(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+    if (hasWhileLoop(lines) || hasRecursion(lines)) return { ok: true };
+    return { ok: false, code: 'nothing-repeats' };
+  }
+
+  function wire(prefix, messages) {
+    const input = document.getElementById(prefix + '-input');
+    const button = document.getElementById(prefix + '-btn');
+    const consoleEl = document.getElementById(prefix + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkLoop(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'nothing-repeats': 'Nothing here repeats yet. Try a while loop, or a function that calls itself.'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the spell is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XI — Sol-Torren',
+    water: 'Chapter XI — Nadir Haven',
+    earth: 'Chapter XI — Noxglen',
+    shadow: 'Chapter XI — Nocturna'
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+
+  wire('water', {
+    empty: 'The current stays still. Write something that repeats before you dive.',
+    success: 'The water ripples outward in perfect rings, echoing your spell back at you, again and again, exactly as many times as you asked.'
+  });
+
+  wire('fire', {
+    empty: 'The embers stay dark. Write something that repeats before you kindle them.',
+    success: 'The flame catches your rhythm exactly, flaring and dimming in time with your spell, over and over, until it settles into steady warmth.'
+  });
+
+  wire('earth', {
+    empty: 'The ground stays still. Write something that repeats before you take root.',
+    success: 'Something stirs beneath the soil, unfurling in time with your spell, again and again, until it finally settles into stillness.'
+  });
+
+  wire('shadow', {
+    empty: 'The dark stays silent. Write something that repeats before you listen.',
+    success: 'The dark answers your spell in kind, echoing it back over and over, each pass a little different, until it finally falls quiet.'
+  });
+</script>
+</body>
+</html>
