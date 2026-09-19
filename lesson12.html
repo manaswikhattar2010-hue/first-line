@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 8px;
+  }
+  .choice {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--page-edge);
+    border-left: 4px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .choice:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -14px rgba(0,0,0,0.35);
+  }
+  .choice:active { transform: translateY(0); }
+  .choice .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--leather);
+    margin-bottom: 4px;
+  }
+  .choice p {
+    font-size: 14.5px;
+    margin: 0;
+    color: var(--ink-dim);
+    max-width: none;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XII</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Doorsteps</h1>
+        <p>You've arrived here without a path to follow. Choose the gem you carried, and the house will remember where it leads.</p>
+        <div class="picker-links">
+          <a href="lesson12.html?path=fire">Ruby &mdash; Autumn's Grove</a>
+          <a href="lesson12.html?path=water">Sapphire &mdash; Virelia's Palace</a>
+          <a href="lesson12.html?path=earth">Emerald &mdash; Aspen's Castle</a>
+          <a href="lesson12.html?path=shadow">Amethyst &mdash; Buer's Palace</a>
+        </div>
+      </div>
+
+      <!-- WATER — Virelia's Palace -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>Virelia's Palace</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          Nadir Haven opens onto a palace grown rather than built —
+          coral and pearl fused into archways, currents combed neatly
+          through open halls. "Come inside, if you'd like," Virelia
+          says, gesturing loosely toward the doors. "Or wait in the
+          gardens. Either way, you're welcome here."
+        </p>
+
+        <h2 class="sub">A spell with no name</h2>
+        <p>
+          Not every current needs a name to be useful. Some are cast
+          once, used immediately, and let go without ever being
+          written down properly. In the spellbook's tongue, this is
+          called a <code>lambda</code> — a function with no name,
+          written on a single line, used exactly where it's needed and
+          never spoken of again.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">add</span> = <span class="kw">lambda</span> <span class="var">a</span>, <span class="var">b</span>: <span class="var">a</span> + <span class="var">b</span>
+<span class="kw">print</span>(<span class="var">add</span>(<span class="var">2</span>, <span class="var">3</span>))</div>
+          <div class="out">5</div>
+        </div>
+        <p>
+          It works the same as a spell written with <code>def</code> —
+          it just skips the ceremony of naming and indenting a whole
+          block beneath it. That makes it most useful when you need a
+          tiny spell just once, often handed directly to another spell
+          that's expecting one.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">apply_twice</span>(<span class="var">f</span>, <span class="var">x</span>):
+    <span class="kw">return</span> <span class="var">f</span>(<span class="var">f</span>(<span class="var">x</span>))
+
+<span class="var">result</span> = <span class="fn">apply_twice</span>(<span class="kw">lambda</span> <span class="var">n</span>: <span class="var">n</span> + <span class="var">3</span>, <span class="var">1</span>)
+<span class="kw">print</span>(<span class="var">result</span>)</div>
+          <div class="out">7</div>
+        </div>
+        <p>
+          Here, the lambda was never given a name at all — it was
+          simply written, used, and forgotten, the moment it was
+          handed to <code>apply_twice</code>.
+        </p>
+
+        <div class="divider"><span>at the doors</span></div>
+        <p>Virelia waits by the threshold, patient, unbothered either way.</p>
+        <div class="choices">
+          <a class="choice" href="lesson13.html?path=water-enter">
+            <div class="name">Step Inside</div>
+            <p>Follow her through the coral archways and into the palace proper.</p>
+          </a>
+          <a class="choice" href="lesson13.html?path=water-stay">
+            <div class="name">Wait in the Gardens</div>
+            <p>Stay outside among the drifting light, and see what waits there instead.</p>
+          </a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson11.html?path=water">&larr; Nadir Haven</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- FIRE — Autumn's Grove -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>Autumn's Grove</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          Sol-Torren gives way to a grove untouched by the fire
+          elsewhere in the realm — trees glowing faint ember-orange,
+          embers drifting like slow fireflies. "You can come sit with
+          us," Autumn says, nodding toward the warmth beyond the tree
+          line, "or stay at the edge if crowds aren't your thing. No
+          pressure either way."
+        </p>
+
+        <h2 class="sub">A spell with no name</h2>
+        <p>
+          Not every spark needs a name to be useful. Some are cast
+          once, used immediately, and let go without ever being
+          written down properly. In the spellbook's tongue, this is
+          called a <code>lambda</code> — a function with no name,
+          written on a single line, used exactly where it's needed and
+          never spoken of again.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">add</span> = <span class="kw">lambda</span> <span class="var">a</span>, <span class="var">b</span>: <span class="var">a</span> + <span class="var">b</span>
+<span class="kw">print</span>(<span class="var">add</span>(<span class="var">2</span>, <span class="var">3</span>))</div>
+          <div class="out">5</div>
+        </div>
+        <p>
+          It works the same as a spell written with <code>def</code> —
+          it just skips the ceremony of naming and indenting a whole
+          block beneath it. That makes it most useful when you need a
+          tiny spell just once, often handed directly to another spell
+          that's expecting one.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">apply_twice</span>(<span class="var">f</span>, <span class="var">x</span>):
+    <span class="kw">return</span> <span class="var">f</span>(<span class="var">f</span>(<span class="var">x</span>))
+
+<span class="var">result</span> = <span class="fn">apply_twice</span>(<span class="kw">lambda</span> <span class="var">n</span>: <span class="var">n</span> + <span class="var">3</span>, <span class="var">1</span>)
+<span class="kw">print</span>(<span class="var">result</span>)</div>
+          <div class="out">7</div>
+        </div>
+        <p>
+          Here, the lambda was never given a name at all — it was
+          simply written, used, and forgotten, the moment it was
+          handed to <code>apply_twice</code>.
+        </p>
+
+        <div class="divider"><span>at the tree line</span></div>
+        <p>Autumn glances back at you, waiting, entirely unbothered either way.</p>
+        <div class="choices">
+          <a class="choice" href="lesson13.html?path=fire-enter">
+            <div class="name">Enter the Grove</div>
+            <p>Cross the tree line and sit with the others gathered around the embers.</p>
+          </a>
+          <a class="choice" href="lesson13.html?path=fire-stay">
+            <div class="name">Stay at the Edge</div>
+            <p>Keep your distance from the fire, and see what waits at the tree line instead.</p>
+          </a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson11.html?path=fire">&larr; Sol-Torren</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — Aspen's Castle -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>The White Marble Castle</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          A castle of white marble rises out of the middle of Noxglen,
+          impossibly tall, humming faintly with something you can't
+          quite name. "You may enter," Aspen says, "if you think you
+          can behave yourself. Or remain in the courtyard, if you'd
+          rather keep your distance. Either is acceptable."
+        </p>
+
+        <h2 class="sub">A spell with no name</h2>
+        <p>
+          Not every glamour needs to be woven permanently into the
+          world. Some fae magic is cast once, used immediately, and
+          allowed to fade without ever being given a proper name. In
+          the spellbook's tongue, this is called a <code>lambda</code>
+          — a function with no name, written on a single line, used
+          exactly where it's needed and never spoken of again.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">add</span> = <span class="kw">lambda</span> <span class="var">a</span>, <span class="var">b</span>: <span class="var">a</span> + <span class="var">b</span>
+<span class="kw">print</span>(<span class="var">add</span>(<span class="var">2</span>, <span class="var">3</span>))</div>
+          <div class="out">5</div>
+        </div>
+        <p>
+          It works the same as a spell written with <code>def</code> —
+          it just skips the ceremony of naming and indenting a whole
+          block beneath it. That makes it most useful when you need a
+          tiny spell just once, often handed directly to another spell
+          that's expecting one.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">apply_twice</span>(<span class="var">f</span>, <span class="var">x</span>):
+    <span class="kw">return</span> <span class="var">f</span>(<span class="var">f</span>(<span class="var">x</span>))
+
+<span class="var">result</span> = <span class="fn">apply_twice</span>(<span class="kw">lambda</span> <span class="var">n</span>: <span class="var">n</span> + <span class="var">3</span>, <span class="var">1</span>)
+<span class="kw">print</span>(<span class="var">result</span>)</div>
+          <div class="out">7</div>
+        </div>
+        <p>
+          Here, the lambda was never given a name at all — it was
+          simply written, used, and forgotten, the moment it was
+          handed to <code>apply_twice</code>.
+        </p>
+
+        <div class="divider"><span>at the gates</span></div>
+        <p>Aspen holds the gate, watching you decide, giving nothing away.</p>
+        <div class="choices">
+          <a class="choice" href="lesson13.html?path=earth-enter">
+            <div class="name">Enter the Castle</div>
+            <p>Follow Aspen inside, beneath the humming white marble.</p>
+          </a>
+          <a class="choice" href="lesson13.html?path=earth-stay">
+            <div class="name">Remain in the Courtyard</div>
+            <p>Stay outside the gates, and see what waits in the courtyard instead.</p>
+          </a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson11.html?path=earth">&larr; Noxglen</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — Buer's Palace -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>Buer's Palace</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          The palace rises out of Nocturna's dark like it's made of the
+          dark itself — black stone that seems to drink whatever light
+          reaches it. "Don't gawk," Buer mutters, though he clearly
+          doesn't mind that you are. "In or out. Doesn't matter to me
+          either way."
+        </p>
+
+        <h2 class="sub">A spell with no name</h2>
+        <p>
+          Not every working needs a name to be useful. Some are cast
+          once, used immediately, and let go without ever being
+          written down properly. In the spellbook's tongue, this is
+          called a <code>lambda</code> — a function with no name,
+          written on a single line, used exactly where it's needed and
+          never spoken of again.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">add</span> = <span class="kw">lambda</span> <span class="var">a</span>, <span class="var">b</span>: <span class="var">a</span> + <span class="var">b</span>
+<span class="kw">print</span>(<span class="var">add</span>(<span class="var">2</span>, <span class="var">3</span>))</div>
+          <div class="out">5</div>
+        </div>
+        <p>
+          It works the same as a spell written with <code>def</code> —
+          it just skips the ceremony of naming and indenting a whole
+          block beneath it. That makes it most useful when you need a
+          tiny spell just once, often handed directly to another spell
+          that's expecting one.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">def</span> <span class="fn">apply_twice</span>(<span class="var">f</span>, <span class="var">x</span>):
+    <span class="kw">return</span> <span class="var">f</span>(<span class="var">f</span>(<span class="var">x</span>))
+
+<span class="var">result</span> = <span class="fn">apply_twice</span>(<span class="kw">lambda</span> <span class="var">n</span>: <span class="var">n</span> + <span class="var">3</span>, <span class="var">1</span>)
+<span class="kw">print</span>(<span class="var">result</span>)</div>
+          <div class="out">7</div>
+        </div>
+        <p>
+          Here, the lambda was never given a name at all — it was
+          simply written, used, and forgotten, the moment it was
+          handed to <code>apply_twice</code>.
+        </p>
+
+        <div class="divider"><span>at the doors</span></div>
+        <p>Buer stands aside, arms crossed, entirely indifferent to your choice.</p>
+        <div class="choices">
+          <a class="choice" href="lesson13.html?path=shadow-enter">
+            <div class="name">Step Inside</div>
+            <p>Follow him through the black stone doors and into the palace.</p>
+          </a>
+          <a class="choice" href="lesson13.html?path=shadow-stay">
+            <div class="name">Stay in the Courtyard</div>
+            <p>Keep your distance from the palace, and see what waits outside instead.</p>
+          </a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson11.html?path=shadow">&larr; Nocturna</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XII — Autumn\'s Grove',
+    water: 'Chapter XII — Virelia\'s Palace',
+    earth: 'Chapter XII — The White Marble Castle',
+    shadow: 'Chapter XII — Buer\'s Palace'
+  };
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
