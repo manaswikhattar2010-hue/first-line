@@ -241,7 +241,7 @@
   .nav-row a:hover { color: var(--flame); }
 </style>
 </head>
-<body>
+<body style="visibility: hidden;">
 
   <div class="book">
     <div class="chapter-bar">
@@ -348,6 +348,19 @@
   button.addEventListener('click', showResult);
   input.addEventListener('keydown', (e) => {
     if (e.key === 'Enter') showResult();
+  });
+</script>
+
+<script type="module">
+  import { onProgressReady, recordVisit } from './progress.js';
+
+  onProgressReady((user) => {
+    if (user) {
+      recordVisit('index.html');
+      document.body.style.visibility = 'visible';
+    } else {
+      window.location.replace('login.html');
+    }
   });
 </script>
 </body>
