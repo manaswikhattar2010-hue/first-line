@@ -1,0 +1,873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XIII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .ask {
+    background: rgba(74,47,34,0.06);
+    border: 1px solid var(--page-edge);
+    border-left: 3px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 4px 0 24px;
+  }
+  .ask .q {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16.5px;
+    color: var(--ink-dim);
+    margin-bottom: 10px;
+  }
+  .ask .row { display: flex; gap: 10px; }
+  .ask input[type="text"] {
+    flex: 1;
+    font-family: var(--font-mono);
+    font-size: 14.5px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 10px 12px;
+    border-radius: 5px;
+    outline: none;
+  }
+  .ask input[type="text"]:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+  .ask .reply {
+    margin-top: 12px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink);
+    min-height: 22px;
+  }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .ask button { height: auto; padding: 0 18px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 8px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .recap {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 4px 0 22px;
+  }
+  .recap span {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--leather);
+    background: rgba(74,47,34,0.08);
+    border: 1px solid var(--page-edge);
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 11px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XIII</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Eight Ways Forward</h1>
+        <p>You've arrived here without a path to follow. Choose where you left off, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson13.html?path=fire-enter">Ruby &mdash; entered Autumn's Grove</a>
+          <a href="lesson13.html?path=fire-stay">Ruby &mdash; stayed at the tree line</a>
+          <a href="lesson13.html?path=water-enter">Sapphire &mdash; entered Virelia's Palace</a>
+          <a href="lesson13.html?path=water-stay">Sapphire &mdash; stayed in the gardens</a>
+          <a href="lesson13.html?path=earth-enter">Emerald &mdash; entered the White Marble Castle</a>
+          <a href="lesson13.html?path=earth-stay">Emerald &mdash; stayed in the courtyard</a>
+          <a href="lesson13.html?path=shadow-enter">Amethyst &mdash; entered Buer's Palace</a>
+          <a href="lesson13.html?path=shadow-stay">Amethyst &mdash; stayed in the courtyard</a>
+        </div>
+      </div>
+
+      <!-- ===================== FIRE — ENTER: Ember ===================== -->
+      <div id="fire-enter" hidden style="--accent: var(--ruby)">
+        <h1>Ember</h1>
+        <span class="tag">inside Autumn's Grove</span>
+        <p class="lede">
+          You duck beneath the low branches and the grove opens up
+          around you, warm and humming with quiet conversation. Before
+          Autumn can even introduce you, someone barrels past her,
+          grinning wide.
+        </p>
+        <p class="voice">
+          "You're the one who put my sister's fire out? Finally,
+          someone interesting shows up." She sticks out a hand,
+          practically vibrating. "I'm Ember. I have about a hundred
+          questions, but I'll start with one."
+        </p>
+        <p>
+          Ember doesn't wait for spells to be written out fully
+          beforehand — she likes to ask, and hear the answer right
+          away. In the spellbook's tongue, this is <code>input()</code>:
+          a spell that pauses, asks a question, and waits for whatever
+          you type back before continuing.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">name</span> = <span class="kw">input</span>(<span class="str">"What should I call you?"</span>)
+<span class="kw">print</span>(<span class="str">"Nice to meet you, "</span> + <span class="var">name</span>)</div>
+          <div class="out">Whatever you type appears here, and the house uses it right away.</div>
+        </div>
+        <p>
+          Unlike everything you've written so far, <code>input()</code>
+          doesn't come from you deciding what to write — it comes from
+          whoever's sitting in front of the house at the time.
+        </p>
+
+        <div class="ask">
+          <div class="q">Ember: "So — what should I call you?"</div>
+          <div class="row">
+            <input type="text" id="fire-ask-input" placeholder="Type your answer" autocomplete="off">
+            <button id="fire-ask-btn">Answer</button>
+          </div>
+          <div class="reply" id="fire-ask-reply"></div>
+        </div>
+
+        <p>
+          Try it yourself. Write a spell of your own that asks a
+          question with <code>input()</code>, and does something with
+          whatever's typed back. Ask anything you like — Ember isn't
+          picky.
+        </p>
+        <label for="fire-input">Your incantation</label>
+        <textarea id="fire-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='answer = input("...")&#10;print("...")'></textarea>
+        <div class="run-row"><button id="fire-btn">Ask</button></div>
+        <div class="console" id="fire-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson12.html?path=fire">&larr; Autumn's Grove</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== FIRE — STAY: The Garden ===================== -->
+      <div id="fire-stay" hidden style="--accent: var(--ruby)">
+        <h1>The Garden</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          You stay back at the tree line, and the warmth of the grove
+          fades gently behind you. When you look up again, you're
+          standing somewhere else entirely — a quiet garden, gone
+          still at the edge of everything, as if it had been waiting
+          for you specifically.
+        </p>
+        <p>
+          This is where your quest ends, for tonight — not because the
+          story is finished, but because this is as far as this
+          particular choice goes. The ruby's warmth settles into
+          something calmer against your skin, content to wait for
+          another night.
+        </p>
+        <p>Before you go, a glance back at everything you've carried with you so far:</p>
+        <div class="recap">
+          <span>print()</span><span>variables</span><span>strings</span><span>comments</span>
+          <span>if / elif</span><span>for loops</span><span>while loops</span><span>recursion</span>
+          <span>lists</span><span>functions</span><span>lambda</span>
+        </div>
+        <p>
+          The garden gate is open behind you, back toward the
+          Crossroads, whenever you're ready to choose a different door.
+        </p>
+        <div class="nav-row">
+          <a href="lesson6.html">&larr; Back to the Crossroads</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== WATER — ENTER: Lorelei ===================== -->
+      <div id="water-enter" hidden style="--accent: var(--sapphire)">
+        <h1>Lorelei</h1>
+        <span class="tag">inside Virelia's Palace</span>
+        <p class="lede">
+          You follow Virelia through the coral archways, and the halls
+          open into a wide room lit from within by drifting jellyfish.
+          Another siren looks up from a bed of anemones, and her face
+          breaks into an easy, unguarded smile.
+        </p>
+        <p class="voice">
+          "So you're the one Virelia won't stop talking about," she
+          says, drifting closer. "I'm Lorelei. Any friend of hers is
+          welcome here — truly. Can I ask you something?"
+        </p>
+        <p>
+          Lorelei doesn't like assuming things about a guest — she'd
+          rather just ask. In the spellbook's tongue, this is
+          <code>input()</code>: a spell that pauses, asks a question,
+          and waits for whatever you type back before continuing.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">name</span> = <span class="kw">input</span>(<span class="str">"What should I call you?"</span>)
+<span class="kw">print</span>(<span class="str">"Nice to meet you, "</span> + <span class="var">name</span>)</div>
+          <div class="out">Whatever you type appears here, and the house uses it right away.</div>
+        </div>
+        <p>
+          Unlike everything you've written so far, <code>input()</code>
+          doesn't come from you deciding what to write — it comes from
+          whoever's sitting in front of the house at the time.
+        </p>
+
+        <div class="ask">
+          <div class="q">Lorelei: "So — what should I call you?"</div>
+          <div class="row">
+            <input type="text" id="water-ask-input" placeholder="Type your answer" autocomplete="off">
+            <button id="water-ask-btn">Answer</button>
+          </div>
+          <div class="reply" id="water-ask-reply"></div>
+        </div>
+
+        <p>
+          Try it yourself. Write a spell of your own that asks a
+          question with <code>input()</code>, and does something with
+          whatever's typed back. Ask anything you like — Lorelei's
+          curious about all of it.
+        </p>
+        <label for="water-input">Your incantation</label>
+        <textarea id="water-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='answer = input("...")&#10;print("...")'></textarea>
+        <div class="run-row"><button id="water-btn">Ask</button></div>
+        <div class="console" id="water-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson12.html?path=water">&larr; Virelia's Palace</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== WATER — STAY: The Garden ===================== -->
+      <div id="water-stay" hidden style="--accent: var(--sapphire)">
+        <h1>The Garden</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          You wait in the gardens outside, watching the light drift
+          past the palace windows without you. When you look up again,
+          you're standing somewhere else entirely — a quiet garden,
+          gone still at the edge of everything, as if it had been
+          waiting for you specifically.
+        </p>
+        <p>
+          This is where your quest ends, for tonight — not because the
+          story is finished, but because this is as far as this
+          particular choice goes. The sapphire cools against your
+          skin, content to wait for another night.
+        </p>
+        <p>Before you go, a glance back at everything you've carried with you so far:</p>
+        <div class="recap">
+          <span>print()</span><span>variables</span><span>strings</span><span>comments</span>
+          <span>if / elif</span><span>for loops</span><span>while loops</span><span>recursion</span>
+          <span>lists</span><span>functions</span><span>lambda</span>
+        </div>
+        <p>
+          The garden gate is open behind you, back toward the
+          Crossroads, whenever you're ready to choose a different door.
+        </p>
+        <div class="nav-row">
+          <a href="lesson6.html">&larr; Back to the Crossroads</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== EARTH — ENTER: Briar ===================== -->
+      <div id="earth-enter" hidden style="--accent: var(--emerald)">
+        <h1>Briar</h1>
+        <span class="tag">inside the White Marble Castle</span>
+        <p class="lede">
+          The doors close behind you with a hush, and the hall beyond
+          is all pale stone and low light. A figure rises from a
+          window seat as you enter — antlers smaller than Aspen's,
+          expression more careful than warm, but not unkind.
+        </p>
+        <p class="voice">
+          "My brother doesn't usually bring people inside," he says,
+          watching you with open curiosity rather than suspicion. "I'm
+          Briar. If you're going to be here a while, I'd rather know
+          something about you than guess."
+        </p>
+        <p>
+          Briar doesn't assume — he'd rather ask, plainly, and wait for
+          a real answer. In the spellbook's tongue, this is
+          <code>input()</code>: a spell that pauses, asks a question,
+          and waits for whatever you type back before continuing.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">name</span> = <span class="kw">input</span>(<span class="str">"What should I call you?"</span>)
+<span class="kw">print</span>(<span class="str">"Nice to meet you, "</span> + <span class="var">name</span>)</div>
+          <div class="out">Whatever you type appears here, and the house uses it right away.</div>
+        </div>
+        <p>
+          Unlike everything you've written so far, <code>input()</code>
+          doesn't come from you deciding what to write — it comes from
+          whoever's sitting in front of the house at the time.
+        </p>
+
+        <div class="ask">
+          <div class="q">Briar: "So — what should I call you?"</div>
+          <div class="row">
+            <input type="text" id="earth-ask-input" placeholder="Type your answer" autocomplete="off">
+            <button id="earth-ask-btn">Answer</button>
+          </div>
+          <div class="reply" id="earth-ask-reply"></div>
+        </div>
+
+        <p>
+          Try it yourself. Write a spell of your own that asks a
+          question with <code>input()</code>, and does something with
+          whatever's typed back. Ask anything you like — Briar's
+          listening either way.
+        </p>
+        <label for="earth-input">Your incantation</label>
+        <textarea id="earth-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='answer = input("...")&#10;print("...")'></textarea>
+        <div class="run-row"><button id="earth-btn">Ask</button></div>
+        <div class="console" id="earth-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson12.html?path=earth">&larr; The White Marble Castle</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== EARTH — STAY: The Garden ===================== -->
+      <div id="earth-stay" hidden style="--accent: var(--emerald)">
+        <h1>The Garden</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          You remain in the courtyard, watching the white marble catch
+          the light without you. When you look up again, you're
+          standing somewhere else entirely — a quiet garden, gone
+          still at the edge of everything, as if it had been waiting
+          for you specifically.
+        </p>
+        <p>
+          This is where your quest ends, for tonight — not because the
+          story is finished, but because this is as far as this
+          particular choice goes. The emerald settles heavier against
+          your palm, content to wait for another night.
+        </p>
+        <p>Before you go, a glance back at everything you've carried with you so far:</p>
+        <div class="recap">
+          <span>print()</span><span>variables</span><span>strings</span><span>comments</span>
+          <span>if / elif</span><span>for loops</span><span>while loops</span><span>recursion</span>
+          <span>lists</span><span>functions</span><span>lambda</span>
+        </div>
+        <p>
+          The garden gate is open behind you, back toward the
+          Crossroads, whenever you're ready to choose a different door.
+        </p>
+        <div class="nav-row">
+          <a href="lesson6.html">&larr; Back to the Crossroads</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== SHADOW — ENTER: Rhys ===================== -->
+      <div id="shadow-enter" hidden style="--accent: var(--amethyst)">
+        <h1>Rhys</h1>
+        <span class="tag">inside Buer's Palace</span>
+        <p class="lede">
+          The black stone doors close behind you without a sound. A
+          figure detaches from the shadows near the far wall, moving
+          with the unhurried confidence of someone who's never once
+          been told no.
+        </p>
+        <p class="voice">
+          "So this is the one who ruined my cousin's evening," he
+          says, with a smile that's all charm and no warmth. "Rhys.
+          Delighted, truly. Come, come — let's not stand about in the
+          doorway like strangers." His eyes stay narrow the entire
+          time.
+        </p>
+        <p>
+          Rhys is pleasant right up until he isn't — but even he wants
+          to know who he's dealing with before he decides anything. In
+          the spellbook's tongue, asking plainly is called
+          <code>input()</code>: a spell that pauses, asks a question,
+          and waits for whatever you type back before continuing.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">name</span> = <span class="kw">input</span>(<span class="str">"What should I call you?"</span>)
+<span class="kw">print</span>(<span class="str">"Nice to meet you, "</span> + <span class="var">name</span>)</div>
+          <div class="out">Whatever you type appears here, and the house uses it right away.</div>
+        </div>
+        <p>
+          Unlike everything you've written so far, <code>input()</code>
+          doesn't come from you deciding what to write — it comes from
+          whoever's sitting in front of the house at the time.
+        </p>
+
+        <div class="ask">
+          <div class="q">Rhys: "So — what should I call you?"</div>
+          <div class="row">
+            <input type="text" id="shadow-ask-input" placeholder="Type your answer" autocomplete="off">
+            <button id="shadow-ask-btn">Answer</button>
+          </div>
+          <div class="reply" id="shadow-ask-reply"></div>
+        </div>
+
+        <p>
+          Try it yourself. Write a spell of your own that asks a
+          question with <code>input()</code>, and does something with
+          whatever's typed back. Ask anything you like — Rhys is
+          watching closely either way.
+        </p>
+        <label for="shadow-input">Your incantation</label>
+        <textarea id="shadow-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='answer = input("...")&#10;print("...")'></textarea>
+        <div class="run-row"><button id="shadow-btn">Ask</button></div>
+        <div class="console" id="shadow-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson12.html?path=shadow">&larr; Buer's Palace</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ===================== SHADOW — STAY: The Garden ===================== -->
+      <div id="shadow-stay" hidden style="--accent: var(--amethyst)">
+        <h1>The Garden</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          You stay back in the courtyard, watching the black stone
+          swallow the last of the light without you. When you look up
+          again, you're standing somewhere else entirely — a quiet
+          garden, gone still at the edge of everything, as if it had
+          been waiting for you specifically.
+        </p>
+        <p>
+          This is where your quest ends, for tonight — not because the
+          story is finished, but because this is as far as this
+          particular choice goes. The amethyst dims to something
+          gentler against your skin, content to wait for another
+          night.
+        </p>
+        <p>Before you go, a glance back at everything you've carried with you so far:</p>
+        <div class="recap">
+          <span>print()</span><span>variables</span><span>strings</span><span>comments</span>
+          <span>if / elif</span><span>for loops</span><span>while loops</span><span>recursion</span>
+          <span>lists</span><span>functions</span><span>lambda</span>
+        </div>
+        <p>
+          The garden gate is open behind you, back toward the
+          Crossroads, whenever you're ready to choose a different door.
+        </p>
+        <div class="nav-row">
+          <a href="lesson6.html">&larr; Back to the Crossroads</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  // Wires the small "ask" widget: typing a name and pressing Answer
+  // reflects it back immediately, demonstrating what input() does.
+  function wireAsk(prefix, replyTemplate) {
+    const input = document.getElementById(prefix + '-ask-input');
+    const button = document.getElementById(prefix + '-ask-btn');
+    const reply = document.getElementById(prefix + '-ask-reply');
+    if (!input) return;
+    function respond() {
+      const name = input.value.trim() || 'friend';
+      reply.textContent = replyTemplate(name);
+    }
+    button.addEventListener('click', respond);
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') respond(); });
+  }
+
+  // Open-ended check: is there a variable assigned from input(), and
+  // is that variable used again somewhere afterward? Anything inside
+  // the prompt text, and whatever's done with the answer, is free.
+  function checkInputUsage(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+
+    let varName = null;
+    for (const l of lines) {
+      const m = l.trim().match(/^([A-Za-z_]\w*)\s*=\s*input\s*\(.*\)\s*$/);
+      if (m) { varName = m[1]; break; }
+    }
+
+    if (!varName) {
+      const hasInputWord = lines.some(l => /\binput\s*\(/.test(l));
+      if (!hasInputWord) return { ok: false, code: 'no-input' };
+      return { ok: false, code: 'bad-input' };
+    }
+
+    const usedPattern = new RegExp('(^|[^\\w])' + varName + '([^\\w]|$)');
+    const usedElsewhere = lines.some(l => !/=\s*input\s*\(/.test(l) && usedPattern.test(l));
+    if (!usedElsewhere) return { ok: false, code: 'not-used' };
+
+    return { ok: true };
+  }
+
+  function wireTask(prefix, messages) {
+    const input = document.getElementById(prefix + '-input');
+    const button = document.getElementById(prefix + '-btn');
+    const consoleEl = document.getElementById(prefix + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkInputUsage(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-input': 'Every question like this uses the word input.',
+        'bad-input': 'Check the shape of your line — it needs a name, an equals sign, and input("...") after it.',
+        'not-used': 'You\'ve asked the question, but never done anything with the answer. Try using that name somewhere afterward.'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the spell is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const valid = ['fire-enter','fire-stay','water-enter','water-stay','earth-enter','earth-stay','shadow-enter','shadow-stay'];
+  const titles = {
+    'fire-enter': 'Chapter XIII — Ember',
+    'fire-stay': 'Chapter XIII — The Garden',
+    'water-enter': 'Chapter XIII — Lorelei',
+    'water-stay': 'Chapter XIII — The Garden',
+    'earth-enter': 'Chapter XIII — Briar',
+    'earth-stay': 'Chapter XIII — The Garden',
+    'shadow-enter': 'Chapter XIII — Rhys',
+    'shadow-stay': 'Chapter XIII — The Garden'
+  };
+
+  if (valid.includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+
+  wireAsk('fire', (name) => `Ember grins. "${name}? I like that. Come on, I want you to meet everyone."`);
+  wireAsk('water', (name) => `Lorelei smiles. "${name}. That suits you, somehow. Stay as long as you like, ${name}."`);
+  wireAsk('earth', (name) => `Briar nods once, like he's filing it away. "${name}. Noted. Sit, if you'd like."`);
+  wireAsk('shadow', (name) => `Rhys's smile sharpens slightly. "${name}. How lovely. I'll remember that."`);
+
+  wireTask('fire', {
+    empty: 'Ember waits, eyebrows raised. Ask her something first.',
+    success: 'Ember lights up at whatever you asked, already talking before you finish reading her answer.'
+  });
+  wireTask('water', {
+    empty: 'Lorelei tilts her head, waiting. Ask her something first.',
+    success: 'Lorelei answers easily, delighted that you asked at all.'
+  });
+  wireTask('earth', {
+    empty: 'Briar watches quietly. Ask him something first.',
+    success: 'Briar considers the question seriously before answering, more at ease than he was a moment ago.'
+  });
+  wireTask('shadow', {
+    empty: 'Rhys raises an eyebrow, unimpressed. Ask him something first.',
+    success: 'Rhys answers smoothly, entirely too pleased that you asked.'
+  });
+</script>
+</body>
+</html>
