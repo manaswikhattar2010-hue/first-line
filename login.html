@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Ledger — Sign In</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+  .book {
+    width: 100%;
+    max-width: 440px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+  .content { padding: 34px 34px 30px; }
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 30px;
+    line-height: 1.15;
+    margin: 0 0 10px;
+    color: var(--leather);
+  }
+  p.lede {
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 16.5px;
+    line-height: 1.6;
+    margin: 0 0 24px;
+  }
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 15px;
+    color: var(--ink-dim);
+    margin: 0 0 6px;
+  }
+  input[type="email"], input[type="password"] {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 11px 13px;
+    border-radius: 5px;
+    outline: none;
+    margin-bottom: 16px;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  input[type="email"]:focus, input[type="password"]:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+  button {
+    width: 100%;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 12px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease, opacity 0.15s ease;
+  }
+  button:hover:not(:disabled) { filter: brightness(1.15); }
+  button:active:not(:disabled) { transform: translateY(1px); }
+  button:disabled { opacity: 0.55; cursor: wait; }
+  .switch {
+    text-align: center;
+    margin-top: 18px;
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .switch a { color: var(--leather); font-weight: 600; cursor: pointer; text-decoration: none; }
+  .switch a:hover { color: var(--flame); }
+  .message {
+    min-height: 20px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14.5px;
+    margin: -6px 0 16px;
+  }
+  .message.error { color: var(--error); }
+  .message.success { color: #3f6b3a; }
+  .nav-row {
+    display: flex;
+    justify-content: center;
+    margin-top: 26px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">THE LEDGER</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+      <h1 id="heading">Sign In</h1>
+      <p class="lede" id="subtext">The house remembers those who've signed its ledger. Enter your details to pick up where you left off.</p>
+
+      <form id="auth-form">
+        <label for="email">Your email</label>
+        <input type="email" id="email" autocomplete="email" required>
+
+        <label for="password">Your password</label>
+        <input type="password" id="password" autocomplete="current-password" required minlength="6">
+
+        <div class="message" id="message"></div>
+
+        <button type="submit" id="submit-btn">Sign In</button>
+      </form>
+
+      <div class="switch">
+        <span id="switch-text">New here?</span>
+        <a id="switch-link">Sign the ledger for the first time</a>
+      </div>
+
+      <div class="nav-row">
+        <a href="index.html">&larr; Back to Chapter I</a>
+      </div>
+    </div>
+  </div>
+
+<script type="module">
+  import { signUp, logIn, getUser, onProgressReady } from './progress.js';
+
+  const form = document.getElementById('auth-form');
+  const emailInput = document.getElementById('email');
+  const passwordInput = document.getElementById('password');
+  const messageEl = document.getElementById('message');
+  const submitBtn = document.getElementById('submit-btn');
+  const heading = document.getElementById('heading');
+  const subtext = document.getElementById('subtext');
+  const switchText = document.getElementById('switch-text');
+  const switchLink = document.getElementById('switch-link');
+
+  let mode = 'signin'; // or 'signup'
+
+  function paintMode() {
+    if (mode === 'signin') {
+      heading.textContent = 'Sign In';
+      subtext.textContent = "The house remembers those who've signed its ledger. Enter your details to pick up where you left off.";
+      submitBtn.textContent = 'Sign In';
+      switchText.textContent = 'New here?';
+      switchLink.textContent = 'Sign the ledger for the first time';
+    } else {
+      heading.textContent = 'Sign the Ledger';
+      subtext.textContent = "Choose an email and password, and the house will remember your progress from now on.";
+      submitBtn.textContent = 'Create Account';
+      switchText.textContent = 'Already signed in before?';
+      switchLink.textContent = 'Sign in instead';
+    }
+    messageEl.textContent = '';
+    messageEl.className = 'message';
+  }
+
+  switchLink.addEventListener('click', () => {
+    mode = mode === 'signin' ? 'signup' : 'signin';
+    paintMode();
+  });
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    messageEl.className = 'message';
+    messageEl.textContent = '';
+    submitBtn.disabled = true;
+    const prevLabel = submitBtn.textContent;
+    submitBtn.textContent = mode === 'signin' ? 'Signing in…' : 'Creating account…';
+
+    try {
+      if (mode === 'signin') {
+        await logIn(emailInput.value, passwordInput.value);
+      } else {
+        await signUp(emailInput.value, passwordInput.value);
+      }
+      messageEl.className = 'message success';
+      messageEl.textContent = 'Welcome. Taking you back to the house…';
+      setTimeout(() => { window.location.href = 'index.html'; }, 700);
+    } catch (err) {
+      let friendly = 'Something went wrong. Please try again.';
+      const code = err.code || '';
+      if (code.includes('email-already-in-use')) friendly = 'That email is already signed in the ledger. Try signing in instead.';
+      else if (code.includes('invalid-email')) friendly = 'That doesn\'t look like a valid email address.';
+      else if (code.includes('weak-password')) friendly = 'Your password needs to be at least 6 characters.';
+      else if (code.includes('user-not-found') || code.includes('wrong-password') || code.includes('invalid-credential')) friendly = 'That email and password don\'t match anything in the ledger.';
+
+      messageEl.className = 'message error';
+      messageEl.textContent = friendly;
+      submitBtn.disabled = false;
+      submitBtn.textContent = prevLabel;
+    }
+  });
+
+  // If already logged in, no need to be here
+  onProgressReady((user) => {
+    if (user) {
+      messageEl.className = 'message success';
+      messageEl.textContent = 'You\'re already signed in as ' + user.email + '.';
+    }
+  });
+</script>
+</body>
+</html>
