@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XIV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .fstr { color: #e0c68a; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .gift {
+    border: 1px solid var(--page-edge);
+    border-left: 4px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 4px 0 24px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+  }
+  .gift .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--leather);
+    margin-bottom: 4px;
+  }
+  .gift p { font-size: 15.5px; margin: 0; color: var(--ink-dim); max-width: none; }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XIV</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Kingdoms</h1>
+        <p>You've arrived here without a path to follow. Choose the kingdom you entered, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson14.html?path=fire">Ruby &mdash; deeper into Sol-Torren</a>
+          <a href="lesson14.html?path=water">Sapphire &mdash; deeper into Nadir Haven</a>
+          <a href="lesson14.html?path=earth">Emerald &mdash; deeper into Noxglen</a>
+          <a href="lesson14.html?path=shadow">Amethyst &mdash; deeper into Nocturna</a>
+        </div>
+      </div>
+
+      <!-- FIRE — Ember, deeper into Sol-Torren -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>The Heart of Sol-Torren</h1>
+        <span class="tag">with Ember</span>
+        <p class="lede">
+          Ember doesn't let you linger at the grove for long. "There's
+          more to see," she says, already walking, "and I'd rather
+          show you than describe it." She leads you past the tree
+          line, deeper into the kingdom, toward towers you'd mistaken
+          for the horizon.
+        </p>
+
+        <h2 class="sub">A shorter way to weave words</h2>
+        <p>
+          You've been building sentences the long way so far — stitching
+          words and values together with <code>+</code>. There's a
+          cleaner way: an <code>f-string</code>, which lets you drop a
+          value directly into the middle of your words, wrapped in
+          curly braces.
+        </p>
+        <div class="spellbook">
+          <span class="label">The old way:</span>
+          <div><span class="var">sparks</span> = <span class="var">3</span>
+<span class="kw">print</span>(<span class="str">"Ember summons "</span> + <span class="kw">str</span>(<span class="var">sparks</span>) + <span class="str">" sparks."</span>)</div>
+          <span class="label">The f-string way:</span>
+          <div><span class="fstr">f</span><span class="str">"Ember summons {sparks} sparks."</span></div>
+          <div class="out">Ember summons 3 sparks.</div>
+        </div>
+        <p>
+          The <code>f</code> right before the quotation mark tells the
+          house to look inside for curly braces, and fill them in with
+          whatever's between them — a variable, or even a small
+          calculation.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell using an f-string of your own
+          — weave any value into any words you like.
+        </p>
+        <label for="fire-input">Your incantation</label>
+        <textarea id="fire-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='sparks = 3&#10;print(f"...{sparks}...")'></textarea>
+        <div class="run-row"><button id="fire-btn">Weave</button></div>
+        <div class="console" id="fire-console"></div>
+
+        <div class="divider"><span>at the heart of the kingdom</span></div>
+        <p>
+          The towers open into a forge unlike anything you've seen —
+          heat without smoke, flame that holds its shape like liquid
+          glass. Ember pulls something long and dark from the coals,
+          still glowing faintly along its grain.
+        </p>
+        <div class="gift">
+          <div class="name">An Ember-Wood Bow</div>
+          <p>Carved from a branch that burned but never fell, warm to the touch even now. It doesn't need arrows fletched with fire — it makes its own.</p>
+        </div>
+        <p class="voice">"Every hunter in Sol-Torren carries one," Ember says. "Now you do too."</p>
+
+        <div class="nav-row">
+          <a href="lesson13.html?path=fire-enter">&larr; Ember</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- WATER — Lorelei, deeper into Nadir Haven -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>The Heart of Nadir Haven</h1>
+        <span class="tag">with Lorelei</span>
+        <p class="lede">
+          Lorelei doesn't stay in the coral halls for long either.
+          "You've barely seen anything yet," she says, already gliding
+          deeper. She leads you down, past the last of the drifting
+          jellyfish light, toward a glow that isn't coming from
+          anything you recognize.
+        </p>
+
+        <h2 class="sub">A shorter way to weave words</h2>
+        <p>
+          You've been building sentences the long way so far — stitching
+          words and values together with <code>+</code>. There's a
+          cleaner way: an <code>f-string</code>, which lets you drop a
+          value directly into the middle of your words, wrapped in
+          curly braces.
+        </p>
+        <div class="spellbook">
+          <span class="label">The old way:</span>
+          <div><span class="var">pearls</span> = <span class="var">3</span>
+<span class="kw">print</span>(<span class="str">"The tide brings "</span> + <span class="kw">str</span>(<span class="var">pearls</span>) + <span class="str">" pearls."</span>)</div>
+          <span class="label">The f-string way:</span>
+          <div><span class="fstr">f</span><span class="str">"The tide brings {pearls} pearls."</span></div>
+          <div class="out">The tide brings 3 pearls.</div>
+        </div>
+        <p>
+          The <code>f</code> right before the quotation mark tells the
+          house to look inside for curly braces, and fill them in with
+          whatever's between them — a variable, or even a small
+          calculation.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell using an f-string of your own
+          — weave any value into any words you like.
+        </p>
+        <label for="water-input">Your incantation</label>
+        <textarea id="water-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='pearls = 3&#10;print(f"...{pearls}...")'></textarea>
+        <div class="run-row"><button id="water-btn">Weave</button></div>
+        <div class="console" id="water-console"></div>
+
+        <div class="divider"><span>at the heart of the kingdom</span></div>
+        <p>
+          The glow resolves into a chamber lined with drifting scrolls
+          that never seem to touch the ground. Lorelei draws one book
+          free from the current — its cover shifting color like oil on
+          water, humming faintly against your hands the moment you
+          take it.
+        </p>
+        <div class="gift">
+          <div class="name">A Tidebound Catalyst</div>
+          <p>A spellbook that writes down nothing on its own — but every working you cast near it seems to come to you a little easier, a little clearer, from now on.</p>
+        </div>
+        <p class="voice">"It won't cast anything for you," Lorelei warns. "It just... helps you remember how."</p>
+
+        <div class="nav-row">
+          <a href="lesson13.html?path=water-enter">&larr; Lorelei</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — Briar, deeper into Noxglen -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>The Heart of Noxglen</h1>
+        <span class="tag">with Briar</span>
+        <p class="lede">
+          Briar rises from the window seat without being asked twice.
+          "If my brother's letting you stay," he says, "you may as
+          well see the rest of it." He leads you deeper into the
+          castle, past halls that seem to rearrange themselves
+          slightly whenever you're not looking directly at them.
+        </p>
+
+        <h2 class="sub">A shorter way to weave words</h2>
+        <p>
+          You've been building sentences the long way so far — stitching
+          words and values together with <code>+</code>. There's a
+          cleaner way: an <code>f-string</code>, which lets you drop a
+          value directly into the middle of your words, wrapped in
+          curly braces.
+        </p>
+        <div class="spellbook">
+          <span class="label">The old way:</span>
+          <div><span class="var">roots</span> = <span class="var">3</span>
+<span class="kw">print</span>(<span class="str">"The hall grows "</span> + <span class="kw">str</span>(<span class="var">roots</span>) + <span class="str">" new roots."</span>)</div>
+          <span class="label">The f-string way:</span>
+          <div><span class="fstr">f</span><span class="str">"The hall grows {roots} new roots."</span></div>
+          <div class="out">The hall grows 3 new roots.</div>
+        </div>
+        <p>
+          The <code>f</code> right before the quotation mark tells the
+          house to look inside for curly braces, and fill them in with
+          whatever's between them — a variable, or even a small
+          calculation.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell using an f-string of your own
+          — weave any value into any words you like.
+        </p>
+        <label for="earth-input">Your incantation</label>
+        <textarea id="earth-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='roots = 3&#10;print(f"...{roots}...")'></textarea>
+        <div class="run-row"><button id="earth-btn">Weave</button></div>
+        <div class="console" id="earth-console"></div>
+
+        <div class="divider"><span>at the heart of the kingdom</span></div>
+        <p>
+          The hall finally opens into an armory carved straight from
+          living root and pale stone. Briar picks through it without
+          hesitation, like he already knew exactly what he was looking
+          for, and sets two things down in front of you.
+        </p>
+        <div class="gift">
+          <div class="name">Twin Daggers &amp; a Sterling Silver Sword</div>
+          <p>The daggers are light, quick, made for someone who'd rather not be seen at all. The sword is heavier, colder, unmistakably fae-make — the kind of blade that isn't meant to be hidden.</p>
+        </div>
+        <p class="voice">"One for when you'd rather not be noticed," Briar says, "and one for when you'd rather make sure you are."</p>
+
+        <div class="nav-row">
+          <a href="lesson13.html?path=earth-enter">&larr; Briar</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — Rhys, deeper into Nocturna -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>The Heart of Nocturna</h1>
+        <span class="tag">with Rhys</span>
+        <p class="lede">
+          "Come, come," Rhys says, already moving before you've fully
+          agreed to follow. "You didn't think the entrance hall was
+          all there was to see, did you?" He leads you deeper into the
+          palace, past doors that seem to close on their own the
+          moment you pass them.
+        </p>
+
+        <h2 class="sub">A shorter way to weave words</h2>
+        <p>
+          You've been building sentences the long way so far — stitching
+          words and values together with <code>+</code>. There's a
+          cleaner way: an <code>f-string</code>, which lets you drop a
+          value directly into the middle of your words, wrapped in
+          curly braces.
+        </p>
+        <div class="spellbook">
+          <span class="label">The old way:</span>
+          <div><span class="var">whispers</span> = <span class="var">3</span>
+<span class="kw">print</span>(<span class="str">"The dark carries "</span> + <span class="kw">str</span>(<span class="var">whispers</span>) + <span class="str">" whispers."</span>)</div>
+          <span class="label">The f-string way:</span>
+          <div><span class="fstr">f</span><span class="str">"The dark carries {whispers} whispers."</span></div>
+          <div class="out">The dark carries 3 whispers.</div>
+        </div>
+        <p>
+          The <code>f</code> right before the quotation mark tells the
+          house to look inside for curly braces, and fill them in with
+          whatever's between them — a variable, or even a small
+          calculation.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell using an f-string of your own
+          — weave any value into any words you like.
+        </p>
+        <label for="shadow-input">Your incantation</label>
+        <textarea id="shadow-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='whispers = 3&#10;print(f"...{whispers}...")'></textarea>
+        <div class="run-row"><button id="shadow-btn">Weave</button></div>
+        <div class="console" id="shadow-console"></div>
+
+        <div class="divider"><span>at the heart of the kingdom</span></div>
+        <p>
+          The doors finally stop closing behind you, and the hall
+          opens into a room with nothing in it but a single stand,
+          lit by the same violet glow that seems to follow you
+          everywhere in this kingdom. Rhys lifts something long and
+          curved from it, testing its weight before offering it to
+          you, hilt first.
+        </p>
+        <div class="gift">
+          <div class="name">A Nocturne Glaive</div>
+          <p>Curved like a scythe, black as the halls it came from, quiet in a way that has nothing to do with sound. It doesn't feel heavier the longer you hold it — if anything, the opposite.</p>
+        </div>
+        <p class="voice">"Do try not to lose that one," Rhys says, smiling in a way that doesn't reach his eyes. "It was rather difficult to acquire."</p>
+
+        <div class="nav-row">
+          <a href="lesson13.html?path=shadow-enter">&larr; Rhys</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  // Open-ended check: is there a genuine f-string — f"..." or f'...'
+  // containing at least one {...} placeholder? Anything inside the
+  // braces or the surrounding words is free.
+  function hasFString(raw) {
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+    return lines.some((line) => {
+      const idxDouble = line.indexOf('f"');
+      const idxSingle = line.indexOf("f'");
+      const idx = idxDouble === -1 ? idxSingle : (idxSingle === -1 ? idxDouble : Math.min(idxDouble, idxSingle));
+      if (idx === -1) return false;
+      const rest = line.slice(idx);
+      const openBrace = rest.indexOf('{');
+      const closeBrace = rest.indexOf('}');
+      return openBrace !== -1 && closeBrace !== -1 && closeBrace > openBrace + 1;
+    });
+  }
+
+  function wire(prefix, messages) {
+    const input = document.getElementById(prefix + '-input');
+    const button = document.getElementById(prefix + '-btn');
+    const consoleEl = document.getElementById(prefix + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const raw = input.value;
+      if (raw.trim().length === 0) {
+        flash(consoleEl, 'console error', messages.empty);
+        return;
+      }
+      if (!hasFString(raw)) {
+        flash(consoleEl, 'console error', 'Nothing here is woven yet — try an f-string, with a value inside curly braces.');
+        return;
+      }
+      flash(consoleEl, 'console success', messages.success);
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XIV — The Heart of Sol-Torren',
+    water: 'Chapter XIV — The Heart of Nadir Haven',
+    earth: 'Chapter XIV — The Heart of Noxglen',
+    shadow: 'Chapter XIV — The Heart of Nocturna'
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+
+  wire('fire', {
+    empty: 'The forge stays quiet. Write something first.',
+    success: 'The words weave together seamlessly, the value settling right into place among them.'
+  });
+  wire('water', {
+    empty: 'The current stays still. Write something first.',
+    success: 'The words drift together seamlessly, the value settling right into place among them.'
+  });
+  wire('earth', {
+    empty: 'The hall stays silent. Write something first.',
+    success: 'The words take root together seamlessly, the value settling right into place among them.'
+  });
+  wire('shadow', {
+    empty: 'The dark stays quiet. Write something first.',
+    success: 'The words settle together seamlessly, the value slotting right into place among them.'
+  });
+</script>
+</body>
+</html>
