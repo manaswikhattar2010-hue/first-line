@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XVII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .methods {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 0 0 22px;
+  }
+  .methods span {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    color: var(--leather);
+    background: rgba(74,47,34,0.08);
+    border: 1px solid var(--page-edge);
+    padding: 3px 9px;
+    border-radius: 12px;
+  }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .destination {
+    border: 1px solid var(--page-edge);
+    border-left: 4px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 16px 18px;
+    margin: 4px 0 8px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+  }
+  .destination .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--leather);
+    margin-bottom: 4px;
+  }
+  .destination p { font-size: 15.5px; margin: 0; color: var(--ink-dim); max-width: none; }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XVII</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Allies</h1>
+        <p>You've arrived here without a path to follow. Choose who you're with, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson17.html?path=fire">Ruby &mdash; with Autumn</a>
+          <a href="lesson17.html?path=water">Sapphire &mdash; with Virelia</a>
+          <a href="lesson17.html?path=earth">Emerald &mdash; with Aspen</a>
+          <a href="lesson17.html?path=shadow">Amethyst &mdash; with Buer</a>
+        </div>
+      </div>
+
+      <!-- FIRE — Autumn -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>Asking Autumn</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          Ember walks you back through the grove, and by the time you
+          reach the tree line, Autumn is already waiting, arms
+          crossed, watching the two of you approach with open
+          curiosity of her own.
+        </p>
+        <p class="voice">"So. What exactly do you need from me?"</p>
+        <p>
+          Rather than explain it all at once, you find it easier to
+          simply list it out — and a list, once made, doesn't have to
+          stay the way you first wrote it. You can add to it with
+          <code>.append()</code>, take something off with
+          <code>.remove()</code>, or put it in order with
+          <code>.sort()</code>.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">needs</span> = [<span class="str">"a way home"</span>, <span class="str">"answers"</span>]
+<span class="var">needs</span>.<span class="fn">append</span>(<span class="str">"Autumn's help"</span>)
+<span class="kw">print</span>(<span class="var">needs</span>)</div>
+          <div class="out">['a way home', 'answers', "Autumn's help"]</div>
+        </div>
+        <p>A few other list methods worth knowing:</p>
+        <div class="methods">
+          <span>.append(x)</span><span>.remove(x)</span><span>.sort()</span><span>.pop()</span><span>len(list)</span>
+        </div>
+        <p>
+          Try it yourself. Build a list of what you need, then use at
+          least one list method on it — add something, take something
+          away, sort it, whatever fits what you're asking Autumn for.
+        </p>
+        <label for="fire-input">Your incantation</label>
+        <textarea id="fire-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='needs = ["a way home"]&#10;needs.append("Autumn\'s help")&#10;print(needs)'></textarea>
+        <div class="run-row"><button id="fire-btn">List Your Needs</button></div>
+        <div class="console" id="fire-console"></div>
+
+        <div class="divider"><span>Autumn's answer</span></div>
+        <p class="voice">
+          Autumn's whole face lights up before you've even finished.
+          "Obviously I'm helping. Are you kidding? Let's go."
+        </p>
+        <p>She hesitates for exactly one second before adding:</p>
+        <div class="destination">
+          <div class="name">Phlograna &mdash; the Lava Court</div>
+          <p>Land of the Vulcans. "You're going to need them for this," Autumn says. "I'll take you as far as the border myself."</p>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson16.html?path=fire">&larr; A Question, Finally</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- WATER — Virelia -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>Asking Virelia</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          Lorelei guides you back through the coral halls, and Virelia
+          is waiting near the entrance, tail flicking with the
+          particular patience of someone who's been listening for you
+          the whole time.
+        </p>
+        <p class="voice">"So. What exactly do you need from me?"</p>
+        <p>
+          Rather than explain it all at once, you find it easier to
+          simply list it out — and a list, once made, doesn't have to
+          stay the way you first wrote it. You can add to it with
+          <code>.append()</code>, take something off with
+          <code>.remove()</code>, or put it in order with
+          <code>.sort()</code>.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">needs</span> = [<span class="str">"a way home"</span>, <span class="str">"answers"</span>]
+<span class="var">needs</span>.<span class="fn">append</span>(<span class="str">"Virelia's help"</span>)
+<span class="kw">print</span>(<span class="var">needs</span>)</div>
+          <div class="out">['a way home', 'answers', "Virelia's help"]</div>
+        </div>
+        <p>A few other list methods worth knowing:</p>
+        <div class="methods">
+          <span>.append(x)</span><span>.remove(x)</span><span>.sort()</span><span>.pop()</span><span>len(list)</span>
+        </div>
+        <p>
+          Try it yourself. Build a list of what you need, then use at
+          least one list method on it — add something, take something
+          away, sort it, whatever fits what you're asking Virelia for.
+        </p>
+        <label for="water-input">Your incantation</label>
+        <textarea id="water-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='needs = ["a way home"]&#10;needs.append("Virelia\'s help")&#10;print(needs)'></textarea>
+        <div class="run-row"><button id="water-btn">List Your Needs</button></div>
+        <div class="console" id="water-console"></div>
+
+        <div class="divider"><span>Virelia's answer</span></div>
+        <p class="voice">
+          Virelia doesn't hesitate at all. "Of course. After everything?
+          I'd help you regardless of what you asked."
+        </p>
+        <p>She tilts her head, considering, before adding:</p>
+        <div class="destination">
+          <div class="name">Sneznova &mdash; the Ice Court</div>
+          <p>Land of the Frost Elves. "You'll need them for this part," Virelia says. "I know someone who can get us through the border, at least."</p>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson16.html?path=water">&larr; A Question, Finally</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — Aspen -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>Asking Aspen</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          Briar leads you back through the shifting halls, and Aspen
+          is exactly where you left him — window seat, unreadable
+          expression, antlers catching the low light.
+        </p>
+        <p class="voice">"So. What exactly do you need from me?"</p>
+        <p>
+          Rather than explain it all at once, you find it easier to
+          simply list it out — and a list, once made, doesn't have to
+          stay the way you first wrote it. You can add to it with
+          <code>.append()</code>, take something off with
+          <code>.remove()</code>, or put it in order with
+          <code>.sort()</code>.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">needs</span> = [<span class="str">"a way home"</span>, <span class="str">"answers"</span>]
+<span class="var">needs</span>.<span class="fn">append</span>(<span class="str">"Aspen's help"</span>)
+<span class="kw">print</span>(<span class="var">needs</span>)</div>
+          <div class="out">['a way home', 'answers', "Aspen's help"]</div>
+        </div>
+        <p>A few other list methods worth knowing:</p>
+        <div class="methods">
+          <span>.append(x)</span><span>.remove(x)</span><span>.sort()</span><span>.pop()</span><span>len(list)</span>
+        </div>
+        <p>
+          Try it yourself. Build a list of what you need, then use at
+          least one list method on it — add something, take something
+          away, sort it, whatever fits what you're asking Aspen for.
+        </p>
+        <label for="earth-input">Your incantation</label>
+        <textarea id="earth-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='needs = ["a way home"]&#10;needs.append("Aspen\'s help")&#10;print(needs)'></textarea>
+        <div class="run-row"><button id="earth-btn">List Your Needs</button></div>
+        <div class="console" id="earth-console"></div>
+
+        <div class="divider"><span>Aspen's answer</span></div>
+        <p class="voice">
+          Aspen listens to the whole list without much visible interest,
+          then exhales, like this is a mild inconvenience he's decided
+          to permit. "Fine. I suppose I can spare the effort."
+        </p>
+        <p>He says it like it costs him nothing, and adds, almost as an afterthought:</p>
+        <div class="destination">
+          <div class="name">Krystaline &mdash; the Light Court</div>
+          <p>Land of the Valkyrie. "You'll want their favor for this," Aspen says. "I can get you to the border. What happens after that is up to you."</p>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson16.html?path=earth">&larr; A Question, Finally</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — Buer -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>Asking Buer</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          Rhys leads you back through the black stone halls, and Buer
+          is waiting exactly where you'd expect him to be — arms
+          crossed, watching the doorway like he already knew you'd
+          come back through it.
+        </p>
+        <p class="voice">"So. What exactly do you need from me?"</p>
+        <p>
+          Rather than explain it all at once, you find it easier to
+          simply list it out — and a list, once made, doesn't have to
+          stay the way you first wrote it. You can add to it with
+          <code>.append()</code>, take something off with
+          <code>.remove()</code>, or put it in order with
+          <code>.sort()</code>.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">needs</span> = [<span class="str">"a way home"</span>, <span class="str">"answers"</span>]
+<span class="var">needs</span>.<span class="fn">append</span>(<span class="str">"Buer's help"</span>)
+<span class="kw">print</span>(<span class="var">needs</span>)</div>
+          <div class="out">['a way home', 'answers', "Buer's help"]</div>
+        </div>
+        <p>A few other list methods worth knowing:</p>
+        <div class="methods">
+          <span>.append(x)</span><span>.remove(x)</span><span>.sort()</span><span>.pop()</span><span>len(list)</span>
+        </div>
+        <p>
+          Try it yourself. Build a list of what you need, then use at
+          least one list method on it — add something, take something
+          away, sort it, whatever fits what you're asking Buer for.
+        </p>
+        <label for="shadow-input">Your incantation</label>
+        <textarea id="shadow-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='needs = ["a way home"]&#10;needs.append("Buer\'s help")&#10;print(needs)'></textarea>
+        <div class="run-row"><button id="shadow-btn">List Your Needs</button></div>
+        <div class="console" id="shadow-console"></div>
+
+        <div class="divider"><span>Buer's answer</span></div>
+        <p class="voice">
+          "Oh, I'll help," Buer says, and he says it just a little too
+          easily, a smile settling in somewhere it doesn't quite belong.
+          "Gladly, in fact."
+        </p>
+        <p>
+          You don't notice the way his expression flickers for just a
+          moment before he adds:
+        </p>
+        <div class="destination">
+          <div class="name">Hawthorne &mdash; the Nightmare Court</div>
+          <p>Land of the Ghouls. "You'll need them, whether you like it or not," Buer says. "I can get you to the border easily enough."</p>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson16.html?path=shadow">&larr; A Question, Finally</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  // Open-ended check: is there a real list, and is a genuine list
+  // method (append, remove, sort, pop, insert, extend, clear) called
+  // on it afterward? Contents and exact method are entirely free.
+  const LIST_METHODS = ['append', 'remove', 'sort', 'pop', 'insert', 'extend', 'clear', 'reverse'];
+
+  function checkListMethod(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+
+    let listName = null;
+    for (const l of lines) {
+      const m = l.trim().match(/^([A-Za-z_]\w*)\s*=\s*\[.*\]\s*$/);
+      if (m) { listName = m[1]; break; }
+    }
+
+    if (!listName) return { ok: false, code: 'no-list' };
+
+    const methodPattern = new RegExp('(^|[^\\w])' + listName + '\\.(' + LIST_METHODS.join('|') + ')\\s*\\(');
+    const hasMethod = lines.some((l) => methodPattern.test(l));
+
+    if (!hasMethod) return { ok: false, code: 'no-method' };
+
+    return { ok: true };
+  }
+
+  function wire(prefix, messages) {
+    const input = document.getElementById(prefix + '-input');
+    const button = document.getElementById(prefix + '-btn');
+    const consoleEl = document.getElementById(prefix + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkListMethod(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-list': 'Start with a real list — a name, an equals sign, and square brackets holding what you need.',
+        'no-method': 'The list is there, but you haven\'t used a method on it yet — try .append(...), .remove(...), or .sort().'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XVII — Asking Autumn',
+    water: 'Chapter XVII — Asking Virelia',
+    earth: 'Chapter XVII — Asking Aspen',
+    shadow: 'Chapter XVII — Asking Buer'
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+
+  wire('fire', {
+    empty: 'Autumn waits. Write your list first.',
+    success: 'Autumn reads over the list, already nodding along before you\'ve finished.'
+  });
+  wire('water', {
+    empty: 'Virelia waits. Write your list first.',
+    success: 'Virelia reads over the list, unsurprised by any of it.'
+  });
+  wire('earth', {
+    empty: 'Aspen waits. Write your list first.',
+    success: 'Aspen scans the list once, unhurried, and says nothing until he\'s finished.'
+  });
+  wire('shadow', {
+    empty: 'Buer waits. Write your list first.',
+    success: 'Buer reads over the list slowly, entirely too pleased by something on it.'
+  });
+</script>
+</body>
+</html>
