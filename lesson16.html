@@ -1,0 +1,640 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XVI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .bool { color: #7dcfff; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .choice-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16.5px;
+    color: var(--leather);
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    border: 1px solid var(--page-edge);
+    border-left: 4px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .choice-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -14px rgba(0,0,0,0.35);
+  }
+  .choice-btn:active { transform: translateY(0); }
+
+  .response {
+    margin-top: 4px;
+  }
+  .response .voice { margin-bottom: 22px; }
+
+  .continue-link {
+    display: inline-block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border-bottom: 2px solid var(--accent, var(--gold));
+    padding-bottom: 2px;
+  }
+  .continue-link:hover { color: var(--flame); }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XVI</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Questions</h1>
+        <p>You've arrived here without a path to follow. Choose the kingdom you're in, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson16.html?path=fire">Ruby &mdash; Sol-Torren</a>
+          <a href="lesson16.html?path=water">Sapphire &mdash; Nadir Haven</a>
+          <a href="lesson16.html?path=earth">Emerald &mdash; Noxglen</a>
+          <a href="lesson16.html?path=shadow">Amethyst &mdash; Nocturna</a>
+        </div>
+      </div>
+
+      <!-- FIRE -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>A Question, Finally</h1>
+        <span class="tag">with Ember</span>
+        <p class="lede">
+          Ember turns the bow over once more in your hands before
+          letting you keep it, then looks up at you properly for the
+          first time since you arrived — not excited, for once, just
+          genuinely curious.
+        </p>
+        <p class="voice">"Alright. I have to ask. Why are you actually here?"</p>
+
+        <h2 class="sub">True, or not true</h2>
+        <p>
+          Every question the house has asked you so far — every
+          <code>if</code>, every <code>elif</code> — was quietly
+          asking one of two things underneath: <code>True</code>, or
+          <code>False</code>. These are called <code>booleans</code>,
+          and they're the simplest values in the language: a thing is
+          either the case, or it isn't.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_bow</span> = <span class="bool">True</span>
+<span class="kw">print</span>(<span class="var">has_bow</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          Comparisons — <code>==</code> for "is equal to," <code>!=</code>
+          for "is not equal to," along with <code>&gt;</code>,
+          <code>&lt;</code>, <code>&gt;=</code>, and <code>&lt;=</code> —
+          all produce a boolean too, once the house checks them.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">arrows</span> = <span class="var">0</span>
+<span class="kw">print</span>(<span class="var">arrows</span> == <span class="var">0</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          And when you need to ask more than one true-or-false
+          question at once, three small words combine them:
+          <code>and</code> requires both sides to be true,
+          <code>or</code> only needs one, and <code>not</code> flips
+          whatever follows it.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_bow</span> = <span class="bool">True</span>
+<span class="var">has_catalyst</span> = <span class="bool">False</span>
+<span class="kw">print</span>(<span class="var">has_bow</span> <span class="kw">and</span> <span class="var">has_catalyst</span>)
+<span class="kw">print</span>(<span class="var">has_bow</span> <span class="kw">or</span> <span class="var">has_catalyst</span>)
+<span class="kw">print</span>(<span class="kw">not</span> <span class="var">has_catalyst</span>)</div>
+          <div class="out">False
+True
+True</div>
+        </div>
+
+        <div class="divider"><span>Ember waits</span></div>
+
+        <div class="choices" id="fire-choices">
+          <button class="choice-btn" data-choice="home">"I'm trying to get home."</button>
+          <button class="choice-btn" data-choice="secret">"It's not your concern."</button>
+        </div>
+
+        <div class="response" id="fire-response" hidden>
+          <p class="voice" id="fire-response-text"></p>
+          <a class="continue-link" href="lesson17.html?path=fire">Continue &rarr;</a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson15.html?path=fire">&larr; The Rune on the Bow</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- WATER -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>A Question, Finally</h1>
+        <span class="tag">with Lorelei</span>
+        <p class="lede">
+          Lorelei watches you close the spellbook, its cover still
+          faintly warm, and for once she isn't smiling — just
+          watching you with an expression you can't quite place.
+        </p>
+        <p class="voice">"Can I ask you something? Why are you actually here?"</p>
+
+        <h2 class="sub">True, or not true</h2>
+        <p>
+          Every question the house has asked you so far — every
+          <code>if</code>, every <code>elif</code> — was quietly
+          asking one of two things underneath: <code>True</code>, or
+          <code>False</code>. These are called <code>booleans</code>,
+          and they're the simplest values in the language: a thing is
+          either the case, or it isn't.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_catalyst</span> = <span class="bool">True</span>
+<span class="kw">print</span>(<span class="var">has_catalyst</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          Comparisons — <code>==</code> for "is equal to," <code>!=</code>
+          for "is not equal to," along with <code>&gt;</code>,
+          <code>&lt;</code>, <code>&gt;=</code>, and <code>&lt;=</code> —
+          all produce a boolean too, once the house checks them.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">pearls</span> = <span class="var">0</span>
+<span class="kw">print</span>(<span class="var">pearls</span> == <span class="var">0</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          And when you need to ask more than one true-or-false
+          question at once, three small words combine them:
+          <code>and</code> requires both sides to be true,
+          <code>or</code> only needs one, and <code>not</code> flips
+          whatever follows it.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_catalyst</span> = <span class="bool">True</span>
+<span class="var">has_bow</span> = <span class="bool">False</span>
+<span class="kw">print</span>(<span class="var">has_catalyst</span> <span class="kw">and</span> <span class="var">has_bow</span>)
+<span class="kw">print</span>(<span class="var">has_catalyst</span> <span class="kw">or</span> <span class="var">has_bow</span>)
+<span class="kw">print</span>(<span class="kw">not</span> <span class="var">has_bow</span>)</div>
+          <div class="out">False
+True
+True</div>
+        </div>
+
+        <div class="divider"><span>Lorelei waits</span></div>
+
+        <div class="choices" id="water-choices">
+          <button class="choice-btn" data-choice="home">"I'm trying to get home."</button>
+          <button class="choice-btn" data-choice="secret">"It's not your concern."</button>
+        </div>
+
+        <div class="response" id="water-response" hidden>
+          <p class="voice" id="water-response-text"></p>
+          <a class="continue-link" href="lesson17.html?path=water">Continue &rarr;</a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson15.html?path=water">&larr; The Rune on the Catalyst</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>A Question, Finally</h1>
+        <span class="tag">with Briar</span>
+        <p class="lede">
+          Briar sets the last dagger down in front of you and doesn't
+          immediately step back, watching you with the same careful
+          attention he's given everything since you arrived.
+        </p>
+        <p class="voice">"Before you go any further — why are you actually here?"</p>
+
+        <h2 class="sub">True, or not true</h2>
+        <p>
+          Every question the house has asked you so far — every
+          <code>if</code>, every <code>elif</code> — was quietly
+          asking one of two things underneath: <code>True</code>, or
+          <code>False</code>. These are called <code>booleans</code>,
+          and they're the simplest values in the language: a thing is
+          either the case, or it isn't.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_blades</span> = <span class="bool">True</span>
+<span class="kw">print</span>(<span class="var">has_blades</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          Comparisons — <code>==</code> for "is equal to," <code>!=</code>
+          for "is not equal to," along with <code>&gt;</code>,
+          <code>&lt;</code>, <code>&gt;=</code>, and <code>&lt;=</code> —
+          all produce a boolean too, once the house checks them.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">roots</span> = <span class="var">0</span>
+<span class="kw">print</span>(<span class="var">roots</span> == <span class="var">0</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          And when you need to ask more than one true-or-false
+          question at once, three small words combine them:
+          <code>and</code> requires both sides to be true,
+          <code>or</code> only needs one, and <code>not</code> flips
+          whatever follows it.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_blades</span> = <span class="bool">True</span>
+<span class="var">has_bow</span> = <span class="bool">False</span>
+<span class="kw">print</span>(<span class="var">has_blades</span> <span class="kw">and</span> <span class="var">has_bow</span>)
+<span class="kw">print</span>(<span class="var">has_blades</span> <span class="kw">or</span> <span class="var">has_bow</span>)
+<span class="kw">print</span>(<span class="kw">not</span> <span class="var">has_bow</span>)</div>
+          <div class="out">False
+True
+True</div>
+        </div>
+
+        <div class="divider"><span>Briar waits</span></div>
+
+        <div class="choices" id="earth-choices">
+          <button class="choice-btn" data-choice="home">"I'm trying to get home."</button>
+          <button class="choice-btn" data-choice="secret">"It's not your concern."</button>
+        </div>
+
+        <div class="response" id="earth-response" hidden>
+          <p class="voice" id="earth-response-text"></p>
+          <a class="continue-link" href="lesson17.html?path=earth">Continue &rarr;</a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson15.html?path=earth">&larr; The Rune on the Twin Blades</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>A Question, Finally</h1>
+        <span class="tag">with Rhys</span>
+        <p class="lede">
+          Rhys leans against the stand where the glaive had been
+          resting, arms crossed, studying you with the first fully
+          serious expression you've seen on him.
+        </p>
+        <p class="voice">"Humor me. Why are you actually here?"</p>
+
+        <h2 class="sub">True, or not true</h2>
+        <p>
+          Every question the house has asked you so far — every
+          <code>if</code>, every <code>elif</code> — was quietly
+          asking one of two things underneath: <code>True</code>, or
+          <code>False</code>. These are called <code>booleans</code>,
+          and they're the simplest values in the language: a thing is
+          either the case, or it isn't.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_glaive</span> = <span class="bool">True</span>
+<span class="kw">print</span>(<span class="var">has_glaive</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          Comparisons — <code>==</code> for "is equal to," <code>!=</code>
+          for "is not equal to," along with <code>&gt;</code>,
+          <code>&lt;</code>, <code>&gt;=</code>, and <code>&lt;=</code> —
+          all produce a boolean too, once the house checks them.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">whispers</span> = <span class="var">0</span>
+<span class="kw">print</span>(<span class="var">whispers</span> == <span class="var">0</span>)</div>
+          <div class="out">True</div>
+        </div>
+        <p>
+          And when you need to ask more than one true-or-false
+          question at once, three small words combine them:
+          <code>and</code> requires both sides to be true,
+          <code>or</code> only needs one, and <code>not</code> flips
+          whatever follows it.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">has_glaive</span> = <span class="bool">True</span>
+<span class="var">has_bow</span> = <span class="bool">False</span>
+<span class="kw">print</span>(<span class="var">has_glaive</span> <span class="kw">and</span> <span class="var">has_bow</span>)
+<span class="kw">print</span>(<span class="var">has_glaive</span> <span class="kw">or</span> <span class="var">has_bow</span>)
+<span class="kw">print</span>(<span class="kw">not</span> <span class="var">has_bow</span>)</div>
+          <div class="out">False
+True
+True</div>
+        </div>
+
+        <div class="divider"><span>Rhys waits</span></div>
+
+        <div class="choices" id="shadow-choices">
+          <button class="choice-btn" data-choice="home">"I'm trying to get home."</button>
+          <button class="choice-btn" data-choice="secret">"It's not your concern."</button>
+        </div>
+
+        <div class="response" id="shadow-response" hidden>
+          <p class="voice" id="shadow-response-text"></p>
+          <a class="continue-link" href="lesson17.html?path=shadow">Continue &rarr;</a>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson15.html?path=shadow">&larr; The Rune on the Glaive</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XVI — A Question, Finally',
+    water: 'Chapter XVI — A Question, Finally',
+    earth: 'Chapter XVI — A Question, Finally',
+    shadow: 'Chapter XVI — A Question, Finally'
+  };
+
+  const responses = {
+    fire: {
+      home: '"Trying to get home?" Ember\'s shoulders ease. "Yeah. Okay. That I can understand. I\'ll help however I can."',
+      secret: '"Fine. Keep your secrets." Ember shrugs, though something in her expression stays curious anyway.'
+    },
+    water: {
+      home: '"Home." Lorelei\'s smile comes back, softer than before. "That\'s a fair thing to want. I hope we can help you find your way there."',
+      secret: '"Fine. Keep your secrets." Lorelei doesn\'t push — she just watches you a moment longer before letting it go.'
+    },
+    earth: {
+      home: 'Briar considers that for a long moment, then nods once. "That\'s... a reasonable answer. Noted."',
+      secret: '"Fine. Keep your secrets." Briar\'s expression doesn\'t change, but something in his posture closes off, just slightly.'
+    },
+    shadow: {
+      home: '"How refreshingly honest." Rhys\'s smile returns, sharper than before. "Very well. I\'ll allow it."',
+      secret: '"Fine. Keep your secrets." Rhys\'s smile doesn\'t waver, though his eyes stay on you a beat too long.'
+    }
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+
+    const choicesEl = document.getElementById(path + '-choices');
+    const responseEl = document.getElementById(path + '-response');
+    const responseTextEl = document.getElementById(path + '-response-text');
+
+    choicesEl.querySelectorAll('.choice-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const choice = btn.getAttribute('data-choice');
+        responseTextEl.textContent = responses[path][choice];
+        choicesEl.hidden = true;
+        responseEl.hidden = false;
+      });
+    });
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
