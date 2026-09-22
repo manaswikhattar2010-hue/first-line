@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .rune {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    text-align: center;
+    color: var(--ink);
+    background: rgba(74,47,34,0.06);
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 18px 22px;
+    margin: 4px 0 22px;
+    line-height: 1.6;
+  }
+  .rune::before, .rune::after {
+    content: "\2726";
+    display: block;
+    color: var(--accent, var(--gold));
+    font-size: 13px;
+    margin-bottom: 6px;
+  }
+  .rune::after { margin-bottom: 0; margin-top: 6px; }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XV</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Weapons</h1>
+        <p>You've arrived here without a path to follow. Choose the weapon you carry, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson15.html?path=fire">Ruby &mdash; the bow</a>
+          <a href="lesson15.html?path=water">Sapphire &mdash; the catalyst</a>
+          <a href="lesson15.html?path=earth">Emerald &mdash; the twin blades</a>
+          <a href="lesson15.html?path=shadow">Amethyst &mdash; the glaive</a>
+        </div>
+      </div>
+
+      <!-- FIRE — the bow -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>The Rune on the Bow</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          You notice it only once the forge-light catches the wood at
+          the right angle — a line of script running the length of
+          the bow's grip, too fine to have been carved by hand. Ember
+          leans in beside you, squinting. "Huh. Never actually read
+          that part."
+        </p>
+
+        <h2 class="sub">Looking things up by name</h2>
+        <p>
+          A list holds things in order, one after another. A
+          <code>dictionary</code> holds things by <em>name</em>
+          instead — a label, called a <code>key</code>, paired with
+          whatever it belongs to, called a <code>value</code>. Written
+          in curly braces, each pair joined by a colon.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">weapon</span> = {<span class="str">"name"</span>: <span class="str">"glaive"</span>, <span class="str">"element"</span>: <span class="str">"shadow"</span>}
+<span class="kw">print</span>(<span class="var">weapon</span>[<span class="str">"element"</span>])</div>
+          <div class="out">shadow</div>
+        </div>
+        <p>
+          Rather than asking for the third thing in a row, like a
+          list, a dictionary lets you ask for the thing named
+          <code>"element"</code> directly — and it hands back whatever
+          was paired with it.
+        </p>
+
+        <p>
+          The rune on your bow won't read itself aloud until it's
+          properly indexed. Here is what it says:
+        </p>
+        <div class="rune">The flames of your continuance will ever burn.</div>
+        <p>
+          Try it yourself. Build a dictionary that holds this rune as
+          one of its values — under any key you'd like to give it —
+          and then access that key to speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="fire-input">Your incantation</label>
+        <textarea id="fire-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='runes = {"bow": "The flames of your continuance will ever burn."}&#10;print(runes["bow"])'></textarea>
+        <div class="run-row"><button id="fire-btn">Read the Rune</button></div>
+        <div class="console" id="fire-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson14.html?path=fire">&larr; The Heart of Sol-Torren</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- WATER — the catalyst -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>The Rune on the Catalyst</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          The words surface slowly along the spellbook's spine, the
+          way ink blooms through wet paper — there, and then gone
+          again, unless you're looking at exactly the right moment.
+          Lorelei tilts her head at it. "That's new. Or maybe it was
+          always there."
+        </p>
+
+        <h2 class="sub">Looking things up by name</h2>
+        <p>
+          A list holds things in order, one after another. A
+          <code>dictionary</code> holds things by <em>name</em>
+          instead — a label, called a <code>key</code>, paired with
+          whatever it belongs to, called a <code>value</code>. Written
+          in curly braces, each pair joined by a colon.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">weapon</span> = {<span class="str">"name"</span>: <span class="str">"catalyst"</span>, <span class="str">"element"</span>: <span class="str">"water"</span>}
+<span class="kw">print</span>(<span class="var">weapon</span>[<span class="str">"element"</span>])</div>
+          <div class="out">water</div>
+        </div>
+        <p>
+          Rather than asking for the third thing in a row, like a
+          list, a dictionary lets you ask for the thing named
+          <code>"element"</code> directly — and it hands back whatever
+          was paired with it.
+        </p>
+
+        <p>
+          The rune on your catalyst won't read itself aloud until it's
+          properly indexed. Here is what it says:
+        </p>
+        <div class="rune">May the blessing of purity keep you.</div>
+        <p>
+          Try it yourself. Build a dictionary that holds this rune as
+          one of its values — under any key you'd like to give it —
+          and then access that key to speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="water-input">Your incantation</label>
+        <textarea id="water-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='runes = {"catalyst": "May the blessing of purity keep you."}&#10;print(runes["catalyst"])'></textarea>
+        <div class="run-row"><button id="water-btn">Read the Rune</button></div>
+        <div class="console" id="water-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson14.html?path=water">&larr; The Heart of Nadir Haven</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — the twin blades -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>The Rune on the Twin Blades</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          It's etched twice, once along each dagger, and once more,
+          larger, along the flat of the silver sword — the same words,
+          three times over, like whoever made them wasn't confident
+          you'd read it the first time. Briar traces one line of it
+          without quite touching the metal.
+        </p>
+
+        <h2 class="sub">Looking things up by name</h2>
+        <p>
+          A list holds things in order, one after another. A
+          <code>dictionary</code> holds things by <em>name</em>
+          instead — a label, called a <code>key</code>, paired with
+          whatever it belongs to, called a <code>value</code>. Written
+          in curly braces, each pair joined by a colon.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">weapon</span> = {<span class="str">"name"</span>: <span class="str">"twin blades"</span>, <span class="str">"element"</span>: <span class="str">"earth"</span>}
+<span class="kw">print</span>(<span class="var">weapon</span>[<span class="str">"element"</span>])</div>
+          <div class="out">earth</div>
+        </div>
+        <p>
+          Rather than asking for the third thing in a row, like a
+          list, a dictionary lets you ask for the thing named
+          <code>"element"</code> directly — and it hands back whatever
+          was paired with it.
+        </p>
+
+        <p>
+          The rune on your blades won't read itself aloud until it's
+          properly indexed. Here is what it says:
+        </p>
+        <div class="rune">The blessing of the Fair Folk will guide you, keep your twins close, as they will you.</div>
+        <p>
+          Try it yourself. Build a dictionary that holds this rune as
+          one of its values — under any key you'd like to give it —
+          and then access that key to speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="earth-input">Your incantation</label>
+        <textarea id="earth-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='runes = {"blades": "The blessing of the Fair Folk will guide you, keep your twins close, as they will you."}&#10;print(runes["blades"])'></textarea>
+        <div class="run-row"><button id="earth-btn">Read the Rune</button></div>
+        <div class="console" id="earth-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson14.html?path=earth">&larr; The Heart of Noxglen</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — the glaive -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>The Rune on the Glaive</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          The script runs the length of the curve, visible only
+          because it's slightly darker than the black metal around
+          it — darker than should be possible, honestly. Rhys studies
+          it with more interest than he's shown anything else so far.
+          "Well. That's ominous."
+        </p>
+
+        <h2 class="sub">Looking things up by name</h2>
+        <p>
+          A list holds things in order, one after another. A
+          <code>dictionary</code> holds things by <em>name</em>
+          instead — a label, called a <code>key</code>, paired with
+          whatever it belongs to, called a <code>value</code>. Written
+          in curly braces, each pair joined by a colon.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">weapon</span> = {<span class="str">"name"</span>: <span class="str">"glaive"</span>, <span class="str">"element"</span>: <span class="str">"shadow"</span>}
+<span class="kw">print</span>(<span class="var">weapon</span>[<span class="str">"element"</span>])</div>
+          <div class="out">shadow</div>
+        </div>
+        <p>
+          Rather than asking for the third thing in a row, like a
+          list, a dictionary lets you ask for the thing named
+          <code>"element"</code> directly — and it hands back whatever
+          was paired with it.
+        </p>
+
+        <p>
+          The rune on your glaive won't read itself aloud until it's
+          properly indexed. Here is what it says:
+        </p>
+        <div class="rune">Shadows reign over your lightest moment.</div>
+        <p>
+          Try it yourself. Build a dictionary that holds this rune as
+          one of its values — under any key you'd like to give it —
+          and then access that key to speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="shadow-input">Your incantation</label>
+        <textarea id="shadow-input" autocomplete="off" spellcheck="false" rows="4"
+          placeholder='runes = {"glaive": "Shadows reign over your lightest moment."}&#10;print(runes["glaive"])'></textarea>
+        <div class="run-row"><button id="shadow-btn">Read the Rune</button></div>
+        <div class="console" id="shadow-console"></div>
+
+        <div class="nav-row">
+          <a href="lesson14.html?path=shadow">&larr; The Heart of Nocturna</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  function normalize(str) {
+    return str.toLowerCase().replace(/['"]/g, '').replace(/\s+/g, ' ').trim();
+  }
+
+  // Open-ended shape check: a real dict literal (name = { "key": "value", ... })
+  // and a bracket access into that same name (name[...]), used inside a print.
+  // The rune text itself must appear somewhere in the code, so the reader is
+  // genuinely reading their own rune rather than an unrelated dictionary.
+  function checkRune(raw, runeSnippet) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+    const joined = lines.join('\n');
+
+    let dictName = null;
+    for (const l of lines) {
+      const m = l.trim().match(/^([A-Za-z_]\w*)\s*=\s*\{.*:.*\}\s*$/);
+      if (m) { dictName = m[1]; break; }
+    }
+
+    if (!dictName) {
+      if (!joined.includes('{') || !joined.includes('}')) return { ok: false, code: 'no-braces' };
+      if (!joined.includes(':')) return { ok: false, code: 'no-colon' };
+      return { ok: false, code: 'bad-shape' };
+    }
+
+    const accessPattern = new RegExp('(^|[^\\w])' + dictName + '\\s*\\[');
+    const hasAccess = lines.some((l) => accessPattern.test(l) && !/^\s*\w+\s*=\s*\{/.test(l.trim()));
+    if (!hasAccess) return { ok: false, code: 'no-access' };
+
+    const hasPrint = lines.some((l) => /^print\s*\(/.test(l.trim()) || /print\s*\(\s*\w+\s*\[/.test(l));
+    if (!hasPrint) return { ok: false, code: 'no-print' };
+
+    if (!normalize(joined).includes(normalize(runeSnippet))) return { ok: false, code: 'wrong-rune' };
+
+    return { ok: true };
+  }
+
+  function wire(prefix, rune, messages) {
+    const input = document.getElementById(prefix + '-input');
+    const button = document.getElementById(prefix + '-btn');
+    const consoleEl = document.getElementById(prefix + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkRune(input.value, rune);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-braces': 'A dictionary needs curly braces holding what\'s inside it.',
+        'no-colon': 'Each entry needs a colon joining its key to its value, like "key": "value".',
+        'bad-shape': 'Check the shape of your dictionary — a name, an equals sign, and curly braces with at least one "key": "value" pair.',
+        'no-access': 'You\'ve built the dictionary, but never asked it for anything. Try accessing it with square brackets, like runes["..."].',
+        'no-print': 'The rune is indexed, but never spoken aloud — wrap the access in print().',
+        'wrong-rune': 'That doesn\'t look like the rune actually carved into your weapon. Check the words closely.'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XV — The Rune on the Bow',
+    water: 'Chapter XV — The Rune on the Catalyst',
+    earth: 'Chapter XV — The Rune on the Twin Blades',
+    shadow: 'Chapter XV — The Rune on the Glaive'
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+
+  wire('fire', 'The flames of your continuance will ever burn.', {
+    empty: 'The bow stays silent. Write something first.',
+    success: 'The words rise off the grip like heat off a coal, warm against your hand as you finish reading them.'
+  });
+  wire('water', 'May the blessing of purity keep you.', {
+    empty: 'The catalyst stays silent. Write something first.',
+    success: 'The words settle into the cover like ink into water, and the spellbook feels heavier — fuller — in your hands.'
+  });
+  wire('earth', 'The blessing of the Fair Folk will guide you, keep your twins close, as they will you.', {
+    empty: 'The blades stay silent. Write something first.',
+    success: 'The words hum through the metal, the daggers and sword all sounding the same low note for just a moment.'
+  });
+  wire('shadow', 'Shadows reign over your lightest moment.', {
+    empty: 'The glaive stays silent. Write something first.',
+    success: 'The words seem to darken the room slightly as they\'re read, the glaive drinking in what little light was left.'
+  });
+</script>
+</body>
+</html>
