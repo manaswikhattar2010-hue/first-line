@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XIX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .choices {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+  .choice-btn {
+    display: block;
+    width: 100%;
+    text-align: left;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16.5px;
+    color: var(--leather);
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    border: 1px solid var(--page-edge);
+    border-left: 4px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 14px 16px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .choice-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -14px rgba(0,0,0,0.35);
+  }
+  .choice-btn:active { transform: translateY(0); }
+
+  .reveal { margin-top: 4px; }
+
+  .destinations {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin: 4px 0 8px;
+  }
+  .destination {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    border: 1px solid var(--page-edge);
+    border-left: 4px solid var(--accent, var(--gold));
+    border-radius: 8px;
+    padding: 16px 18px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.35), rgba(255,255,255,0));
+    transition: border-color 0.15s ease, transform 0.1s ease, box-shadow 0.15s ease;
+  }
+  .destination:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 10px 24px -14px rgba(0,0,0,0.35);
+  }
+  .destination:active { transform: translateY(0); }
+  .destination .name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 19px;
+    color: var(--leather);
+    margin-bottom: 4px;
+  }
+  .destination p { font-size: 15px; margin: 0; color: var(--ink-dim); max-width: none; }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XIX</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Confessions</h1>
+        <p>You've arrived here without a path to follow. Choose the court you're in, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson19.html?path=fire">Ruby &mdash; with Lilith</a>
+          <a href="lesson19.html?path=water">Sapphire &mdash; with Sylvia</a>
+          <a href="lesson19.html?path=earth">Emerald &mdash; with Celeste</a>
+          <a href="lesson19.html?path=shadow">Amethyst &mdash; with Crave</a>
+        </div>
+      </div>
+
+      <!-- FIRE — Lilith -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>The Way Home</h1>
+        <span class="tag">with Lilith</span>
+        <p class="lede">
+          Lilith watches you for a while before she finally asks it —
+          not unkindly, just directly, the way she seems to do
+          everything.
+        </p>
+        <p class="voice">"So. Why have you actually come here?"</p>
+
+        <div class="choices" id="fire-choices">
+          <button class="choice-btn" data-choice="confess">"I'm trying to get home. Can you help me?"</button>
+          <button class="choice-btn" data-choice="decline">"It's not your concern."</button>
+        </div>
+
+        <div class="reveal" id="fire-reveal" hidden>
+          <p class="voice" id="fire-response-text"></p>
+
+          <h2 class="sub">Turning words into numbers</h2>
+          <p>
+            Lilith counts something out on her fingers before she
+            answers properly — and when the house counts, it needs a
+            true number to work with, not just the shape of one. This
+            is <code>type conversion</code>: turning a value from one
+            kind into another, like <code>int()</code> to make
+            something a number, or <code>str()</code> to make it words
+            again.
+          </p>
+          <div class="spellbook">
+            <span class="label">From the spellbook:</span>
+            <div><span class="var">pearls_needed</span> = <span class="str">"4"</span>
+<span class="var">pearls_needed</span> = <span class="kw">int</span>(<span class="var">pearls_needed</span>)
+<span class="kw">print</span>(<span class="var">pearls_needed</span> + <span class="var">1</span>)</div>
+            <div class="out">5</div>
+          </div>
+          <p>
+            Written as <code>"4"</code>, it's just text — the house
+            can't add anything to it. Converted with <code>int()</code>,
+            it becomes an actual number, one that can be counted,
+            compared, added to.
+          </p>
+
+          <p class="voice">
+            "What you need," Lilith says, "isn't something I can just
+            hand you. There's an old working bound to you — a tether
+            keeping you here. Break it, and you go home. To break it,
+            you'll need four broach pearls. Find all four, and the
+            spell unravels."
+          </p>
+
+          <div class="divider"><span>where to look</span></div>
+          <p>Lilith thinks for a moment, then offers you two places to start.</p>
+          <div class="destinations">
+            <a class="destination" href="lesson20.html?path=fire&amp;dest=ridge">
+              <div class="name">Diamond Ridge</div>
+              <p>"Cold, high up, and picked over by half the realm already. But pearls do turn up there."</p>
+            </a>
+            <a class="destination" href="lesson20.html?path=fire&amp;dest=forest">
+              <div class="name">Krahn Forest</div>
+              <p>"Denser, stranger, and a longer walk. Fewer people bother looking there — which might work in your favor."</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson18.html?path=fire">&larr; Phlograna</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- WATER — Sylvia -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>The Way Home</h1>
+        <span class="tag">with Sylvia</span>
+        <p class="lede">
+          Sylvia leads you and Virelia somewhere warmer than the ice
+          field, and once you're settled, she finally asks the
+          question she's clearly been holding onto since the moment
+          she recognized Virelia.
+        </p>
+        <p class="voice">"So. Why have you actually come here?"</p>
+
+        <div class="choices" id="water-choices">
+          <button class="choice-btn" data-choice="confess">"I'm trying to get home. Can you help me?"</button>
+          <button class="choice-btn" data-choice="decline">"It's not your concern."</button>
+        </div>
+
+        <div class="reveal" id="water-reveal" hidden>
+          <p class="voice" id="water-response-text"></p>
+
+          <h2 class="sub">Turning words into numbers</h2>
+          <p>
+            Sylvia counts something out under her breath before she
+            answers properly — and when the house counts, it needs a
+            true number to work with, not just the shape of one. This
+            is <code>type conversion</code>: turning a value from one
+            kind into another, like <code>int()</code> to make
+            something a number, or <code>str()</code> to make it words
+            again.
+          </p>
+          <div class="spellbook">
+            <span class="label">From the spellbook:</span>
+            <div><span class="var">pearls_needed</span> = <span class="str">"4"</span>
+<span class="var">pearls_needed</span> = <span class="kw">int</span>(<span class="var">pearls_needed</span>)
+<span class="kw">print</span>(<span class="var">pearls_needed</span> + <span class="var">1</span>)</div>
+            <div class="out">5</div>
+          </div>
+          <p>
+            Written as <code>"4"</code>, it's just text — the house
+            can't add anything to it. Converted with <code>int()</code>,
+            it becomes an actual number, one that can be counted,
+            compared, added to.
+          </p>
+
+          <p class="voice">
+            "What you need," Sylvia says, "isn't something I can just
+            hand you. There's an old working bound to you — a tether
+            keeping you here. Break it, and you go home. To break it,
+            you'll need four broach pearls. Find all four, and the
+            spell unravels."
+          </p>
+
+          <div class="divider"><span>where to look</span></div>
+          <p>Sylvia considers for a moment, then offers you two places to start.</p>
+          <div class="destinations">
+            <a class="destination" href="lesson20.html?path=water&amp;dest=ridge">
+              <div class="name">Diamond Ridge</div>
+              <p>"Cold, high up, and picked over by half the realm already. But pearls do turn up there."</p>
+            </a>
+            <a class="destination" href="lesson20.html?path=water&amp;dest=forest">
+              <div class="name">Krahn Forest</div>
+              <p>"Denser, stranger, and a longer walk. Fewer people bother looking there — which might work in your favor."</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson18.html?path=water">&larr; Sneznova</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — Celeste -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>The Way Home</h1>
+        <span class="tag">with Celeste</span>
+        <p class="lede">
+          Celeste doesn't relax exactly, but she does finally lower
+          whatever guard she'd been holding since the gate, enough to
+          actually ask instead of just watching.
+        </p>
+        <p class="voice">"So. Why have you actually come here?"</p>
+
+        <div class="choices" id="earth-choices">
+          <button class="choice-btn" data-choice="confess">"I'm trying to get home. Can you help me?"</button>
+          <button class="choice-btn" data-choice="decline">"It's not your concern."</button>
+        </div>
+
+        <div class="reveal" id="earth-reveal" hidden>
+          <p class="voice" id="earth-response-text"></p>
+
+          <h2 class="sub">Turning words into numbers</h2>
+          <p>
+            Celeste counts something out with precise, deliberate
+            movements before she answers properly — and when the house
+            counts, it needs a true number to work with, not just the
+            shape of one. This is <code>type conversion</code>: turning
+            a value from one kind into another, like <code>int()</code>
+            to make something a number, or <code>str()</code> to make
+            it words again.
+          </p>
+          <div class="spellbook">
+            <span class="label">From the spellbook:</span>
+            <div><span class="var">pearls_needed</span> = <span class="str">"4"</span>
+<span class="var">pearls_needed</span> = <span class="kw">int</span>(<span class="var">pearls_needed</span>)
+<span class="kw">print</span>(<span class="var">pearls_needed</span> + <span class="var">1</span>)</div>
+            <div class="out">5</div>
+          </div>
+          <p>
+            Written as <code>"4"</code>, it's just text — the house
+            can't add anything to it. Converted with <code>int()</code>,
+            it becomes an actual number, one that can be counted,
+            compared, added to.
+          </p>
+
+          <p class="voice">
+            "What you need," Celeste says, "isn't something I can just
+            hand you. There's an old working bound to you — a tether
+            keeping you here. Break it, and you go home. To break it,
+            you'll need four broach pearls. Find all four, and the
+            spell unravels."
+          </p>
+
+          <div class="divider"><span>where to look</span></div>
+          <p>Celeste considers for a moment, then offers you two places to start.</p>
+          <div class="destinations">
+            <a class="destination" href="lesson20.html?path=earth&amp;dest=ridge">
+              <div class="name">Diamond Ridge</div>
+              <p>"Cold, high up, and picked over by half the realm already. But pearls do turn up there."</p>
+            </a>
+            <a class="destination" href="lesson20.html?path=earth&amp;dest=forest">
+              <div class="name">Krahn Forest</div>
+              <p>"Denser, stranger, and a longer walk. Fewer people bother looking there — which might work in your favor."</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson18.html?path=earth">&larr; Krystaline</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — Crave -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>The Way Home</h1>
+        <span class="tag">with Crave</span>
+        <p class="lede">
+          Buer's answer, when it finally comes, is quiet and clipped
+          — a single word of agreement, nothing more, and something in
+          his expression closes off the moment he says it. Crave looks
+          entirely too pleased. Whatever's been decided, no one
+          explains it to you, and somehow that's worse than if they
+          had.
+        </p>
+        <p>
+          Crave turns to you next, easily, like nothing at all has
+          just happened.
+        </p>
+        <p class="voice">"So. Why have you actually come here?"</p>
+
+        <div class="choices" id="shadow-choices">
+          <button class="choice-btn" data-choice="confess">"I'm trying to get home. Can you help me?"</button>
+          <button class="choice-btn" data-choice="decline">"It's not your concern."</button>
+        </div>
+
+        <div class="reveal" id="shadow-reveal" hidden>
+          <p class="voice" id="shadow-response-text"></p>
+
+          <h2 class="sub">Turning words into numbers</h2>
+          <p>
+            Crave counts something out with long, deliberate fingers
+            before he answers properly — and when the house counts, it
+            needs a true number to work with, not just the shape of
+            one. This is <code>type conversion</code>: turning a value
+            from one kind into another, like <code>int()</code> to
+            make something a number, or <code>str()</code> to make it
+            words again.
+          </p>
+          <div class="spellbook">
+            <span class="label">From the spellbook:</span>
+            <div><span class="var">pearls_needed</span> = <span class="str">"4"</span>
+<span class="var">pearls_needed</span> = <span class="kw">int</span>(<span class="var">pearls_needed</span>)
+<span class="kw">print</span>(<span class="var">pearls_needed</span> + <span class="var">1</span>)</div>
+            <div class="out">5</div>
+          </div>
+          <p>
+            Written as <code>"4"</code>, it's just text — the house
+            can't add anything to it. Converted with <code>int()</code>,
+            it becomes an actual number, one that can be counted,
+            compared, added to.
+          </p>
+
+          <p class="voice">
+            "What you need," Crave says, almost fond about it, "isn't
+            something I can just hand you. There's an old working
+            bound to you — a tether keeping you here. Break it, and
+            you go home. To break it, you'll need four broach pearls.
+            Find all four, and the spell unravels."
+          </p>
+
+          <div class="divider"><span>where to look</span></div>
+          <p>Crave smiles, and offers you two places to start.</p>
+          <div class="destinations">
+            <a class="destination" href="lesson20.html?path=shadow&amp;dest=ridge">
+              <div class="name">Diamond Ridge</div>
+              <p>"Cold, high up, and picked over by half the realm already. But pearls do turn up there."</p>
+            </a>
+            <a class="destination" href="lesson20.html?path=shadow&amp;dest=forest">
+              <div class="name">Krahn Forest</div>
+              <p>"Denser, stranger, and a longer walk. Fewer people bother looking there — which might work in your favor."</p>
+            </a>
+          </div>
+        </div>
+
+        <div class="nav-row">
+          <a href="lesson18.html?path=shadow">&larr; Hawthorne</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XIX — The Way Home',
+    water: 'Chapter XIX — The Way Home',
+    earth: 'Chapter XIX — The Way Home',
+    shadow: 'Chapter XIX — The Way Home'
+  };
+
+  const responses = {
+    fire: {
+      confess: '"Home," Lilith repeats, like she\'s turning the word over. "Alright. Let\'s see what I can do about that."',
+      decline: '"Fine. Keep your secrets." Lilith shrugs, unbothered, but doesn\'t quite drop the subject. "Doesn\'t change much, though. I already know you\'re not from around here."'
+    },
+    water: {
+      confess: '"Home." Sylvia\'s expression softens, just slightly. "That I can understand. Let\'s see what can be done."',
+      decline: '"Fine. Keep your secrets." Sylvia doesn\'t press, though she watches you a moment longer than strictly necessary. "Doesn\'t change much. I already know you\'re not from around here."'
+    },
+    earth: {
+      confess: 'Celeste studies you for a long moment, then nods once, like that answer settles something. "Home. Understood. Let\'s see what can be done."',
+      decline: '"Fine. Keep your secrets." Celeste\'s expression doesn\'t change. "Doesn\'t change much. I already know you\'re not from around here."'
+    },
+    shadow: {
+      confess: '"Home," Crave says, delighted by the word for reasons you can\'t quite place. "How sentimental. Let\'s see what can be done."',
+      decline: '"Fine. Keep your secrets." Crave\'s smile doesn\'t waver in the slightest. "Doesn\'t change much. I already know you\'re not from around here."'
+    }
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+
+    const choicesEl = document.getElementById(path + '-choices');
+    const revealEl = document.getElementById(path + '-reveal');
+    const responseTextEl = document.getElementById(path + '-response-text');
+
+    choicesEl.querySelectorAll('.choice-btn').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const choice = btn.getAttribute('data-choice');
+        responseTextEl.textContent = responses[path][choice];
+        choicesEl.hidden = true;
+        revealEl.hidden = false;
+      });
+    });
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
