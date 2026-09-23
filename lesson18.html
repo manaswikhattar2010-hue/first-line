@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XVIII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--leather-dark);
+    background-image:
+      radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%),
+      radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink);
+    font-family: var(--font-body);
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 44px 18px;
+  }
+
+  .book {
+    width: 100%;
+    max-width: 600px;
+    background: var(--parchment);
+    background-image:
+      radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%),
+      radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge);
+    border-radius: 3px;
+    box-shadow:
+      0 2px 0 var(--page-edge),
+      0 4px 0 var(--parchment-dark),
+      0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+
+  .chapter-bar {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 18px 30px;
+    background: var(--leather);
+    border-bottom: 3px double var(--gold);
+  }
+  .chapter-bar .roman {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 15px;
+    letter-spacing: 1.5px;
+    color: var(--parchment-dark);
+  }
+  .chapter-bar .flicker {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+  }
+
+  .content { padding: 34px 34px 30px; }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 32px;
+    line-height: 1.15;
+    margin: 0 0 6px;
+    color: var(--leather);
+  }
+  h2.sub {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 20px;
+    margin: 26px 0 6px;
+    color: var(--leather);
+  }
+
+  .tag {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: var(--accent, var(--gold));
+    margin-bottom: 16px;
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 1.7;
+    color: var(--ink);
+    margin: 0 0 16px;
+    max-width: 56ch;
+  }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+
+  .voice {
+    border-left: 3px solid var(--accent, var(--gold));
+    padding-left: 14px;
+    font-style: italic;
+    color: var(--ink-dim);
+    font-size: 17px;
+    margin: 0 0 18px;
+    max-width: 54ch;
+  }
+
+  code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--flame);
+    background: rgba(74,47,34,0.07);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  .spellbook {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    background: var(--leather-dark);
+    color: #e9dcb8;
+    border: 1px solid #1c110b;
+    border-top: 3px solid var(--accent, var(--gold));
+    border-radius: 6px;
+    padding: 14px 18px;
+    margin: 10px 0 22px;
+    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre;
+    overflow-x: auto;
+  }
+  .spellbook .label {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 14px;
+    color: #c7a862;
+    margin-bottom: 8px;
+    display: block;
+    white-space: normal;
+  }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+
+  label {
+    display: block;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--ink-dim);
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    font-family: var(--font-mono);
+    font-size: 15px;
+    background: #faf5e6;
+    border: 1px solid var(--page-edge);
+    color: var(--ink);
+    padding: 12px 14px;
+    border-radius: 5px;
+    outline: none;
+    resize: vertical;
+    line-height: 1.5;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus {
+    border-color: var(--accent, var(--gold));
+    box-shadow: 0 0 0 3px rgba(156,122,46,0.15);
+  }
+
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+
+  button {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.3px;
+    background: var(--leather);
+    color: #f1e6c8;
+    border: 1px solid var(--leather-dark);
+    padding: 0 22px;
+    height: 42px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  .console {
+    margin-top: 20px;
+    min-height: 26px;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 17px;
+    line-height: 1.6;
+  }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .console.flash { animation: flash-in 0.3s ease; }
+  }
+  @keyframes flash-in {
+    from { opacity: 0; transform: translateY(-3px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .divider {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 28px 0 20px;
+    color: var(--accent, var(--gold));
+  }
+  .divider::before, .divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: var(--page-edge);
+  }
+  .divider span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 16px;
+  }
+
+  .nav-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 30px;
+    padding-top: 18px;
+    border-top: 1px solid var(--page-edge);
+    font-family: var(--font-display);
+    font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--leather);
+    text-decoration: none;
+    border: 1px solid var(--page-edge);
+    border-radius: 8px;
+    padding: 12px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XVIII</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Four Courts</h1>
+        <p>You've arrived here without a path to follow. Choose the court you've reached, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson18.html?path=fire">Ruby &mdash; Phlograna, the Lava Court</a>
+          <a href="lesson18.html?path=water">Sapphire &mdash; Sneznova, the Ice Court</a>
+          <a href="lesson18.html?path=earth">Emerald &mdash; Krystaline, the Light Court</a>
+          <a href="lesson18.html?path=shadow">Amethyst &mdash; Hawthorne, the Nightmare Court</a>
+        </div>
+      </div>
+
+      <!-- FIRE — Phlograna, Lilith -->
+      <div id="fire" hidden style="--accent: var(--ruby)">
+        <h1>Phlograna</h1>
+        <span class="tag">the Lava Court &middot; land of the Vulcans</span>
+        <p class="lede">
+          The border crossing alone nearly takes your breath away —
+          rivers of molten stone winding between black glass spires,
+          heat that should be unbearable and somehow isn't. A woman
+          with skin like cooling embers meets you before you've even
+          finished staring, and her face breaks into a grin the moment
+          she spots Ember beside you.
+        </p>
+        <p class="voice">"Ember! It's been ages." She barely glances at Autumn before pulling Ember into a hug. "And who's this you've brought me?"</p>
+        <p>
+          Autumn clears her throat, faintly put out at being skipped
+          over, but Lilith's attention is already on you, warm and
+          curious rather than suspicious.
+        </p>
+        <p class="voice">"Any friend of Ember's eats at my table," Lilith says. "Come in, come in — mind the floor near the east wall, it's still a bit temperamental."</p>
+
+        <h2 class="sub">When a spell might fail</h2>
+        <p>
+          The floor of Phlograna doesn't always cooperate — sometimes
+          a spell just doesn't work, and the house needs a way to
+          handle that without collapsing entirely. This is
+          <code>try</code> and <code>except</code>: you attempt
+          something risky inside <code>try</code>, and if it fails,
+          <code>except</code> catches the failure and lets you respond
+          instead.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">try</span>:
+    <span class="var">age</span> = <span class="kw">int</span>(<span class="str">"very old"</span>)
+    <span class="kw">print</span>(<span class="var">age</span>)
+<span class="kw">except</span>:
+    <span class="kw">print</span>(<span class="str">"That wasn't a number."</span>)</div>
+          <div class="out">That wasn't a number.</div>
+        </div>
+        <p>
+          Without <code>try</code>, a failure like that would stop the
+          spell cold. With it, the house simply moves to
+          <code>except</code> instead, and keeps going.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell that might fail, wrapped in
+          <code>try</code>, with an <code>except</code> beneath it to
+          catch it if it does.
+        </p>
+        <label for="fire-input">Your incantation</label>
+        <textarea id="fire-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='try:&#10;    print("...")&#10;except:&#10;    print("...")'></textarea>
+        <div class="run-row"><button id="fire-btn">Test the Floor</button></div>
+        <div class="console" id="fire-console"></div>
+
+        <div class="divider"><span>at Lilith's table</span></div>
+        <p>
+          Lilith listens to why you've come with genuine interest,
+          nodding along, occasionally glancing at Ember for
+          confirmation rather than Autumn. Whatever's between her and
+          Autumn, it clearly isn't unfriendliness — just distance. You
+          get the sense this isn't the last you'll hear of it.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson17.html?path=fire">&larr; Asking Autumn</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- WATER — Sneznova, Sylvia -->
+      <div id="water" hidden style="--accent: var(--sapphire)">
+        <h1>Sneznova</h1>
+        <span class="tag">the Ice Court &middot; land of the Frost Elves</span>
+        <p class="lede">
+          You don't even see it coming — one moment you're crossing
+          into a field of blue-white frost, and the next, ice has
+          closed around both your wrists and Virelia's, hard and
+          absolute. A tall figure steps out from between the frozen
+          trees, unhurried, studying you both like specimens.
+        </p>
+        <p class="voice">"Trespassers," the frost elf says flatly. "In Sneznova, that's rarely a mistake anyone makes twice."</p>
+        <p>
+          Then her eyes land on Virelia properly, and something in her
+          posture shifts entirely.
+        </p>
+        <p class="voice">"...A siren?" She steps closer, ice already loosening around Virelia's wrists. "Why didn't you say so. Our courts have kept peace for longer than I've been alive — you should have led with that."</p>
+
+        <h2 class="sub">When a spell might fail</h2>
+        <p>
+          Ice doesn't always break the way you expect it to — sometimes
+          a spell just doesn't work, and the house needs a way to
+          handle that without collapsing entirely. This is
+          <code>try</code> and <code>except</code>: you attempt
+          something risky inside <code>try</code>, and if it fails,
+          <code>except</code> catches the failure and lets you respond
+          instead.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">try</span>:
+    <span class="var">grip</span> = <span class="var">warmth</span> / <span class="var">0</span>
+<span class="kw">except</span>:
+    <span class="kw">print</span>(<span class="str">"The ice holds firm."</span>)</div>
+          <div class="out">The ice holds firm.</div>
+        </div>
+        <p>
+          Without <code>try</code>, a failure like that would stop the
+          spell cold. With it, the house simply moves to
+          <code>except</code> instead, and keeps going.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell that might fail, wrapped in
+          <code>try</code>, with an <code>except</code> beneath it to
+          catch it if it does.
+        </p>
+        <label for="water-input">Your incantation</label>
+        <textarea id="water-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='try:&#10;    print("...")&#10;except:&#10;    print("...")'></textarea>
+        <div class="run-row"><button id="water-btn">Test the Ice</button></div>
+        <div class="console" id="water-console"></div>
+
+        <div class="divider"><span>Sylvia's apology</span></div>
+        <p>
+          The ice at your own wrists melts a moment later, almost as
+          an afterthought. "Sylvia," the frost elf offers, by way of
+          introduction. "Sorry about that. Standard procedure, but I
+          should've looked more carefully before I froze first and
+          asked questions second."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson17.html?path=water">&larr; Asking Virelia</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- EARTH — Krystaline, Celeste -->
+      <div id="earth" hidden style="--accent: var(--emerald)">
+        <h1>Krystaline</h1>
+        <span class="tag">the Light Court &middot; land of the Valkyrie</span>
+        <p class="lede">
+          The light here doesn't come from any sun you recognize — it
+          simply exists, even, shadowless, faintly uncomfortable in a
+          way you can't quite name. A woman in pale armor blocks the
+          path before you've gone more than a few steps into it,
+          wings half-spread, expression carved from something colder
+          than the metal she's wearing.
+        </p>
+        <p class="voice">"State your purpose," she says, "and choose your next words carefully. I don't extend patience twice."</p>
+        <p>
+          Aspen answers for you, calm as ever, but Celeste's eyes stay
+          fixed on you the entire time he speaks — like she's
+          measuring something in you that has nothing to do with
+          anything he's actually saying.
+        </p>
+
+        <h2 class="sub">When a spell might fail</h2>
+        <p>
+          Krystaline's light doesn't forgive a wasted working —
+          sometimes a spell just doesn't work, and the house needs a
+          way to handle that without collapsing entirely. This is
+          <code>try</code> and <code>except</code>: you attempt
+          something risky inside <code>try</code>, and if it fails,
+          <code>except</code> catches the failure and lets you respond
+          instead.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">try</span>:
+    <span class="var">trust</span> = <span class="kw">int</span>(<span class="str">"none yet"</span>)
+<span class="kw">except</span>:
+    <span class="kw">print</span>(<span class="str">"Celeste is still watching."</span>)</div>
+          <div class="out">Celeste is still watching.</div>
+        </div>
+        <p>
+          Without <code>try</code>, a failure like that would stop the
+          spell cold. With it, the house simply moves to
+          <code>except</code> instead, and keeps going.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell that might fail, wrapped in
+          <code>try</code>, with an <code>except</code> beneath it to
+          catch it if it does.
+        </p>
+        <label for="earth-input">Your incantation</label>
+        <textarea id="earth-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='try:&#10;    print("...")&#10;except:&#10;    print("...")'></textarea>
+        <div class="run-row"><button id="earth-btn">Hold Your Ground</button></div>
+        <div class="console" id="earth-console"></div>
+
+        <div class="divider"><span>Celeste's verdict</span></div>
+        <p>
+          Whatever she's looking for, she doesn't say she's found it.
+          Celeste steps aside, but only just, her eyes never quite
+          leaving you. "You may enter," she says. "Whether you'll be
+          permitted to stay is another question entirely."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson17.html?path=earth">&larr; Asking Aspen</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- SHADOW — Hawthorne, Crave -->
+      <div id="shadow" hidden style="--accent: var(--amethyst)">
+        <h1>Hawthorne</h1>
+        <span class="tag">the Nightmare Court &middot; land of the Ghouls</span>
+        <p class="lede">
+          Hawthorne doesn't announce itself so much as arrive around
+          you — one moment there's a road, and the next there's a
+          court built from something that looks like bone and
+          remembers being alive. A gaunt figure unfolds itself from
+          the shadows near the gate, too many joints bending in ways
+          that make you look away on instinct.
+        </p>
+        <p class="voice">"Buer." The ghoul's voice is dry, delighted. "You brought me a visitor. How thoughtful."</p>
+        <p class="voice">"Crave," Buer says, with none of his usual charm. "I need your help. You know the terms."</p>
+        <p>
+          Crave's attention slides toward you, slow and deliberate,
+          before returning to Buer entirely.
+        </p>
+        <p class="voice">"I do. An offering, Buer. A human body, for my trouble. You know I don't work for free — you brought exactly the sort of thing I like best, didn't you."</p>
+        <p>
+          Buer doesn't answer right away. You don't like how long the
+          silence lasts.
+        </p>
+
+        <h2 class="sub">When a spell might fail</h2>
+        <p>
+          Hawthorne doesn't tolerate careless workings — sometimes a
+          spell just doesn't work, and the house needs a way to handle
+          that without collapsing entirely. This is <code>try</code>
+          and <code>except</code>: you attempt something risky inside
+          <code>try</code>, and if it fails, <code>except</code>
+          catches the failure and lets you respond instead.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">try</span>:
+    <span class="var">escape</span> = <span class="var">plan</span> / <span class="var">0</span>
+<span class="kw">except</span>:
+    <span class="kw">print</span>(<span class="str">"There's no way out of this yet."</span>)</div>
+          <div class="out">There's no way out of this yet.</div>
+        </div>
+        <p>
+          Without <code>try</code>, a failure like that would stop the
+          spell cold. With it, the house simply moves to
+          <code>except</code> instead, and keeps going.
+        </p>
+
+        <p>
+          Try it yourself. Write a spell that might fail, wrapped in
+          <code>try</code>, with an <code>except</code> beneath it to
+          catch it if it does.
+        </p>
+        <label for="shadow-input">Your incantation</label>
+        <textarea id="shadow-input" autocomplete="off" spellcheck="false" rows="5"
+          placeholder='try:&#10;    print("...")&#10;except:&#10;    print("...")'></textarea>
+        <div class="run-row"><button id="shadow-btn">Steady Yourself</button></div>
+        <div class="console" id="shadow-console"></div>
+
+        <div class="divider"><span>the silence holds</span></div>
+        <p>
+          Buer still hasn't answered. Crave waits, entirely unbothered,
+          the way something patient always waits when it already
+          suspects how this ends.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson17.html?path=shadow">&larr; Asking Buer</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  function parseBlocks(raw) {
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+    const blocks = [];
+    let i = 0;
+    while (i < lines.length) {
+      if (lines[i].trim().length === 0) { i++; continue; }
+      if (/^(\s)/.test(lines[i])) { i++; continue; }
+      const header = lines[i].trim().replace(/\s+/g, ' ');
+      let j = i + 1;
+      while (j < lines.length && lines[j].trim().length === 0) j++;
+      const bodyRaw = j < lines.length ? lines[j] : '';
+      const bodyIndented = /^(\s{2,}|\t)/.test(bodyRaw);
+      blocks.push({ header, bodyIndented });
+      i = j + 1;
+    }
+    return blocks;
+  }
+
+  // Open-ended check: a real try: block with an indented body, followed
+  // later by a real except (...): block with its own indented body.
+  // What's inside either block is entirely free.
+  function checkTryExcept(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const blocks = parseBlocks(raw);
+
+    const tryIdx = blocks.findIndex((b) => /^try\s*:$/.test(b.header));
+    if (tryIdx === -1) return { ok: false, code: 'no-try' };
+    if (!blocks[tryIdx].bodyIndented) return { ok: false, code: 'try-not-indented' };
+
+    const exceptIdx = blocks.findIndex((b, i) => i > tryIdx && /^except\b.*:$/.test(b.header));
+    if (exceptIdx === -1) return { ok: false, code: 'no-except' };
+    if (!blocks[exceptIdx].bodyIndented) return { ok: false, code: 'except-not-indented' };
+
+    return { ok: true };
+  }
+
+  function wire(prefix, messages) {
+    const input = document.getElementById(prefix + '-input');
+    const button = document.getElementById(prefix + '-btn');
+    const consoleEl = document.getElementById(prefix + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkTryExcept(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-try': 'Every attempt like this begins with try, on its own line, ending in a colon.',
+        'try-not-indented': 'The line beneath try must be indented, or the house won\'t know what you\'re attempting.',
+        'no-except': 'A try needs an except after it, to catch things if they go wrong.',
+        'except-not-indented': 'The line beneath except must be indented too.'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const titles = {
+    fire: 'Chapter XVIII — Phlograna',
+    water: 'Chapter XVIII — Sneznova',
+    earth: 'Chapter XVIII — Krystaline',
+    shadow: 'Chapter XVIII — Hawthorne'
+  };
+
+  if (['fire', 'water', 'earth', 'shadow'].includes(path)) {
+    document.getElementById(path).hidden = false;
+    document.title = titles[path];
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+
+  wire('fire', {
+    empty: 'The floor stays still. Write something first.',
+    success: 'The floor holds, this time. Lilith doesn\'t even look up from the conversation.'
+  });
+  wire('water', {
+    empty: 'The ice stays still. Write something first.',
+    success: 'The ice groans once, but holds together. Sylvia raises an eyebrow, mildly impressed.'
+  });
+  wire('earth', {
+    empty: 'Celeste is still watching. Write something first.',
+    success: 'Nothing shatters, at least. Celeste\'s expression doesn\'t change, but she doesn\'t stop you either.'
+  });
+  wire('shadow', {
+    empty: 'The silence stretches. Write something first.',
+    success: 'Whatever almost went wrong, doesn\'t. Crave tilts his head, mildly curious about that.'
+  });
+</script>
+</body>
+</html>
