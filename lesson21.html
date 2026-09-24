@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XXI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--leather-dark);
+    background-image: radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%), radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink); font-family: var(--font-body);
+    display: flex; justify-content: center; align-items: flex-start; padding: 44px 18px;
+  }
+  .book {
+    width: 100%; max-width: 600px; background: var(--parchment);
+    background-image: radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge); border-radius: 3px;
+    box-shadow: 0 2px 0 var(--page-edge), 0 4px 0 var(--parchment-dark), 0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+  .chapter-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 18px 30px; background: var(--leather); border-bottom: 3px double var(--gold); }
+  .chapter-bar .roman { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 1.5px; color: var(--parchment-dark); }
+  .chapter-bar .flicker { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; }
+  .content { padding: 34px 34px 30px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.15; margin: 0 0 6px; color: var(--leather); }
+  h2.sub { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 24px 0 6px; color: var(--leather); }
+  .tag { display: block; font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--accent, var(--gold)); margin-bottom: 16px; }
+  p { font-size: 17.5px; line-height: 1.7; color: var(--ink); margin: 0 0 16px; max-width: 56ch; }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+  .voice { border-left: 3px solid var(--accent, var(--gold)); padding-left: 14px; font-style: italic; color: var(--ink-dim); font-size: 16.5px; margin: 0 0 18px; max-width: 54ch; }
+  code { font-family: var(--font-mono); font-size: 0.85em; color: var(--flame); background: rgba(74,47,34,0.07); padding: 1px 5px; border-radius: 3px; }
+  .spellbook {
+    font-family: var(--font-mono); font-size: 13.5px; background: var(--leather-dark); color: #e9dcb8;
+    border: 1px solid #1c110b; border-top: 3px solid var(--accent, var(--gold)); border-radius: 6px;
+    padding: 14px 18px; margin: 10px 0 20px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre; overflow-x: auto;
+  }
+  .spellbook .label { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; margin-bottom: 8px; display: block; white-space: normal; }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+  label { display: block; font-family: var(--font-display); font-style: italic; font-size: 15.5px; color: var(--ink-dim); margin-bottom: 8px; }
+  textarea {
+    width: 100%; font-family: var(--font-mono); font-size: 14.5px; background: #faf5e6;
+    border: 1px solid var(--page-edge); color: var(--ink); padding: 12px 14px; border-radius: 5px;
+    outline: none; resize: vertical; line-height: 1.5; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus { border-color: var(--accent, var(--gold)); box-shadow: 0 0 0 3px rgba(156,122,46,0.15); }
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  button {
+    font-family: var(--font-display); font-weight: 700; font-size: 15.5px; letter-spacing: 0.3px;
+    background: var(--leather); color: #f1e6c8; border: 1px solid var(--leather-dark); padding: 0 22px;
+    height: 40px; border-radius: 5px; cursor: pointer; transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .console { margin-top: 20px; min-height: 26px; font-family: var(--font-display); font-style: italic; font-size: 16.5px; line-height: 1.6; }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+  @media (prefers-reduced-motion: no-preference) { .console.flash { animation: flash-in 0.3s ease; } }
+  @keyframes flash-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px;
+    border-top: 1px solid var(--page-edge); font-family: var(--font-display); font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block; font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--leather);
+    text-decoration: none; border: 1px solid var(--page-edge); border-radius: 8px; padding: 11px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XXI</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path/dest carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Eight Roads</h1>
+        <p>You've arrived here without a path to follow. Choose where you left off, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson21.html?path=fire&dest=ridge">Ruby &mdash; on the road to Nicole</a>
+          <a href="lesson21.html?path=fire&dest=forest">Ruby &mdash; deeper into Krahn Forest</a>
+          <a href="lesson21.html?path=water&dest=ridge">Sapphire &mdash; on the road to Nicole</a>
+          <a href="lesson21.html?path=water&dest=forest">Sapphire &mdash; deeper into Krahn Forest</a>
+          <a href="lesson21.html?path=earth&dest=ridge">Emerald &mdash; on the road to Nicole</a>
+          <a href="lesson21.html?path=earth&dest=forest">Emerald &mdash; deeper into Krahn Forest</a>
+          <a href="lesson21.html?path=shadow&dest=ridge">Amethyst &mdash; on the road to Nicole</a>
+          <a href="lesson21.html?path=shadow&dest=forest">Amethyst &mdash; deeper into Krahn Forest</a>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – RIDGE (Autumn, saddened, ignition) ============ -->
+      <div id="fire-ridge" hidden style="--accent: var(--ruby)">
+        <h1>The Road to Nicole</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          The attack comes from the tree line without warning — a
+          figure in dark leathers, blade already drawn, faster than
+          you have time to properly react to. Autumn moves before you
+          do, and when you glance at her face, it isn't anger you find
+          there. It's something closer to grief.
+        </p>
+        <p class="voice">"Not again," Autumn says, quietly, flame already gathering white-hot in both palms. "I really thought I was done with this."</p>
+        <p>
+          The assassin doesn't flinch from the fire building in front
+          of her — if anything, she looks almost resigned to it.
+          "Evelyn," she offers, like a name might buy her a moment she
+          clearly doesn't expect to get.
+        </p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">plea</span> = (<span class="str">"wait"</span>, <span class="str">"let her speak"</span>)
+<span class="kw">print</span>(<span class="var">plea</span>)</div>
+          <div class="out">('wait', 'let her speak')</div>
+        </div>
+        <p>
+          That's exactly why it fits this moment — something that
+          can't be talked out of what it means, the instant it's
+          spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two things you
+          need Autumn to hear, fixed together, unable to be taken
+          apart — and speak it aloud with <code>print()</code>.
+        </p>
+        <label for="fire-ridge-input">Your incantation</label>
+        <textarea id="fire-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='plea = ("wait", "let her speak")&#10;print(plea)'></textarea>
+        <div class="run-row"><button id="fire-ridge-btn">Stay Her Hand</button></div>
+        <div class="console" id="fire-ridge-console"></div>
+
+        <p>
+          The flame in Autumn's hands doesn't vanish, but it stops
+          climbing. She doesn't look happy about it, and she doesn't
+          look away from Evelyn either — but she waits, arms still
+          raised, for whatever Evelyn's about to say.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=fire&amp;dest=ridge">&larr; The Missing Map</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – FOREST ============ -->
+      <div id="fire-forest" hidden style="--accent: var(--ruby)">
+        <h1>The Shadow Over Krahn</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          Past the archway, the forest doesn't so much darken as
+          dim — a low, even shadow lying over everything, muting
+          color, muffling sound, like the whole place is being viewed
+          through old glass. Ember stops walking and stares at it with
+          open unease.
+        </p>
+        <p class="voice">"That's not natural dark," she says. "Something's sitting on top of this whole forest."</p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">working</span> = (<span class="str">"light"</span>, <span class="str">"rise"</span>)
+<span class="kw">print</span>(<span class="var">working</span>)</div>
+          <div class="out">('light', 'rise')</div>
+        </div>
+        <p>
+          A shadow this old doesn't bend to something that might
+          change halfway through — it needs a working that's fixed,
+          the same at the end as it was the moment it was spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two words fixed
+          together, unable to be taken apart — and speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="fire-forest-input">Your incantation</label>
+        <textarea id="fire-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='working = ("light", "rise")&#10;print(working)'></textarea>
+        <div class="run-row"><button id="fire-forest-btn">Raise the Shadow</button></div>
+        <div class="console" id="fire-forest-console"></div>
+
+        <p>
+          The dim lifts slowly, like fog pulling back rather than
+          breaking, and color returns to the forest floor around you
+          in patches. Whatever was sitting over Krahn, it hasn't gone
+          far — but for now, at least, you can see clearly again.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=fire&amp;dest=forest">&larr; Krahn Forest</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ WATER – RIDGE (Virelia, disappointed, siren song) ============ -->
+      <div id="water-ridge" hidden style="--accent: var(--sapphire)">
+        <h1>The Road to Nicole</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          The attack comes from the reeds without warning — a figure
+          in dark leathers, blade already drawn, faster than you have
+          time to properly react to. Virelia doesn't look surprised so
+          much as tired, a low note already building in her throat
+          before the blade's even fully clear of its sheath.
+        </p>
+        <p class="voice">"I'd hoped this wouldn't happen again," Virelia says, disappointment plain in her voice, the song beneath it already pulling at the air.</p>
+        <p>
+          The assassin's steps falter, caught by the song despite
+          herself. "Evelyn," she offers, like a name might buy her a
+          moment she clearly doesn't expect to get.
+        </p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">plea</span> = (<span class="str">"wait"</span>, <span class="str">"let her speak"</span>)
+<span class="kw">print</span>(<span class="var">plea</span>)</div>
+          <div class="out">('wait', 'let her speak')</div>
+        </div>
+        <p>
+          That's exactly why it fits this moment — something that
+          can't be talked out of what it means, the instant it's
+          spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two things you
+          need Virelia to hear, fixed together, unable to be taken
+          apart — and speak it aloud with <code>print()</code>.
+        </p>
+        <label for="water-ridge-input">Your incantation</label>
+        <textarea id="water-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='plea = ("wait", "let her speak")&#10;print(plea)'></textarea>
+        <div class="run-row"><button id="water-ridge-btn">Stay Her Song</button></div>
+        <div class="console" id="water-ridge-console"></div>
+
+        <p>
+          The song doesn't stop, but it eases, loosening its grip on
+          Evelyn's limbs without letting go entirely. Virelia doesn't
+          look pleased, and she doesn't look away from Evelyn either —
+          but she waits, for whatever Evelyn's about to say.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=water&amp;dest=ridge">&larr; The Missing Map</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ WATER – FOREST ============ -->
+      <div id="water-forest" hidden style="--accent: var(--sapphire)">
+        <h1>The Shadow Over Krahn</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          Past the archway, the forest doesn't so much darken as
+          dim — a low, even shadow lying over everything, muting
+          color, muffling sound, like the whole place is being viewed
+          through old glass. Lorelei stops swimming through the mist
+          and stares at it with open unease.
+        </p>
+        <p class="voice">"That's not natural dark," she says. "Something's sitting on top of this whole forest."</p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">working</span> = (<span class="str">"light"</span>, <span class="str">"rise"</span>)
+<span class="kw">print</span>(<span class="var">working</span>)</div>
+          <div class="out">('light', 'rise')</div>
+        </div>
+        <p>
+          A shadow this old doesn't bend to something that might
+          change halfway through — it needs a working that's fixed,
+          the same at the end as it was the moment it was spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two words fixed
+          together, unable to be taken apart — and speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="water-forest-input">Your incantation</label>
+        <textarea id="water-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='working = ("light", "rise")&#10;print(working)'></textarea>
+        <div class="run-row"><button id="water-forest-btn">Raise the Shadow</button></div>
+        <div class="console" id="water-forest-console"></div>
+
+        <p>
+          The dim lifts slowly, like fog pulling back rather than
+          breaking, and color returns to the forest floor around you
+          in patches. Whatever was sitting over Krahn, it hasn't gone
+          far — but for now, at least, you can see clearly again.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=water&amp;dest=forest">&larr; Krahn Forest</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – RIDGE (Aspen, cold, glamour) ============ -->
+      <div id="earth-ridge" hidden style="--accent: var(--emerald)">
+        <h1>The Road to Nicole</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          The attack comes from the underbrush without warning — a
+          figure in dark leathers, blade already drawn, faster than
+          you have time to properly react to. Aspen's expression goes
+          perfectly, unnervingly still, and the single word he speaks
+          afterward is quiet enough that you almost miss it.
+        </p>
+        <p class="voice">"Kneel."</p>
+        <p>
+          The assassin's knees buckle before she's even decided to
+          resist it, the glamour settling over her like a weight she
+          can't argue with. "Evelyn," she manages, like a name might
+          buy her a moment she clearly doesn't expect to get.
+        </p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">plea</span> = (<span class="str">"wait"</span>, <span class="str">"let her speak"</span>)
+<span class="kw">print</span>(<span class="var">plea</span>)</div>
+          <div class="out">('wait', 'let her speak')</div>
+        </div>
+        <p>
+          That's exactly why it fits this moment — something that
+          can't be talked out of what it means, the instant it's
+          spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two things you
+          need Aspen to hear, fixed together, unable to be taken
+          apart — and speak it aloud with <code>print()</code>.
+        </p>
+        <label for="earth-ridge-input">Your incantation</label>
+        <textarea id="earth-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='plea = ("wait", "let her speak")&#10;print(plea)'></textarea>
+        <div class="run-row"><button id="earth-ridge-btn">Break the Glamour</button></div>
+        <div class="console" id="earth-ridge-console"></div>
+
+        <p>
+          Aspen doesn't lift the glamour entirely, but he loosens it —
+          enough for Evelyn to breathe properly again, enough for her
+          to speak. His expression stays exactly as cold as before.
+          "You have her attention," he says to Evelyn, without looking
+          at her. "Use it."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=earth&amp;dest=ridge">&larr; The Missing Map</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – FOREST ============ -->
+      <div id="earth-forest" hidden style="--accent: var(--emerald)">
+        <h1>The Shadow Over Krahn</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          Past the archway, the forest doesn't so much darken as
+          dim — a low, even shadow lying over everything, muting
+          color, muffling sound, like the whole place is being viewed
+          through old glass. Briar stops walking and stares at it with
+          open unease.
+        </p>
+        <p class="voice">"That's not natural dark," he says. "Something's sitting on top of this whole forest."</p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">working</span> = (<span class="str">"light"</span>, <span class="str">"rise"</span>)
+<span class="kw">print</span>(<span class="var">working</span>)</div>
+          <div class="out">('light', 'rise')</div>
+        </div>
+        <p>
+          A shadow this old doesn't bend to something that might
+          change halfway through — it needs a working that's fixed,
+          the same at the end as it was the moment it was spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two words fixed
+          together, unable to be taken apart — and speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="earth-forest-input">Your incantation</label>
+        <textarea id="earth-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='working = ("light", "rise")&#10;print(working)'></textarea>
+        <div class="run-row"><button id="earth-forest-btn">Raise the Shadow</button></div>
+        <div class="console" id="earth-forest-console"></div>
+
+        <p>
+          The dim lifts slowly, like fog pulling back rather than
+          breaking, and color returns to the forest floor around you
+          in patches. Whatever was sitting over Krahn, it hasn't gone
+          far — but for now, at least, you can see clearly again.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=earth&amp;dest=forest">&larr; Krahn Forest</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – RIDGE (Buer, cruel, shadow mind spell) ============ -->
+      <div id="shadow-ridge" hidden style="--accent: var(--amethyst)">
+        <h1>The Road to Nicole</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          The attack comes from the dark without warning — a figure in
+          black leathers, blade already drawn, faster than you have
+          time to properly react to. Buer's smile is the first thing
+          that unsettles you — wide, delighted, entirely too pleased
+          for the situation, shadow already coiling toward the
+          assassin's skull.
+        </p>
+        <p class="voice">"Oh, this'll be fun," Buer says, and he sounds like he means it in the worst possible way.</p>
+        <p>
+          The assassin's eyes go glassy, unfocused, the shadow already
+          working its way in. "Evelyn," she gets out, like a name
+          might buy her a moment she clearly doesn't expect to get.
+        </p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">plea</span> = (<span class="str">"wait"</span>, <span class="str">"let her speak"</span>)
+<span class="kw">print</span>(<span class="var">plea</span>)</div>
+          <div class="out">('wait', 'let her speak')</div>
+        </div>
+        <p>
+          That's exactly why it fits this moment — something that
+          can't be talked out of what it means, the instant it's
+          spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two things you
+          need Buer to hear, fixed together, unable to be taken
+          apart — and speak it aloud with <code>print()</code>.
+        </p>
+        <label for="shadow-ridge-input">Your incantation</label>
+        <textarea id="shadow-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='plea = ("wait", "let her speak")&#10;print(plea)'></textarea>
+        <div class="run-row"><button id="shadow-ridge-btn">Pull Him Back</button></div>
+        <div class="console" id="shadow-ridge-console"></div>
+
+        <p>
+          The shadow retreats from Evelyn's mind, slow and reluctant,
+          like it's being physically peeled away rather than released.
+          Buer's smile doesn't waver in the slightest. "Fine," he
+          says, sounding almost amused by his own restraint. "Let's
+          hear it, then."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=shadow&amp;dest=ridge">&larr; The Missing Map</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – FOREST ============ -->
+      <div id="shadow-forest" hidden style="--accent: var(--amethyst)">
+        <h1>The Shadow Over Krahn</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          Past the archway, the forest doesn't so much darken as
+          dim — a low, even shadow lying over everything, muting
+          color, muffling sound, like the whole place is being viewed
+          through old glass. Rhys stops walking and studies it with
+          something closer to professional interest than unease.
+        </p>
+        <p class="voice">"That's not natural dark," he says. "Something's sitting on top of this whole forest. How rude of it."</p>
+
+        <h2 class="sub">A pair that won't come apart</h2>
+        <p>
+          A <code>tuple</code> looks like a list, but once it's
+          written, it can't be changed — no <code>.append()</code>, no
+          <code>.remove()</code>, nothing added or taken away. Just
+          exactly what you wrote, fixed in place, written in
+          parentheses instead of square brackets.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">working</span> = (<span class="str">"light"</span>, <span class="str">"rise"</span>)
+<span class="kw">print</span>(<span class="var">working</span>)</div>
+          <div class="out">('light', 'rise')</div>
+        </div>
+        <p>
+          A shadow this old doesn't bend to something that might
+          change halfway through — it needs a working that's fixed,
+          the same at the end as it was the moment it was spoken.
+        </p>
+        <p>
+          Try it yourself. Build a tuple of your own — two words fixed
+          together, unable to be taken apart — and speak it aloud with
+          <code>print()</code>.
+        </p>
+        <label for="shadow-forest-input">Your incantation</label>
+        <textarea id="shadow-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='working = ("light", "rise")&#10;print(working)'></textarea>
+        <div class="run-row"><button id="shadow-forest-btn">Raise the Shadow</button></div>
+        <div class="console" id="shadow-forest-console"></div>
+
+        <p>
+          The dim lifts slowly, like fog pulling back rather than
+          breaking, and color returns to the forest floor around you
+          in patches. Whatever was sitting over Krahn, it hasn't gone
+          far — but for now, at least, you can see clearly again.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson20.html?path=shadow&amp;dest=forest">&larr; Krahn Forest</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  // Open-ended check: a real tuple — name = (item, item, ...) with
+  // at least one comma inside the parentheses — and a print() call
+  // present somewhere. Contents and count of items are free.
+  function checkTuple(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+
+    let tupleLine = null;
+    for (const l of lines) {
+      const trimmed = l.trim();
+      if (/^[A-Za-z_]\w*\s*=\s*\(.*\)\s*$/.test(trimmed)) {
+        const start = trimmed.indexOf('(');
+        const end = trimmed.lastIndexOf(')');
+        const inner = trimmed.slice(start + 1, end);
+        if (inner.includes(',')) { tupleLine = trimmed; break; }
+      }
+    }
+
+    if (!tupleLine) {
+      if (!/\(/.test(raw) || !/\)/.test(raw)) return { ok: false, code: 'no-parens' };
+      if (!/,/.test(raw)) return { ok: false, code: 'no-comma' };
+      return { ok: false, code: 'bad-shape' };
+    }
+
+    if (!/print\s*\(/.test(raw)) return { ok: false, code: 'no-print' };
+
+    return { ok: true };
+  }
+
+  function wire(id, messages) {
+    const input = document.getElementById(id + '-input');
+    const button = document.getElementById(id + '-btn');
+    const consoleEl = document.getElementById(id + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkTuple(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-parens': 'A tuple needs parentheses holding what\'s inside it.',
+        'no-comma': 'A tuple needs at least two things in it, separated by a comma.',
+        'bad-shape': 'Check the shape of your tuple — a name, an equals sign, and parentheses with at least two items inside.',
+        'no-print': 'The tuple is built, but never spoken aloud — wrap it in print().'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const dest = new URLSearchParams(location.search).get('dest');
+  const key = (path && dest) ? (path + '-' + dest) : null;
+  const validKeys = ['fire-ridge', 'fire-forest', 'water-ridge', 'water-forest', 'earth-ridge', 'earth-forest', 'shadow-ridge', 'shadow-forest'];
+
+  const titles = {
+    'fire-ridge': 'Chapter XXI — The Road to Nicole',
+    'fire-forest': 'Chapter XXI — The Shadow Over Krahn',
+    'water-ridge': 'Chapter XXI — The Road to Nicole',
+    'water-forest': 'Chapter XXI — The Shadow Over Krahn',
+    'earth-ridge': 'Chapter XXI — The Road to Nicole',
+    'earth-forest': 'Chapter XXI — The Shadow Over Krahn',
+    'shadow-ridge': 'Chapter XXI — The Road to Nicole',
+    'shadow-forest': 'Chapter XXI — The Shadow Over Krahn'
+  };
+
+  const messages = {
+    'fire-ridge': { empty: 'The flame keeps building. Write something first.', success: 'The words land steady and unshaken, exactly as fixed as you meant them to be.' },
+    'fire-forest': { empty: 'The dim stays heavy. Write something first.', success: 'The words settle into place, fixed and certain, and the shadow can\'t argue with them.' },
+    'water-ridge': { empty: 'The song keeps building. Write something first.', success: 'The words land steady and unshaken, exactly as fixed as you meant them to be.' },
+    'water-forest': { empty: 'The dim stays heavy. Write something first.', success: 'The words settle into place, fixed and certain, and the shadow can\'t argue with them.' },
+    'earth-ridge': { empty: 'The glamour keeps tightening. Write something first.', success: 'The words land steady and unshaken, exactly as fixed as you meant them to be.' },
+    'earth-forest': { empty: 'The dim stays heavy. Write something first.', success: 'The words settle into place, fixed and certain, and the shadow can\'t argue with them.' },
+    'shadow-ridge': { empty: 'The shadow keeps closing in. Write something first.', success: 'The words land steady and unshaken, exactly as fixed as you meant them to be.' },
+    'shadow-forest': { empty: 'The dim stays heavy. Write something first.', success: 'The words settle into place, fixed and certain, and the shadow can\'t argue with them.' }
+  };
+
+  if (key && validKeys.includes(key)) {
+    document.getElementById(key).hidden = false;
+    document.title = titles[key];
+    wire(key, messages[key]);
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
