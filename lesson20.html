@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--leather-dark);
+    background-image: radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%), radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink); font-family: var(--font-body);
+    display: flex; justify-content: center; align-items: flex-start; padding: 44px 18px;
+  }
+  .book {
+    width: 100%; max-width: 600px; background: var(--parchment);
+    background-image: radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge); border-radius: 3px;
+    box-shadow: 0 2px 0 var(--page-edge), 0 4px 0 var(--parchment-dark), 0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+  .chapter-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 18px 30px; background: var(--leather); border-bottom: 3px double var(--gold); }
+  .chapter-bar .roman { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 1.5px; color: var(--parchment-dark); }
+  .chapter-bar .flicker { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; }
+  .content { padding: 34px 34px 30px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.15; margin: 0 0 6px; color: var(--leather); }
+  h2.sub { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 24px 0 6px; color: var(--leather); }
+  .tag { display: block; font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--accent, var(--gold)); margin-bottom: 16px; }
+  p { font-size: 17.5px; line-height: 1.7; color: var(--ink); margin: 0 0 16px; max-width: 56ch; }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+  .voice { border-left: 3px solid var(--accent, var(--gold)); padding-left: 14px; font-style: italic; color: var(--ink-dim); font-size: 16.5px; margin: 0 0 18px; max-width: 54ch; }
+  code { font-family: var(--font-mono); font-size: 0.85em; color: var(--flame); background: rgba(74,47,34,0.07); padding: 1px 5px; border-radius: 3px; }
+  .spellbook {
+    font-family: var(--font-mono); font-size: 13.5px; background: var(--leather-dark); color: #e9dcb8;
+    border: 1px solid #1c110b; border-top: 3px solid var(--accent, var(--gold)); border-radius: 6px;
+    padding: 14px 18px; margin: 10px 0 20px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre; overflow-x: auto;
+  }
+  .spellbook .label { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; margin-bottom: 8px; display: block; white-space: normal; }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+  .methods { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 20px; }
+  .methods span { font-family: var(--font-mono); font-size: 12px; color: var(--leather); background: rgba(74,47,34,0.08); border: 1px solid var(--page-edge); padding: 3px 9px; border-radius: 12px; }
+  label { display: block; font-family: var(--font-display); font-style: italic; font-size: 15.5px; color: var(--ink-dim); margin-bottom: 8px; }
+  textarea {
+    width: 100%; font-family: var(--font-mono); font-size: 14.5px; background: #faf5e6;
+    border: 1px solid var(--page-edge); color: var(--ink); padding: 12px 14px; border-radius: 5px;
+    outline: none; resize: vertical; line-height: 1.5; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus { border-color: var(--accent, var(--gold)); box-shadow: 0 0 0 3px rgba(156,122,46,0.15); }
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  button {
+    font-family: var(--font-display); font-weight: 700; font-size: 15.5px; letter-spacing: 0.3px;
+    background: var(--leather); color: #f1e6c8; border: 1px solid var(--leather-dark); padding: 0 22px;
+    height: 40px; border-radius: 5px; cursor: pointer; transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .console { margin-top: 20px; min-height: 26px; font-family: var(--font-display); font-style: italic; font-size: 16.5px; line-height: 1.6; }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+  @media (prefers-reduced-motion: no-preference) { .console.flash { animation: flash-in 0.3s ease; } }
+  @keyframes flash-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px;
+    border-top: 1px solid var(--page-edge); font-family: var(--font-display); font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block; font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--leather);
+    text-decoration: none; border: 1px solid var(--page-edge); border-radius: 8px; padding: 11px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XX</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path/dest carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Eight Roads</h1>
+        <p>You've arrived here without a path to follow. Choose where you left off, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson20.html?path=fire&dest=ridge">Ruby &mdash; Diamond Ridge</a>
+          <a href="lesson20.html?path=fire&dest=forest">Ruby &mdash; Krahn Forest</a>
+          <a href="lesson20.html?path=water&dest=ridge">Sapphire &mdash; Diamond Ridge</a>
+          <a href="lesson20.html?path=water&dest=forest">Sapphire &mdash; Krahn Forest</a>
+          <a href="lesson20.html?path=earth&dest=ridge">Emerald &mdash; Diamond Ridge</a>
+          <a href="lesson20.html?path=earth&dest=forest">Emerald &mdash; Krahn Forest</a>
+          <a href="lesson20.html?path=shadow&dest=ridge">Amethyst &mdash; Diamond Ridge</a>
+          <a href="lesson20.html?path=shadow&dest=forest">Amethyst &mdash; Krahn Forest</a>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – RIDGE ============ -->
+      <div id="fire-ridge" hidden style="--accent: var(--ruby)">
+        <h1>The Missing Map</h1>
+        <span class="tag">Diamond Ridge &middot; the path of fire</span>
+        <p class="lede">
+          You reach for the map before setting out and find your bag
+          empty instead — no map, no explanation, just a single
+          scorched scrap of parchment caught on a bramble nearby. The
+          handwriting on it is smudged nearly past reading.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">scrap</span> = <span class="str">"   NiCoLe   "</span>
+<span class="kw">print</span>(<span class="var">scrap</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">nicole</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          Try it yourself. Clean up the scrap however you like — the
+          house only cares that you use at least one string method on
+          it, and speak the result aloud with <code>print()</code>.
+        </p>
+        <label for="fire-ridge-input">Your incantation</label>
+        <textarea id="fire-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='scrap = "   NiCoLe   "&#10;print(scrap.strip().lower())'></textarea>
+        <div class="run-row"><button id="fire-ridge-btn">Clean the Scrap</button></div>
+        <div class="console" id="fire-ridge-console"></div>
+
+        <p>
+          Once the smudges fall away, a name resolves clearly:
+          <strong>Nicole</strong>. Beneath it, barely legible, three
+          more words — <em>outskirts of Sol-Torren</em>. Whoever took
+          your map, it seems, wants you to find her first.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=fire">&larr; The Way Home</a>
+          <a href="lesson21.html?path=fire&amp;dest=ridge">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – FOREST ============ -->
+      <div id="fire-forest" hidden style="--accent: var(--ruby)">
+        <h1>Krahn Forest</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          You set out immediately, Autumn and Lilith falling into step
+          on either side of you — neither willing to let you go in
+          there without them. The forest closes in fast — and within
+          an hour, you're standing before a stone archway sealed shut
+          by something that hums faintly against your skin.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">spoken</span> = <span class="str">"  Open the Way  "</span>
+<span class="kw">print</span>(<span class="var">spoken</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">open the way</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          The seal doesn't care how the words are spoken — clumsy
+          capitals, stray spaces, none of it matters — only what they
+          become once cleaned up. Try it yourself. Write a phrase, use
+          a string method to clean it, and speak the result aloud with
+          <code>print()</code>.
+        </p>
+        <label for="fire-forest-input">Your incantation</label>
+        <textarea id="fire-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='spoken = "  Open the Way  "&#10;print(spoken.strip().lower())'></textarea>
+        <div class="run-row"><button id="fire-forest-btn">Unseal the Gate</button></div>
+        <div class="console" id="fire-forest-console"></div>
+
+        <p>
+          The hum against your skin fades all at once, and the archway
+          splits down the middle, dust sifting off it like it's been
+          waiting years for exactly this. Beyond it: a path, and
+          somewhere along it, the map you're looking for.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=fire">&larr; The Way Home</a>
+          <a href="lesson21.html?path=fire&amp;dest=forest">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ WATER – RIDGE ============ -->
+      <div id="water-ridge" hidden style="--accent: var(--sapphire)">
+        <h1>The Missing Map</h1>
+        <span class="tag">Diamond Ridge &middot; the path of water</span>
+        <p class="lede">
+          You reach for the map before setting out and find your bag
+          empty instead — no map, no explanation, just a single
+          waterlogged scrap of parchment caught in the shallows
+          nearby. The handwriting on it is smudged nearly past
+          reading.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">scrap</span> = <span class="str">"   NiCoLe   "</span>
+<span class="kw">print</span>(<span class="var">scrap</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">nicole</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          Try it yourself. Clean up the scrap however you like — the
+          house only cares that you use at least one string method on
+          it, and speak the result aloud with <code>print()</code>.
+        </p>
+        <label for="water-ridge-input">Your incantation</label>
+        <textarea id="water-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='scrap = "   NiCoLe   "&#10;print(scrap.strip().lower())'></textarea>
+        <div class="run-row"><button id="water-ridge-btn">Clean the Scrap</button></div>
+        <div class="console" id="water-ridge-console"></div>
+
+        <p>
+          Once the smudges fall away, a name resolves clearly:
+          <strong>Nicole</strong>. Beneath it, barely legible, three
+          more words — <em>outskirts of Nadir Haven</em>. Whoever took
+          your map, it seems, wants you to find her first.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=water">&larr; The Way Home</a>
+          <a href="lesson21.html?path=water&amp;dest=ridge">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ WATER – FOREST ============ -->
+      <div id="water-forest" hidden style="--accent: var(--sapphire)">
+        <h1>Krahn Forest</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          You set out immediately, Virelia and Sylvia falling into
+          step on either side of you — neither willing to let you go
+          in there without them. The forest closes in fast — and
+          within an hour, you're standing before a stone archway
+          sealed shut by something that hums faintly against your
+          skin.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">spoken</span> = <span class="str">"  Open the Way  "</span>
+<span class="kw">print</span>(<span class="var">spoken</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">open the way</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          The seal doesn't care how the words are spoken — clumsy
+          capitals, stray spaces, none of it matters — only what they
+          become once cleaned up. Try it yourself. Write a phrase, use
+          a string method to clean it, and speak the result aloud with
+          <code>print()</code>.
+        </p>
+        <label for="water-forest-input">Your incantation</label>
+        <textarea id="water-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='spoken = "  Open the Way  "&#10;print(spoken.strip().lower())'></textarea>
+        <div class="run-row"><button id="water-forest-btn">Unseal the Gate</button></div>
+        <div class="console" id="water-forest-console"></div>
+
+        <p>
+          The hum against your skin fades all at once, and the archway
+          splits down the middle, dust sifting off it like it's been
+          waiting years for exactly this. Beyond it: a path, and
+          somewhere along it, the map you're looking for.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=water">&larr; The Way Home</a>
+          <a href="lesson21.html?path=water&amp;dest=forest">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – RIDGE ============ -->
+      <div id="earth-ridge" hidden style="--accent: var(--emerald)">
+        <h1>The Missing Map</h1>
+        <span class="tag">Diamond Ridge &middot; the path of earth</span>
+        <p class="lede">
+          You reach for the map before setting out and find your bag
+          empty instead — no map, no explanation, just a single
+          root-tangled scrap of parchment caught at the edge of the
+          path nearby. The handwriting on it is smudged nearly past
+          reading.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">scrap</span> = <span class="str">"   NiCoLe   "</span>
+<span class="kw">print</span>(<span class="var">scrap</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">nicole</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          Try it yourself. Clean up the scrap however you like — the
+          house only cares that you use at least one string method on
+          it, and speak the result aloud with <code>print()</code>.
+        </p>
+        <label for="earth-ridge-input">Your incantation</label>
+        <textarea id="earth-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='scrap = "   NiCoLe   "&#10;print(scrap.strip().lower())'></textarea>
+        <div class="run-row"><button id="earth-ridge-btn">Clean the Scrap</button></div>
+        <div class="console" id="earth-ridge-console"></div>
+
+        <p>
+          Once the smudges fall away, a name resolves clearly:
+          <strong>Nicole</strong>. Beneath it, barely legible, three
+          more words — <em>outskirts of Noxglen</em>. Whoever took
+          your map, it seems, wants you to find her first.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=earth">&larr; The Way Home</a>
+          <a href="lesson21.html?path=earth&amp;dest=ridge">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – FOREST ============ -->
+      <div id="earth-forest" hidden style="--accent: var(--emerald)">
+        <h1>Krahn Forest</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          You set out immediately, Aspen and Celeste falling into step
+          on either side of you — neither willing to let you go in
+          there without them. The forest closes in fast — and within
+          an hour, you're standing before a stone archway sealed shut
+          by something that hums faintly against your skin.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">spoken</span> = <span class="str">"  Open the Way  "</span>
+<span class="kw">print</span>(<span class="var">spoken</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">open the way</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          The seal doesn't care how the words are spoken — clumsy
+          capitals, stray spaces, none of it matters — only what they
+          become once cleaned up. Try it yourself. Write a phrase, use
+          a string method to clean it, and speak the result aloud with
+          <code>print()</code>.
+        </p>
+        <label for="earth-forest-input">Your incantation</label>
+        <textarea id="earth-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='spoken = "  Open the Way  "&#10;print(spoken.strip().lower())'></textarea>
+        <div class="run-row"><button id="earth-forest-btn">Unseal the Gate</button></div>
+        <div class="console" id="earth-forest-console"></div>
+
+        <p>
+          The hum against your skin fades all at once, and the archway
+          splits down the middle, dust sifting off it like it's been
+          waiting years for exactly this. Beyond it: a path, and
+          somewhere along it, the map you're looking for.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=earth">&larr; The Way Home</a>
+          <a href="lesson21.html?path=earth&amp;dest=forest">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – RIDGE ============ -->
+      <div id="shadow-ridge" hidden style="--accent: var(--amethyst)">
+        <h1>The Missing Map</h1>
+        <span class="tag">Diamond Ridge &middot; the path of shadow</span>
+        <p class="lede">
+          You reach for the map before setting out and find your bag
+          empty instead — no map, no explanation, just a single
+          scrap of parchment left behind deliberately, folded far too
+          neatly to have fallen there by accident. The handwriting on
+          it is smudged nearly past reading.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">scrap</span> = <span class="str">"   NiCoLe   "</span>
+<span class="kw">print</span>(<span class="var">scrap</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">nicole</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          Try it yourself. Clean up the scrap however you like — the
+          house only cares that you use at least one string method on
+          it, and speak the result aloud with <code>print()</code>.
+        </p>
+        <label for="shadow-ridge-input">Your incantation</label>
+        <textarea id="shadow-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='scrap = "   NiCoLe   "&#10;print(scrap.strip().lower())'></textarea>
+        <div class="run-row"><button id="shadow-ridge-btn">Clean the Scrap</button></div>
+        <div class="console" id="shadow-ridge-console"></div>
+
+        <p>
+          Once the smudges fall away, a name resolves clearly:
+          <strong>Nicole</strong>. Beneath it, barely legible, three
+          more words — <em>outskirts of Nocturna</em>. Whoever took
+          your map, it seems, wants you to find her first — and given
+          everything else lately, you're not entirely convinced that's
+          a coincidence.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=shadow">&larr; The Way Home</a>
+          <a href="lesson21.html?path=shadow&amp;dest=ridge">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – FOREST ============ -->
+      <div id="shadow-forest" hidden style="--accent: var(--amethyst)">
+        <h1>Krahn Forest</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          You set out immediately, Buer and Crave falling into step on
+          either side of you — neither willing to let you go in there
+          without them. The forest closes in fast — and within
+          an hour, you're standing before a stone archway sealed shut
+          by something that hums faintly against your skin.
+        </p>
+        <h2 class="sub">Every string carries its own tools</h2>
+        <p>
+          A string isn't just letters sitting still — it comes with
+          <code>methods</code> built in, ready to use with a dot:
+          <code>.strip()</code> to trim off stray space,
+          <code>.lower()</code> or <code>.upper()</code> to even out
+          the case, <code>.replace()</code> to swap one thing for
+          another.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">spoken</span> = <span class="str">"  Open the Way  "</span>
+<span class="kw">print</span>(<span class="var">spoken</span>.<span class="fn">strip</span>().<span class="fn">lower</span>())</div>
+          <div class="out">open the way</div>
+        </div>
+        <div class="methods"><span>.strip()</span><span>.lower()</span><span>.upper()</span><span>.replace()</span><span>.split()</span></div>
+        <p>
+          The seal doesn't care how the words are spoken — clumsy
+          capitals, stray spaces, none of it matters — only what they
+          become once cleaned up. Try it yourself. Write a phrase, use
+          a string method to clean it, and speak the result aloud with
+          <code>print()</code>.
+        </p>
+        <label for="shadow-forest-input">Your incantation</label>
+        <textarea id="shadow-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='spoken = "  Open the Way  "&#10;print(spoken.strip().lower())'></textarea>
+        <div class="run-row"><button id="shadow-forest-btn">Unseal the Gate</button></div>
+        <div class="console" id="shadow-forest-console"></div>
+
+        <p>
+          The hum against your skin fades all at once, and the archway
+          splits down the middle, dust sifting off it like it's been
+          waiting years for exactly this. Beyond it: a path, and
+          somewhere along it, the map you're looking for.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson19.html?path=shadow">&larr; The Way Home</a>
+          <a href="lesson21.html?path=shadow&amp;dest=forest">Chapter XXI &rarr;</a>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  const STRING_METHODS = ['strip', 'lower', 'upper', 'replace', 'split', 'title', 'find', 'startswith', 'endswith', 'count'];
+
+  // Open-ended check: does the code call at least one real string
+  // method (on a variable or a literal), and is print() present
+  // somewhere? Exact text, phrasing, and variable names are free.
+  function checkStringMethod(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const methodPattern = new RegExp('\\.(' + STRING_METHODS.join('|') + ')\\s*\\(');
+    if (!methodPattern.test(raw)) return { ok: false, code: 'no-method' };
+    if (!/print\s*\(/.test(raw)) return { ok: false, code: 'no-print' };
+    return { ok: true };
+  }
+
+  function wire(id, messages) {
+    const input = document.getElementById(id + '-input');
+    const button = document.getElementById(id + '-btn');
+    const consoleEl = document.getElementById(id + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkStringMethod(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-method': 'Nothing here uses a string method yet — try .strip(), .lower(), .upper(), or .replace().',
+        'no-print': 'The words are cleaned, but never spoken aloud — wrap the result in print().'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const dest = new URLSearchParams(location.search).get('dest');
+  const key = (path && dest) ? (path + '-' + dest) : null;
+  const validKeys = ['fire-ridge', 'fire-forest', 'water-ridge', 'water-forest', 'earth-ridge', 'earth-forest', 'shadow-ridge', 'shadow-forest'];
+
+  const titles = {
+    'fire-ridge': 'Chapter XX — The Missing Map',
+    'fire-forest': 'Chapter XX — Krahn Forest',
+    'water-ridge': 'Chapter XX — The Missing Map',
+    'water-forest': 'Chapter XX — Krahn Forest',
+    'earth-ridge': 'Chapter XX — The Missing Map',
+    'earth-forest': 'Chapter XX — Krahn Forest',
+    'shadow-ridge': 'Chapter XX — The Missing Map',
+    'shadow-forest': 'Chapter XX — Krahn Forest'
+  };
+
+  const messages = {
+    'fire-ridge': { empty: 'The scrap stays smudged. Write something first.', success: 'The smudges lift away, and the words underneath finally hold still.' },
+    'fire-forest': { empty: 'The seal stays quiet. Write something first.', success: 'The seal shudders once, then settles — recognizing the words for what they mean, not how they were spoken.' },
+    'water-ridge': { empty: 'The scrap stays smudged. Write something first.', success: 'The smudges lift away, and the words underneath finally hold still.' },
+    'water-forest': { empty: 'The seal stays quiet. Write something first.', success: 'The seal shudders once, then settles — recognizing the words for what they mean, not how they were spoken.' },
+    'earth-ridge': { empty: 'The scrap stays smudged. Write something first.', success: 'The smudges lift away, and the words underneath finally hold still.' },
+    'earth-forest': { empty: 'The seal stays quiet. Write something first.', success: 'The seal shudders once, then settles — recognizing the words for what they mean, not how they were spoken.' },
+    'shadow-ridge': { empty: 'The scrap stays smudged. Write something first.', success: 'The smudges lift away, and the words underneath finally hold still.' },
+    'shadow-forest': { empty: 'The seal stays quiet. Write something first.', success: 'The seal shudders once, then settles — recognizing the words for what they mean, not how they were spoken.' }
+  };
+
+  if (key && validKeys.includes(key)) {
+    document.getElementById(key).hidden = false;
+    document.title = titles[key];
+    wire(key, messages[key]);
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
