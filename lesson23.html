@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XXIII</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--leather-dark);
+    background-image: radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%), radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink); font-family: var(--font-body);
+    display: flex; justify-content: center; align-items: flex-start; padding: 44px 18px;
+  }
+  .book {
+    width: 100%; max-width: 600px; background: var(--parchment);
+    background-image: radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge); border-radius: 3px;
+    box-shadow: 0 2px 0 var(--page-edge), 0 4px 0 var(--parchment-dark), 0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+  .chapter-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 18px 30px; background: var(--leather); border-bottom: 3px double var(--gold); }
+  .chapter-bar .roman { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 1.5px; color: var(--parchment-dark); }
+  .chapter-bar .flicker { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; }
+  .content { padding: 34px 34px 30px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.15; margin: 0 0 6px; color: var(--leather); }
+  h2.sub { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 24px 0 6px; color: var(--leather); }
+  .tag { display: block; font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--accent, var(--gold)); margin-bottom: 16px; }
+  p { font-size: 17.5px; line-height: 1.7; color: var(--ink); margin: 0 0 16px; max-width: 56ch; }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+  .voice { border-left: 3px solid var(--accent, var(--gold)); padding-left: 14px; font-style: italic; color: var(--ink-dim); font-size: 16.5px; margin: 0 0 18px; max-width: 54ch; }
+  code { font-family: var(--font-mono); font-size: 0.85em; color: var(--flame); background: rgba(74,47,34,0.07); padding: 1px 5px; border-radius: 3px; }
+  .spellbook {
+    font-family: var(--font-mono); font-size: 13.5px; background: var(--leather-dark); color: #e9dcb8;
+    border: 1px solid #1c110b; border-top: 3px solid var(--accent, var(--gold)); border-radius: 6px;
+    padding: 14px 18px; margin: 10px 0 20px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre; overflow-x: auto;
+  }
+  .spellbook .label { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; margin-bottom: 8px; display: block; white-space: normal; }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .fn { color: #7dcfff; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+  label { display: block; font-family: var(--font-display); font-style: italic; font-size: 15.5px; color: var(--ink-dim); margin-bottom: 8px; }
+  textarea {
+    width: 100%; font-family: var(--font-mono); font-size: 14.5px; background: #faf5e6;
+    border: 1px solid var(--page-edge); color: var(--ink); padding: 12px 14px; border-radius: 5px;
+    outline: none; resize: vertical; line-height: 1.5; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus { border-color: var(--accent, var(--gold)); box-shadow: 0 0 0 3px rgba(156,122,46,0.15); }
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  button {
+    font-family: var(--font-display); font-weight: 700; font-size: 15.5px; letter-spacing: 0.3px;
+    background: var(--leather); color: #f1e6c8; border: 1px solid var(--leather-dark); padding: 0 22px;
+    height: 40px; border-radius: 5px; cursor: pointer; transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .console { margin-top: 20px; min-height: 26px; font-family: var(--font-display); font-style: italic; font-size: 16.5px; line-height: 1.6; }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+  @media (prefers-reduced-motion: no-preference) { .console.flash { animation: flash-in 0.3s ease; } }
+  @keyframes flash-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px;
+    border-top: 1px solid var(--page-edge); font-family: var(--font-display); font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block; font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--leather);
+    text-decoration: none; border: 1px solid var(--page-edge); border-radius: 8px; padding: 11px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XXIII</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path/dest carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Eight Roads</h1>
+        <p>You've arrived here without a path to follow. Choose where you left off, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson23.html?path=fire&dest=ridge">Ruby &mdash; Nicole's house</a>
+          <a href="lesson23.html?path=fire&dest=forest">Ruby &mdash; the ambush</a>
+          <a href="lesson23.html?path=water&dest=ridge">Sapphire &mdash; Nicole's house</a>
+          <a href="lesson23.html?path=water&dest=forest">Sapphire &mdash; the ambush</a>
+          <a href="lesson23.html?path=earth&dest=ridge">Emerald &mdash; Nicole's house</a>
+          <a href="lesson23.html?path=earth&dest=forest">Emerald &mdash; the ambush</a>
+          <a href="lesson23.html?path=shadow&dest=ridge">Amethyst &mdash; Nicole's house</a>
+          <a href="lesson23.html?path=shadow&dest=forest">Amethyst &mdash; the ambush</a>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – RIDGE (Nicole home, positive) ============ -->
+      <div id="fire-ridge" hidden style="--accent: var(--ruby)">
+        <h1>Nicole's House</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          The cottage sits at the very edge of Sol-Torren, where the
+          heat gives way to something almost temperate. Evelyn walks
+          right up to the door like she's done it a hundred times.
+          Autumn hangs back half a step, watching the place with open
+          suspicion she doesn't bother hiding.
+        </p>
+        <p class="voice">The door opens before Evelyn even knocks. "You brought a guest," Nicole says, delighted rather than alarmed, waving you inside without a shred of the wariness Autumn's clearly holding onto for her. "Come in, come in — let's see about that map of yours."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          Nicole doesn't work every spell from scratch — half her
+          cottage is shelves of borrowed workings, ready to use the
+          moment she asks for them by name. This is <code>import</code>:
+          bringing in a whole library of tools someone else already
+          built.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">randint</span>(<span class="var">1</span>, <span class="var">6</span>))</div>
+          <div class="out">4</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code>.
+        </p>
+        <label for="fire-ridge-input">Your incantation</label>
+        <textarea id="fire-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.randint(1, 6))'></textarea>
+        <div class="run-row"><button id="fire-ridge-btn">Borrow the Spell</button></div>
+        <div class="console" id="fire-ridge-console"></div>
+
+        <p>
+          Nicole spreads your scorched scrap of a map across the
+          table and gets to work, redrawing what's missing with quick,
+          practiced strokes. Autumn watches every movement of her
+          hands the entire time, arms crossed, saying nothing.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=fire&amp;dest=ridge">&larr; Evelyn's Offer</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ WATER – RIDGE (Nicole home, positive) ============ -->
+      <div id="water-ridge" hidden style="--accent: var(--sapphire)">
+        <h1>Nicole's House</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          The cottage sits at the very edge of Nadir Haven, half-built
+          into a reef, dry inside despite the water all around it.
+          Evelyn walks right up to the door like she's done it a
+          hundred times. Virelia hangs back half a step, watching the
+          place with open suspicion she doesn't bother hiding.
+        </p>
+        <p class="voice">The door opens before Evelyn even knocks. "You brought a guest," Nicole says, delighted rather than alarmed, waving you inside without a shred of the wariness Virelia's clearly holding onto for her. "Come in, come in — let's see about that map of yours."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          Nicole doesn't work every spell from scratch — half her
+          cottage is shelves of borrowed workings, ready to use the
+          moment she asks for them by name. This is <code>import</code>:
+          bringing in a whole library of tools someone else already
+          built.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">randint</span>(<span class="var">1</span>, <span class="var">6</span>))</div>
+          <div class="out">4</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code>.
+        </p>
+        <label for="water-ridge-input">Your incantation</label>
+        <textarea id="water-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.randint(1, 6))'></textarea>
+        <div class="run-row"><button id="water-ridge-btn">Borrow the Spell</button></div>
+        <div class="console" id="water-ridge-console"></div>
+
+        <p>
+          Nicole spreads your waterlogged scrap of a map across the
+          table and gets to work, redrawing what's missing with quick,
+          practiced strokes. Virelia watches every movement of her
+          hands the entire time, arms crossed, saying nothing.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=water&amp;dest=ridge">&larr; Evelyn's Offer</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – RIDGE (Nicole absent, trap) ============ -->
+      <div id="earth-ridge" hidden style="--accent: var(--emerald)">
+        <h1>Nicole's House</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          The cottage sits at the very edge of Noxglen, quiet and
+          dark. Evelyn knocks. Nothing answers. She knocks again,
+          frowning now, and when the door swings open on its own at
+          the third try, Celeste's hand goes straight to her side.
+        </p>
+        <p>
+          You're barely two steps inside when the floor gives way
+          beneath something unseen — and iron, glowing hot, snaps
+          closed around Aspen's wrists and ankles before he can so
+          much as react. He doesn't scream, but his jaw goes tight
+          enough that you can see it.
+        </p>
+        <p class="voice">"Ward," Celeste says immediately, already moving. "Meant for intruders. We need him out of that before the iron does more than burn."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          You don't have time to build a working from nothing — but
+          you don't have to. This is <code>import</code>: bringing in
+          a whole library of tools someone else already built, ready
+          the instant you ask for it by name.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">randint</span>(<span class="var">1</span>, <span class="var">6</span>))</div>
+          <div class="out">4</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code> — fast.
+        </p>
+        <label for="earth-ridge-input">Your incantation</label>
+        <textarea id="earth-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.randint(1, 6))'></textarea>
+        <div class="run-row"><button id="earth-ridge-btn">Break the Ward</button></div>
+        <div class="console" id="earth-ridge-console"></div>
+
+        <p>
+          The iron shudders, glows brighter for one terrible second,
+          then splits apart and falls away in pieces. Aspen doesn't
+          say anything, breathing hard, staring at the blistered marks
+          already forming on his wrists. Nicole is nowhere in sight.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=earth&amp;dest=ridge">&larr; Evelyn's Offer</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – RIDGE (Nicole absent, trap) ============ -->
+      <div id="shadow-ridge" hidden style="--accent: var(--amethyst)">
+        <h1>Nicole's House</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          The cottage sits at the very edge of Nocturna, quiet and
+          dark. Evelyn knocks. Nothing answers. She knocks again,
+          frowning now, and when the door swings open on its own at
+          the third try, Crave goes very still in a way that seems
+          worse than moving would have been.
+        </p>
+        <p>
+          You're barely two steps inside when the floor gives way
+          beneath something unseen — and iron, glowing hot, snaps
+          closed around Buer's wrists and ankles before he can so much
+          as react. He doesn't scream, but his jaw goes tight enough
+          that you can see it.
+        </p>
+        <p class="voice">"Ward," Crave says, almost admiring. "Meant for intruders. We should probably get him out of that before the iron does more than burn. Probably."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          You don't have time to build a working from nothing — but
+          you don't have to. This is <code>import</code>: bringing in
+          a whole library of tools someone else already built, ready
+          the instant you ask for it by name.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">randint</span>(<span class="var">1</span>, <span class="var">6</span>))</div>
+          <div class="out">4</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code> — fast.
+        </p>
+        <label for="shadow-ridge-input">Your incantation</label>
+        <textarea id="shadow-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.randint(1, 6))'></textarea>
+        <div class="run-row"><button id="shadow-ridge-btn">Break the Ward</button></div>
+        <div class="console" id="shadow-ridge-console"></div>
+
+        <p>
+          The iron shudders, glows brighter for one terrible second,
+          then splits apart and falls away in pieces. Buer doesn't say
+          anything at first, breathing hard, staring at the blistered
+          marks already forming on his wrists — and then he laughs,
+          short and humorless. "Well. That's new." Nicole is nowhere
+          in sight.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=shadow&amp;dest=ridge">&larr; Evelyn's Offer</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – FOREST (Autumn taken) ============ -->
+      <div id="fire-forest" hidden style="--accent: var(--ruby)">
+        <h1>The Ambush</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          You're still following the pull toward the pearl when they
+          come out of nowhere — too many of them, too coordinated to
+          be chance. In the scramble, you lose sight of Autumn for
+          less than ten seconds. When you find the spot again, she's
+          simply gone, a scorched circle in the dirt the only sign
+          she was ever there at all.
+        </p>
+        <p class="voice">"They took her," Lilith says, voice gone flat with something that isn't quite panic yet. "They took her, and I didn't even see it happen."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          You don't have time to build a working from nothing — but
+          you don't have to. This is <code>import</code>: bringing in
+          a whole library of tools someone else already built, ready
+          the instant you ask for it by name.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">choice</span>([<span class="str">"north"</span>, <span class="str">"south"</span>, <span class="str">"east"</span>]))</div>
+          <div class="out">east</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code> — fast.
+        </p>
+        <label for="fire-forest-input">Your incantation</label>
+        <textarea id="fire-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.choice(["north", "south", "east"]))'></textarea>
+        <div class="run-row"><button id="fire-forest-btn">Cast Something, Anything</button></div>
+        <div class="console" id="fire-forest-console"></div>
+
+        <p>
+          Nothing about the working tells you where they took her —
+          but it settles, ready, humming faintly, waiting for you to
+          point it at something real. Lilith is already moving toward
+          the scorched circle, jaw set. "We're not leaving without
+          her."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=fire&amp;dest=forest">&larr; The Tombstone</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ WATER – FOREST (Virelia lost) ============ -->
+      <div id="water-forest" hidden style="--accent: var(--sapphire)">
+        <h1>The Ambush</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          You're still following the pull toward the pearl when they
+          come out of nowhere — too many of them, too coordinated to
+          be chance. In the scramble, you lose sight of Virelia for
+          less than ten seconds. When the fighting clears, she isn't
+          anywhere you can see, and no one — not even Sylvia — can say
+          which direction she went.
+        </p>
+        <p class="voice">"She was right here," Sylvia says, turning in a slow circle, ice already forming unconsciously at her fingertips. "I don't understand how she just — she was right here."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          You don't have time to build a working from nothing — but
+          you don't have to. This is <code>import</code>: bringing in
+          a whole library of tools someone else already built, ready
+          the instant you ask for it by name.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">choice</span>([<span class="str">"north"</span>, <span class="str">"south"</span>, <span class="str">"east"</span>]))</div>
+          <div class="out">east</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code> — fast.
+        </p>
+        <label for="water-forest-input">Your incantation</label>
+        <textarea id="water-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.choice(["north", "south", "east"]))'></textarea>
+        <div class="run-row"><button id="water-forest-btn">Cast Something, Anything</button></div>
+        <div class="console" id="water-forest-console"></div>
+
+        <p>
+          Nothing about the working tells you exactly where she went —
+          but it settles, ready, humming faintly, waiting for you to
+          point it at something real. Sylvia's ice climbs a little
+          further up her arms, unconsciously. "We find her. Now."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=water&amp;dest=forest">&larr; The Tombstone</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – FOREST (Aspen poisoned) ============ -->
+      <div id="earth-forest" hidden style="--accent: var(--emerald)">
+        <h1>The Ambush</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          You're still following the pull toward the pearl when they
+          come out of nowhere — too many of them, too coordinated to
+          be chance. A blade barely grazes Aspen's arm in the chaos,
+          nothing that should matter, except within minutes his
+          breathing's gone shallow and his steps have started to drag.
+        </p>
+        <p class="voice">"Poison," Celeste says, catching him before he can fully go down, voice sharper than you've heard it. "Something slow. We don't have long to work this out."</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          You don't have time to build a working from nothing — but
+          you don't have to. This is <code>import</code>: bringing in
+          a whole library of tools someone else already built, ready
+          the instant you ask for it by name.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">choice</span>([<span class="str">"north"</span>, <span class="str">"south"</span>, <span class="str">"east"</span>]))</div>
+          <div class="out">east</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code> — fast.
+        </p>
+        <label for="earth-forest-input">Your incantation</label>
+        <textarea id="earth-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.choice(["north", "south", "east"]))'></textarea>
+        <div class="run-row"><button id="earth-forest-btn">Cast Something, Anything</button></div>
+        <div class="console" id="earth-forest-console"></div>
+
+        <p>
+          Nothing about the working cures him outright — but it
+          settles, ready, humming faintly, buying you time you didn't
+          have a moment ago. Celeste doesn't look reassured. "That
+          slows it. It doesn't stop it. Move."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=earth&amp;dest=forest">&larr; The Tombstone</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – FOREST (Buer shot) ============ -->
+      <div id="shadow-forest" hidden style="--accent: var(--amethyst)">
+        <h1>The Ambush</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          You're still following the pull toward the pearl when they
+          come out of nowhere — too many of them, too coordinated to
+          be chance. An arrow takes Buer in the shoulder before he's
+          even finished turning toward the sound, and he goes down
+          hard, more startled than anything else.
+        </p>
+        <p class="voice">"Well," Buer says, staring at the arrow like it's personally offended him, "that's unusual." Crave, for once, doesn't look amused at all.</p>
+
+        <h2 class="sub">Spells you didn't have to write yourself</h2>
+        <p>
+          You don't have time to build a working from nothing — but
+          you don't have to. This is <code>import</code>: bringing in
+          a whole library of tools someone else already built, ready
+          the instant you ask for it by name.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="kw">import</span> <span class="var">random</span>
+<span class="kw">print</span>(<span class="var">random</span>.<span class="fn">choice</span>([<span class="str">"north"</span>, <span class="str">"south"</span>, <span class="str">"east"</span>]))</div>
+          <div class="out">east</div>
+        </div>
+        <p>
+          Once imported, everything inside <code>random</code> is
+          reached the same way you've reached into a dictionary
+          before — with a dot, and the name of the tool you want.
+        </p>
+        <p>
+          Try it yourself. Import any library you like, and use one
+          tool from it, spoken aloud with <code>print()</code> — fast.
+        </p>
+        <label for="shadow-forest-input">Your incantation</label>
+        <textarea id="shadow-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='import random&#10;print(random.choice(["north", "south", "east"]))'></textarea>
+        <div class="run-row"><button id="shadow-forest-btn">Cast Something, Anything</button></div>
+        <div class="console" id="shadow-forest-console"></div>
+
+        <p>
+          Nothing about the working pulls the arrow free — but it
+          settles, ready, humming faintly, and buys enough steadiness
+          for Buer to sit up under his own power. "Wonderful," he
+          mutters, already looking for whoever fired it. Crave doesn't
+          take his eyes off him.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson22.html?path=shadow&amp;dest=forest">&larr; The Tombstone</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  // Open-ended check: a real `import name` line, at least one call
+  // into that module with a dot (name.something(...)), and a print()
+  // call present. Which module, which tool, and exact wording are free.
+  function checkImport(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+
+    let moduleName = null;
+    for (const l of lines) {
+      const m = l.trim().match(/^import\s+([A-Za-z_][\w.]*)\s*$/);
+      if (m) { moduleName = m[1].split('.')[0]; break; }
+    }
+
+    if (!moduleName) {
+      if (!/\bimport\b/.test(raw)) return { ok: false, code: 'no-import' };
+      return { ok: false, code: 'bad-import' };
+    }
+
+    const usePattern = new RegExp('(^|[^\\w])' + moduleName + '\\.\\w+\\s*\\(');
+    if (!usePattern.test(raw)) return { ok: false, code: 'no-use' };
+
+    if (!/print\s*\(/.test(raw)) return { ok: false, code: 'no-print' };
+
+    return { ok: true };
+  }
+
+  function wire(id, messages) {
+    const input = document.getElementById(id + '-input');
+    const button = document.getElementById(id + '-btn');
+    const consoleEl = document.getElementById(id + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkImport(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-import': 'Every spell like this begins with the word import.',
+        'bad-import': 'Check the shape of your import line — just import, then the name of a library, nothing else.',
+        'no-use': 'The library is borrowed, but nothing from it has been used yet — try library_name.something(...).',
+        'no-print': 'The working is cast, but never spoken aloud — wrap it in print().'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const dest = new URLSearchParams(location.search).get('dest');
+  const key = (path && dest) ? (path + '-' + dest) : null;
+  const validKeys = ['fire-ridge', 'fire-forest', 'water-ridge', 'water-forest', 'earth-ridge', 'earth-forest', 'shadow-ridge', 'shadow-forest'];
+
+  const titles = {
+    'fire-ridge': 'Chapter XXIII — Nicole\'s House',
+    'fire-forest': 'Chapter XXIII — The Ambush',
+    'water-ridge': 'Chapter XXIII — Nicole\'s House',
+    'water-forest': 'Chapter XXIII — The Ambush',
+    'earth-ridge': 'Chapter XXIII — Nicole\'s House',
+    'earth-forest': 'Chapter XXIII — The Ambush',
+    'shadow-ridge': 'Chapter XXIII — Nicole\'s House',
+    'shadow-forest': 'Chapter XXIII — The Ambush'
+  };
+
+  const messages = {
+    'fire-ridge': { empty: 'Nothing stirs. Write something first.', success: 'The borrowed working settles in easily, like it was always meant to be here.' },
+    'water-ridge': { empty: 'Nothing stirs. Write something first.', success: 'The borrowed working settles in easily, like it was always meant to be here.' },
+    'earth-ridge': { empty: 'The iron keeps glowing. Write something first.', success: 'The borrowed working answers immediately, sharp and certain.' },
+    'shadow-ridge': { empty: 'The iron keeps glowing. Write something first.', success: 'The borrowed working answers immediately, sharp and certain.' },
+    'fire-forest': { empty: 'Nothing stirs. Write something first.', success: 'The borrowed working answers immediately, sharp and certain.' },
+    'water-forest': { empty: 'Nothing stirs. Write something first.', success: 'The borrowed working answers immediately, sharp and certain.' },
+    'earth-forest': { empty: 'Nothing stirs. Write something first.', success: 'The borrowed working answers immediately, sharp and certain.' },
+    'shadow-forest': { empty: 'Nothing stirs. Write something first.', success: 'The borrowed working answers immediately, sharp and certain.' }
+  };
+
+  if (key && validKeys.includes(key)) {
+    document.getElementById(key).hidden = false;
+    document.title = titles[key];
+    wire(key, messages[key]);
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
