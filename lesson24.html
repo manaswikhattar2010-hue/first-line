@@ -1,0 +1,636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chapter XXIV</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=EB+Garamond:ital,wght@0,400;0,600;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --parchment: #ece1c4;
+    --parchment-dark: #ddcda3;
+    --page-edge: #c9b784;
+    --ink: #3a2a1c;
+    --ink-dim: #6b5738;
+    --leather: #4a2f22;
+    --leather-dark: #2e1c14;
+    --gold: #9c7a2e;
+    --flame: #b5502e;
+    --error: #8c3b2e;
+    --font-display: "Cormorant Garamond", Georgia, "Times New Roman", serif;
+    --font-body: "EB Garamond", Georgia, serif;
+    --font-mono: "JetBrains Mono", "SFMono-Regular", Menlo, monospace;
+    --ruby: #9b2f2f;
+    --sapphire: #2e5c7a;
+    --emerald: #3f6b3a;
+    --amethyst: #6b4a8c;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; min-height: 100vh; background: var(--leather-dark);
+    background-image: radial-gradient(circle at 20% 10%, rgba(156,122,46,0.10), transparent 55%), radial-gradient(circle at 85% 90%, rgba(181,80,46,0.08), transparent 50%);
+    color: var(--ink); font-family: var(--font-body);
+    display: flex; justify-content: center; align-items: flex-start; padding: 44px 18px;
+  }
+  .book {
+    width: 100%; max-width: 600px; background: var(--parchment);
+    background-image: radial-gradient(ellipse at top left, rgba(255,255,255,0.15), transparent 40%), radial-gradient(ellipse at bottom right, rgba(0,0,0,0.06), transparent 45%);
+    border: 1px solid var(--page-edge); border-radius: 3px;
+    box-shadow: 0 2px 0 var(--page-edge), 0 4px 0 var(--parchment-dark), 0 34px 60px -24px rgba(0,0,0,0.65);
+    overflow: hidden;
+  }
+  .chapter-bar { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; padding: 18px 30px; background: var(--leather); border-bottom: 3px double var(--gold); }
+  .chapter-bar .roman { font-family: var(--font-display); font-weight: 700; font-size: 15px; letter-spacing: 1.5px; color: var(--parchment-dark); }
+  .chapter-bar .flicker { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; }
+  .content { padding: 34px 34px 30px; }
+  h1 { font-family: var(--font-display); font-weight: 700; font-size: 30px; line-height: 1.15; margin: 0 0 6px; color: var(--leather); }
+  h2.sub { font-family: var(--font-display); font-weight: 600; font-size: 19px; margin: 24px 0 6px; color: var(--leather); }
+  .tag { display: block; font-family: var(--font-display); font-style: italic; font-size: 14px; color: var(--accent, var(--gold)); margin-bottom: 16px; }
+  p { font-size: 17.5px; line-height: 1.7; color: var(--ink); margin: 0 0 16px; max-width: 56ch; }
+  p.lede { font-style: italic; color: var(--ink-dim); }
+  .voice { border-left: 3px solid var(--accent, var(--gold)); padding-left: 14px; font-style: italic; color: var(--ink-dim); font-size: 16.5px; margin: 0 0 18px; max-width: 54ch; }
+  code { font-family: var(--font-mono); font-size: 0.85em; color: var(--flame); background: rgba(74,47,34,0.07); padding: 1px 5px; border-radius: 3px; }
+  .spellbook {
+    font-family: var(--font-mono); font-size: 13.5px; background: var(--leather-dark); color: #e9dcb8;
+    border: 1px solid #1c110b; border-top: 3px solid var(--accent, var(--gold)); border-radius: 6px;
+    padding: 14px 18px; margin: 10px 0 20px; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+    white-space: pre; overflow-x: auto;
+  }
+  .spellbook .label { font-family: var(--font-display); font-style: italic; font-size: 14px; color: #c7a862; margin-bottom: 8px; display: block; white-space: normal; }
+  .spellbook .kw { color: #c7a862; }
+  .spellbook .var { color: #7fb5a3; }
+  .spellbook .str { color: #d99a6c; }
+  .spellbook .out { color: #9aa88f; white-space: normal; margin-top: 6px; }
+  label { display: block; font-family: var(--font-display); font-style: italic; font-size: 15.5px; color: var(--ink-dim); margin-bottom: 8px; }
+  textarea {
+    width: 100%; font-family: var(--font-mono); font-size: 14.5px; background: #faf5e6;
+    border: 1px solid var(--page-edge); color: var(--ink); padding: 12px 14px; border-radius: 5px;
+    outline: none; resize: vertical; line-height: 1.5; transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  textarea::placeholder { color: #a8987a; }
+  textarea:focus { border-color: var(--accent, var(--gold)); box-shadow: 0 0 0 3px rgba(156,122,46,0.15); }
+  .run-row { display: flex; justify-content: flex-end; margin-top: 10px; }
+  button {
+    font-family: var(--font-display); font-weight: 700; font-size: 15.5px; letter-spacing: 0.3px;
+    background: var(--leather); color: #f1e6c8; border: 1px solid var(--leather-dark); padding: 0 22px;
+    height: 40px; border-radius: 5px; cursor: pointer; transition: filter 0.15s ease, transform 0.05s ease;
+  }
+  button:hover { filter: brightness(1.15); }
+  button:active { transform: translateY(1px); }
+  button:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  .console { margin-top: 20px; min-height: 26px; font-family: var(--font-display); font-style: italic; font-size: 16.5px; line-height: 1.6; }
+  .console.success { color: #3f6b3a; }
+  .console.error { color: var(--error); }
+  @media (prefers-reduced-motion: no-preference) { .console.flash { animation: flash-in 0.3s ease; } }
+  @keyframes flash-in { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: translateY(0); } }
+  .nav-row {
+    display: flex; justify-content: space-between; align-items: center; margin-top: 28px; padding-top: 16px;
+    border-top: 1px solid var(--page-edge); font-family: var(--font-display); font-size: 15px;
+  }
+  .nav-row a { color: var(--leather); text-decoration: none; font-weight: 600; }
+  .nav-row a:hover { color: var(--flame); }
+  .picker { text-align: center; padding: 10px 0 6px; }
+  .picker-links { display: flex; flex-direction: column; gap: 10px; margin-top: 20px; text-align: left; }
+  .picker-links a {
+    display: block; font-family: var(--font-display); font-weight: 600; font-size: 15px; color: var(--leather);
+    text-decoration: none; border: 1px solid var(--page-edge); border-radius: 8px; padding: 11px 14px;
+  }
+  .picker-links a:hover { border-color: var(--gold); color: var(--flame); }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+
+  <div class="book">
+    <div class="chapter-bar">
+      <span class="roman">CHAPTER XXIV</span>
+      <span class="flicker">by candlelight</span>
+    </div>
+
+    <div class="content">
+
+      <!-- Fallback if no path/dest carried over -->
+      <div class="picker" id="picker" hidden>
+        <h1>Eight Roads</h1>
+        <p>You've arrived here without a path to follow. Choose where you left off, and the house will remember.</p>
+        <div class="picker-links">
+          <a href="lesson24.html?path=fire&dest=ridge">Ruby &mdash; setting off for the Ridge</a>
+          <a href="lesson24.html?path=fire&dest=forest">Ruby &mdash; searching for Autumn</a>
+          <a href="lesson24.html?path=water&dest=ridge">Sapphire &mdash; setting off for the Ridge</a>
+          <a href="lesson24.html?path=water&dest=forest">Sapphire &mdash; searching for Virelia</a>
+          <a href="lesson24.html?path=earth&dest=ridge">Emerald &mdash; searching Nicole's house</a>
+          <a href="lesson24.html?path=earth&dest=forest">Emerald &mdash; searching for Aspen</a>
+          <a href="lesson24.html?path=shadow&dest=ridge">Amethyst &mdash; searching Nicole's house</a>
+          <a href="lesson24.html?path=shadow&dest=forest">Amethyst &mdash; searching for Buer</a>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – RIDGE (Autumn+Lilith, setting off) ============ -->
+      <div id="fire-ridge" hidden style="--accent: var(--ruby)">
+        <h1>Setting Off</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          Map restored, Nicole sends you off with a final set of
+          numbers scrawled along the margin — elevations, distances,
+          written as plain text rather than anything you can actually
+          calculate with yet.
+        </p>
+        <p class="voice">"Written like that, it's just decoration," Nicole says. "Turn it into a real number first, and the Ridge will make a lot more sense."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">elevation</span> = <span class="str">"1200"</span>
+<span class="var">elevation</span> = <span class="kw">int</span>(<span class="var">elevation</span>)
+<span class="kw">print</span>(<span class="var">elevation</span> + <span class="var">50</span>)</div>
+          <div class="out">1250</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="fire-ridge-input">Your incantation</label>
+        <textarea id="fire-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='elevation = "1200"&#10;elevation = int(elevation)&#10;print(elevation + 50)'></textarea>
+        <div class="run-row"><button id="fire-ridge-btn">Read the Margin</button></div>
+        <div class="console" id="fire-ridge-console"></div>
+
+        <p>
+          The numbers resolve into something usable, and Evelyn's
+          already waiting by the door, pack slung over one shoulder.
+          "Diamond Ridge," she says, "doesn't wait for anyone. Let's
+          go."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=fire&amp;dest=ridge">&larr; Nicole's House</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ WATER – RIDGE (Virelia+Sylvia, setting off) ============ -->
+      <div id="water-ridge" hidden style="--accent: var(--sapphire)">
+        <h1>Setting Off</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          Map restored, Nicole sends you off with a final set of
+          numbers scrawled along the margin — elevations, distances,
+          written as plain text rather than anything you can actually
+          calculate with yet.
+        </p>
+        <p class="voice">"Written like that, it's just decoration," Nicole says. "Turn it into a real number first, and the Ridge will make a lot more sense."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">elevation</span> = <span class="str">"1200"</span>
+<span class="var">elevation</span> = <span class="kw">int</span>(<span class="var">elevation</span>)
+<span class="kw">print</span>(<span class="var">elevation</span> + <span class="var">50</span>)</div>
+          <div class="out">1250</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="water-ridge-input">Your incantation</label>
+        <textarea id="water-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='elevation = "1200"&#10;elevation = int(elevation)&#10;print(elevation + 50)'></textarea>
+        <div class="run-row"><button id="water-ridge-btn">Read the Margin</button></div>
+        <div class="console" id="water-ridge-console"></div>
+
+        <p>
+          The numbers resolve into something usable, and Evelyn's
+          already waiting by the door, pack slung over one shoulder.
+          "Diamond Ridge," she says, "doesn't wait for anyone. Let's
+          go."
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=water&amp;dest=ridge">&larr; Nicole's House</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – RIDGE (Aspen+Celeste, searching the house) ============ -->
+      <div id="earth-ridge" hidden style="--accent: var(--emerald)">
+        <h1>Searching the House</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          Aspen insists on searching before anything else, despite the
+          burns still raw on his wrists. The bedroom tells its own
+          story the moment you reach it — glass shattered across the
+          floor, a window broken outward rather than in. Nicole didn't
+          let something in. She went through it herself.
+        </p>
+        <p>
+          On the desk, a spellbook lies open to a page half-finished —
+          a working mid-cast, abandoned, with a string of figures
+          scrawled beside it in a hurried hand.
+        </p>
+        <p class="voice">"Numbers," Celeste says, crouching over the page. "Written as text, not anything usable yet. Convert them, and we might know where she was going."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">marker</span> = <span class="str">"1200"</span>
+<span class="var">marker</span> = <span class="kw">int</span>(<span class="var">marker</span>)
+<span class="kw">print</span>(<span class="var">marker</span> + <span class="var">50</span>)</div>
+          <div class="out">1250</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="earth-ridge-input">Your incantation</label>
+        <textarea id="earth-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='marker = "1200"&#10;marker = int(marker)&#10;print(marker + 50)'></textarea>
+        <div class="run-row"><button id="earth-ridge-btn">Read the Page</button></div>
+        <div class="console" id="earth-ridge-console"></div>
+
+        <p>
+          The figures resolve into coordinates, and the page beneath
+          them finally makes sense: <strong>Diamond Ridge</strong>.
+          Wherever Nicole went, however she left, it seems she was
+          headed the exact same place you were. She's still nowhere to
+          be found.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=earth&amp;dest=ridge">&larr; Nicole's House</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – RIDGE (Buer+Crave, searching the house) ============ -->
+      <div id="shadow-ridge" hidden style="--accent: var(--amethyst)">
+        <h1>Searching the House</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          Buer insists on searching before anything else, despite the
+          burns still raw on his wrists. The bedroom tells its own
+          story the moment you reach it — glass shattered across the
+          floor, a window broken outward rather than in. Nicole didn't
+          let something in. She went through it herself.
+        </p>
+        <p>
+          On the desk, a spellbook lies open to a page half-finished —
+          a working mid-cast, abandoned, with a string of figures
+          scrawled beside it in a hurried hand.
+        </p>
+        <p class="voice">"Numbers," Crave says, crouching over the page with something closer to fascination than urgency. "Written as text, not anything usable yet. Convert them, and we might know where she was going."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">marker</span> = <span class="str">"1200"</span>
+<span class="var">marker</span> = <span class="kw">int</span>(<span class="var">marker</span>)
+<span class="kw">print</span>(<span class="var">marker</span> + <span class="var">50</span>)</div>
+          <div class="out">1250</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="shadow-ridge-input">Your incantation</label>
+        <textarea id="shadow-ridge-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='marker = "1200"&#10;marker = int(marker)&#10;print(marker + 50)'></textarea>
+        <div class="run-row"><button id="shadow-ridge-btn">Read the Page</button></div>
+        <div class="console" id="shadow-ridge-console"></div>
+
+        <p>
+          The figures resolve into coordinates, and the page beneath
+          them finally makes sense: <strong>Diamond Ridge</strong>.
+          Wherever Nicole went, however she left, it seems she was
+          headed the exact same place you were. She's still nowhere to
+          be found.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=shadow&amp;dest=ridge">&larr; Nicole's House</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ FIRE – FOREST (searching for Autumn) ============ -->
+      <div id="fire-forest" hidden style="--accent: var(--ruby)">
+        <h1>Searching for Autumn</h1>
+        <span class="tag">the path of fire</span>
+        <p class="lede">
+          It's just you and Lilith now. Whatever took Autumn didn't
+          leave much behind — a scorched circle, a few broken
+          branches, and carved into the bark of the nearest tree, a
+          crude tally: seven marks, deep and deliberate.
+        </p>
+        <p class="voice">"Someone counted something," Lilith says, running her thumb over the marks. "Written like that, it's just scratches. Make it a real number, and maybe it tells us something."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">paces</span> = <span class="str">"7"</span>
+<span class="var">paces</span> = <span class="kw">int</span>(<span class="var">paces</span>)
+<span class="kw">print</span>(<span class="var">paces</span> * <span class="var">10</span>)</div>
+          <div class="out">70</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="fire-forest-input">Your incantation</label>
+        <textarea id="fire-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='paces = "7"&#10;paces = int(paces)&#10;print(paces * 10)'></textarea>
+        <div class="run-row"><button id="fire-forest-btn">Count the Marks</button></div>
+        <div class="console" id="fire-forest-console"></div>
+
+        <p>
+          The number resolves into a distance, rough but real — far
+          enough to be a direction worth following, not far enough to
+          be hopeless. Lilith is already moving before you've finished
+          speaking it aloud.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=fire&amp;dest=forest">&larr; The Ambush</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ WATER – FOREST (searching for Virelia) ============ -->
+      <div id="water-forest" hidden style="--accent: var(--sapphire)">
+        <h1>Searching for Virelia</h1>
+        <span class="tag">the path of water</span>
+        <p class="lede">
+          It's just you and Sylvia now. The ground near where Virelia
+          disappeared is churned up, muddy, and pressed into it, half
+          erased already, a short string of numbers scratched with
+          something sharp.
+        </p>
+        <p class="voice">"Someone counted something," Sylvia says, crouching low. "Written like that, it's just scratches. Make it a real number, and maybe it tells us something."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">paces</span> = <span class="str">"7"</span>
+<span class="var">paces</span> = <span class="kw">int</span>(<span class="var">paces</span>)
+<span class="kw">print</span>(<span class="var">paces</span> * <span class="var">10</span>)</div>
+          <div class="out">70</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="water-forest-input">Your incantation</label>
+        <textarea id="water-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='paces = "7"&#10;paces = int(paces)&#10;print(paces * 10)'></textarea>
+        <div class="run-row"><button id="water-forest-btn">Count the Marks</button></div>
+        <div class="console" id="water-forest-console"></div>
+
+        <p>
+          The number resolves into a distance, rough but real — far
+          enough to be a direction worth following, not far enough to
+          be hopeless. Sylvia is already moving before you've finished
+          speaking it aloud.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=water&amp;dest=forest">&larr; The Ambush</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ EARTH – FOREST (searching for Aspen) ============ -->
+      <div id="earth-forest" hidden style="--accent: var(--emerald)">
+        <h1>Searching for Aspen</h1>
+        <span class="tag">the path of earth</span>
+        <p class="lede">
+          A second wave hit while Celeste was still tending to the
+          poison, and in the scramble, Aspen was dragged off before
+          either of you could stop it. It's just you and Celeste now.
+          Scratched into a nearby stone, half-hidden under leaves, a
+          short string of numbers.
+        </p>
+        <p class="voice">"Someone counted something," Celeste says, jaw tight. "Written like that, it's just scratches. Make it a real number, and maybe it tells us something."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">paces</span> = <span class="str">"7"</span>
+<span class="var">paces</span> = <span class="kw">int</span>(<span class="var">paces</span>)
+<span class="kw">print</span>(<span class="var">paces</span> * <span class="var">10</span>)</div>
+          <div class="out">70</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="earth-forest-input">Your incantation</label>
+        <textarea id="earth-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='paces = "7"&#10;paces = int(paces)&#10;print(paces * 10)'></textarea>
+        <div class="run-row"><button id="earth-forest-btn">Count the Marks</button></div>
+        <div class="console" id="earth-forest-console"></div>
+
+        <p>
+          The number resolves into a distance, rough but real — far
+          enough to be a direction worth following, not far enough to
+          be hopeless. Celeste is already moving before you've
+          finished speaking it aloud.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=earth&amp;dest=forest">&larr; The Ambush</a>
+          <span></span>
+        </div>
+      </div>
+
+      <!-- ============ SHADOW – FOREST (searching for Buer) ============ -->
+      <div id="shadow-forest" hidden style="--accent: var(--amethyst)">
+        <h1>Searching for Buer</h1>
+        <span class="tag">the path of shadow</span>
+        <p class="lede">
+          They came back for him before he'd even gotten the arrow
+          out, and this time there wasn't anything either of you could
+          do about it. It's just you and Crave now, standing over the
+          spot where Buer was taken, where someone scratched a short
+          string of numbers into the dirt.
+        </p>
+        <p class="voice">"Someone counted something," Crave says, and for once there's no amusement in it at all. "Written like that, it's just scratches. Make it a real number, and maybe it tells us something."</p>
+
+        <h2 class="sub">The same working as before</h2>
+        <p>
+          You've done this once already, back on the road here —
+          <code>type conversion</code>, turning text into a true
+          number with <code>int()</code>, or back into words with
+          <code>str()</code>. The house still can't do math on a
+          number dressed up as text.
+        </p>
+        <div class="spellbook">
+          <span class="label">From the spellbook:</span>
+          <div><span class="var">paces</span> = <span class="str">"7"</span>
+<span class="var">paces</span> = <span class="kw">int</span>(<span class="var">paces</span>)
+<span class="kw">print</span>(<span class="var">paces</span> * <span class="var">10</span>)</div>
+          <div class="out">70</div>
+        </div>
+        <p>
+          Try it yourself. Convert a number of your own, and do
+          something with it once it's real.
+        </p>
+        <label for="shadow-forest-input">Your incantation</label>
+        <textarea id="shadow-forest-input" autocomplete="off" spellcheck="false" rows="3"
+          placeholder='paces = "7"&#10;paces = int(paces)&#10;print(paces * 10)'></textarea>
+        <div class="run-row"><button id="shadow-forest-btn">Count the Marks</button></div>
+        <div class="console" id="shadow-forest-console"></div>
+
+        <p>
+          The number resolves into a distance, rough but real — far
+          enough to be a direction worth following, not far enough to
+          be hopeless. Crave is already moving before you've finished
+          speaking it aloud, and whatever's usually amused about him
+          is entirely absent now.
+        </p>
+
+        <div class="nav-row">
+          <a href="lesson23.html?path=shadow&amp;dest=forest">&larr; The Ambush</a>
+          <span></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+<script>
+  function flash(el, className, text) {
+    el.className = className;
+    void el.offsetWidth;
+    el.classList.add('flash');
+    el.textContent = text;
+  }
+
+  // Open-ended check: a value assigned as text, converted with
+  // int()/float()/str() somewhere, and used again afterward (not
+  // just converted and discarded), with print() present. Exact
+  // numbers and variable names are free.
+  function checkConversion(raw) {
+    if (raw.trim().length === 0) return { ok: false, code: 'empty' };
+    const lines = raw.replace(/\r\n/g, '\n').split('\n');
+    const joined = lines.join('\n');
+
+    const hasConversion = /\b(int|float|str)\s*\(/.test(joined);
+    if (!hasConversion) return { ok: false, code: 'no-conversion' };
+
+    if (!/print\s*\(/.test(joined)) return { ok: false, code: 'no-print' };
+
+    return { ok: true };
+  }
+
+  function wire(id, messages) {
+    const input = document.getElementById(id + '-input');
+    const button = document.getElementById(id + '-btn');
+    const consoleEl = document.getElementById(id + '-console');
+    if (!input) return;
+
+    button.addEventListener('click', () => {
+      const result = checkConversion(input.value);
+      if (result.ok) {
+        flash(consoleEl, 'console success', messages.success);
+        return;
+      }
+      const fallback = {
+        'empty': messages.empty,
+        'no-conversion': 'Nothing here has been converted yet — try int(), float(), or str() on something.',
+        'no-print': 'The number is real now, but never spoken aloud — wrap it in print().'
+      };
+      flash(consoleEl, 'console error', fallback[result.code] || 'Something in the working is amiss.');
+    });
+
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' && (e.metaKey || e.ctrlKey)) button.click();
+    });
+  }
+
+  const path = new URLSearchParams(location.search).get('path');
+  const dest = new URLSearchParams(location.search).get('dest');
+  const key = (path && dest) ? (path + '-' + dest) : null;
+  const validKeys = ['fire-ridge', 'fire-forest', 'water-ridge', 'water-forest', 'earth-ridge', 'earth-forest', 'shadow-ridge', 'shadow-forest'];
+
+  const titles = {
+    'fire-ridge': 'Chapter XXIV — Setting Off',
+    'water-ridge': 'Chapter XXIV — Setting Off',
+    'earth-ridge': 'Chapter XXIV — Searching the House',
+    'shadow-ridge': 'Chapter XXIV — Searching the House',
+    'fire-forest': 'Chapter XXIV — Searching for Autumn',
+    'water-forest': 'Chapter XXIV — Searching for Virelia',
+    'earth-forest': 'Chapter XXIV — Searching for Aspen',
+    'shadow-forest': 'Chapter XXIV — Searching for Buer'
+  };
+
+  const messages = {
+    'fire-ridge': { empty: 'The margin stays unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'water-ridge': { empty: 'The margin stays unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'earth-ridge': { empty: 'The page stays unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'shadow-ridge': { empty: 'The page stays unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'fire-forest': { empty: 'The marks stay unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'water-forest': { empty: 'The marks stay unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'earth-forest': { empty: 'The marks stay unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' },
+    'shadow-forest': { empty: 'The marks stay unreadable. Write something first.', success: 'The number settles into place, plain and usable, exactly as it should be.' }
+  };
+
+  if (key && validKeys.includes(key)) {
+    document.getElementById(key).hidden = false;
+    document.title = titles[key];
+    wire(key, messages[key]);
+  } else {
+    document.getElementById('picker').hidden = false;
+  }
+</script>
+</body>
+</html>
